@@ -70,11 +70,6 @@ The service starts on `http://localhost:8080` by default. API documentation is a
 | Coupon claims | Database conditional updates prevent issuing more coupons than available stock |
 | Order notifications | WebSocket pushes order status events to the management client |
 
-## Documentation
-
-- [FAISS gateway integration](docs/faiss-gateway.md)
-- [Production-readiness notes](docs/production-readiness.md)
-
 ## Repository Hygiene
 
 This repository intentionally excludes local IDE settings, build output, runtime files, private job-search materials, environment configuration, and certificates. Use `application-dev.example.yml` as the starting point for local configuration.
