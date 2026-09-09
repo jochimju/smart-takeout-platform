@@ -1,0 +1,35 @@
+# Copy this file to application-dev.yml and replace every placeholder before starting the service.
+sky:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: smart_takeout
+    username: your_mysql_username
+    password: your_mysql_password
+  alioss:
+    endpoint: your_oss_endpoint
+    access-key-id: your_oss_access_key_id
+    access-key-secret: your_oss_access_key_secret
+    bucket-name: your_oss_bucket
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 10
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+  wechat:
+    appid: your_wechat_appid
+    secret: your_wechat_secret
+    mchid: your_merchant_id
+    mchSerialNo: your_merchant_serial_number
+    privateKeyFilePath: /absolute/path/to/apiclient_key.pem
+    apiV3Key: your_api_v3_key
+    weChatPayCertFilePath: /absolute/path/to/wechatpay_certificate.pem
+    notifyUrl: https://your-domain.example/api/notify/paySuccess
+    refundNotifyUrl: https://your-domain.example/api/notify/refundSuccess

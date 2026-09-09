@@ -1,0 +1,41 @@
+# Build output
+**/target/
+*.class
+*.jar
+*.war
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# Local runtime data
+runtime/
+logs/
+*.log
+
+# Local configuration and secrets
+.env
+.env.*
+!*.example
+sky-server/src/main/resources/application-dev.yml
+sky-server/src/main/resources/application-local.yml
+*.pem
+*.key
+*.p12
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Private working materials
+.agents/
+.codex/
+00-candidate-core.md
+01-project-implementation.md
+02-job-context.md
+03-gold-interview-qa.md
+04-predicted-interview-qa.md
