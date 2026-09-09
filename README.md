@@ -10,6 +10,21 @@
 - **Reliable order processing** — delayed queues cancel unpaid orders after the timeout window; dead-letter handling and retry records improve recoverability.
 - **Marketing and observability** — coupon claiming/usage, Flyway database migrations, WebSocket order notifications, and administrative reporting.
 
+## Interface Preview
+
+> The images below are illustrative interface previews created for this repository. They show the intended product experience and do not contain production or personal data.
+
+<table>
+  <tr>
+    <td width="50%" align="center"><strong>Administration Dashboard</strong></td>
+    <td width="50%" align="center"><strong>Mini Program Ordering</strong></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/admin-dashboard-preview.png" alt="Administration dashboard preview" /></td>
+    <td><img src="assets/screenshots/mini-program-preview.png" alt="Mini program ordering preview" /></td>
+  </tr>
+</table>
+
 ## Architecture
 
 ```text
