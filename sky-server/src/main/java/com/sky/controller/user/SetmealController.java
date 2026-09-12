@@ -1,6 +1,6 @@
 package com.sky.controller.user;
 
-import com.sky.constant.StatusConstant;
+
 import com.sky.entity.Setmeal;
 import com.sky.result.Result;
 import com.sky.service.SetmealService;
@@ -9,7 +9,7 @@ import com.sky.vo.SeckillOrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,14 +28,8 @@ public class SetmealController {
 
     @GetMapping("/list")
     @ApiOperation("list setmeals by category")
-    // 用户端返回 Result；使用独立缓存避免与管理端的 List<Setmeal> 缓存混用。
-    @Cacheable(cacheNames = "userSetmealCache", key = "#categoryId")
     public Result<List<Setmeal>> list(Long categoryId) {
-        Setmeal setmeal = new Setmeal();
-        setmeal.setCategoryId(categoryId);
-        setmeal.setStatus(StatusConstant.ENABLE);
-
-        List<Setmeal> list = setmealService.list(setmeal);
+        List<Setmeal> list = setmealService.listCache(categoryId);
         return Result.success(list);
     }
 

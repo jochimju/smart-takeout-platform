@@ -26,6 +26,7 @@ import java.util.HashMap;
 public class PayNotifyController {
     @Autowired
     private OrderService orderService;
+    @Autowired private com.sky.utils.WeChatPayUtil payment;
     @Autowired
     private WeChatProperties weChatProperties;
 
@@ -36,26 +37,28 @@ public class PayNotifyController {
      */
     @RequestMapping("/paySuccess")
     public void paySuccessNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        //读取数据
-        String body = readData(request);
-        log.info("支付成功回调：{}", body);
-
-        //数据解密
-        String plainText = decryptData(body);
-        log.info("解密后的文本：{}", plainText);
-
-        JSONObject jsonObject = JSON.parseObject(plainText);
-        String outTradeNo = jsonObject.getString("out_trade_no");//商户平台订单号
-        String transactionId = jsonObject.getString("transaction_id");//微信支付交易号
-
-        log.info("商户平台订单号：{}", outTradeNo);
-        log.info("微信支付交易号：{}", transactionId);
-
-        //业务处理，修改订单状态、来单提醒
-        orderService.paySuccess(outTradeNo);
-
-        //给微信响应
+        String body=org.springframework.util.StreamUtils.copyToString(request.getInputStream(),StandardCharsets.UTF_8);
+        payment.verifyNotification(body,request.getHeader("Wechatpay-Timestamp"),
+            request.getHeader("Wechatpay-Nonce"),request.getHeader("Wechatpay-Serial"),request.getHeader("Wechatpay-Signature"));
+        JSONObject receipt=JSON.parseObject(decryptData(body));
+        if(!weChatProperties.getMchid().equals(receipt.getString("mchid")) ||
+            !weChatProperties.getAppid().equals(receipt.getString("appid")) ||
+            !"SUCCESS".equals(receipt.getString("trade_state")))
+            throw new SecurityException("payment receipt identity or state mismatch");
+        JSONObject amount=receipt.getJSONObject("amount");
+        if(amount==null || !"CNY".equals(amount.getString("currency")) || amount.getBigDecimal("total")==null)
+            throw new SecurityException("payment amount missing or currency mismatch");
+        orderService.paySuccess(receipt.getString("out_trade_no"),receipt.getString("transaction_id"),
+            amount.getBigDecimal("total").movePointLeft(2));
         responseToWeixin(response);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+    public void failedNotification(Exception error,HttpServletResponse response) throws java.io.IOException {
+        log.warn("Payment callback rejected",error);
+        response.setStatus(500);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"code\":\"FAIL\",\"message\":\"notification processing failed\"}");
     }
 
     /**

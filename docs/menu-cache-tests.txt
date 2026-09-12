@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.sky.service.impl.DishCacheMutexTest
+-------------------------------------------------------------------------------
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.929 s - in com.sky.service.impl.DishCacheMutexTest
+-------------------------------------------------------------------------------
+Test set: com.sky.service.impl.DishStatusCacheTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.652 s - in com.sky.service.impl.DishStatusCacheTest

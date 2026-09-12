@@ -5,7 +5,7 @@
 ## Highlights
 
 - **Core dining workflow** — user login, shopping cart, address book, menu and set-meal browsing, order creation, payment callbacks, order lifecycle management, and merchant-side operations.
-- **Redis for performance** — cache-aside strategy for menu data, cache warm-up on application startup, and mutex protection for hot-key cache rebuilds.
+- **Redis for menu reads** — shared cache-aside for dish and set-meal categories, startup warm-up, short-lived empty results, jittered expiration, renewable Redis mutexes with ownership-checked Lua publication/unlock, and per-instance cache statistics. See [cache implementation and validation](docs/menu-cache.md).
 - **High-concurrency flash sales** — a Lua script atomically validates stock and one-user-one-order constraints; RabbitMQ then processes accepted orders asynchronously.
 - **Reliable order processing** — delayed queues cancel unpaid orders after the timeout window; dead-letter handling and retry records improve recoverability.
 - **Marketing and observability** — coupon claiming/usage, Flyway database migrations, WebSocket order notifications, and administrative reporting.

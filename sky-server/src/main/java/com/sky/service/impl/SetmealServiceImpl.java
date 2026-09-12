@@ -52,6 +52,9 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class SetmealServiceImpl implements SetmealService {
+    @Autowired private OrderReliabilityStore reliability;
+
+    @Autowired private com.sky.mapper.SeckillReservationMapper reservationMapper;
 
     @Autowired
     private SetmealMapper setmealMapper;
@@ -67,6 +70,8 @@ public class SetmealServiceImpl implements SetmealService {
     private SeckillOrderGuardMapper seckillOrderGuardMapper;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private com.sky.cache.MenuCache menuCache;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
@@ -185,6 +190,7 @@ public class SetmealServiceImpl implements SetmealService {
      * @param status
      * @param id
      */
+    @Transactional
     public void startOrStop(Integer status, Long id) {
         //璧峰敭濂楅鏃讹紝鍒ゆ柇濂楅鍐呮槸鍚︽湁鍋滃敭鑿滃搧锛屾湁鍋滃敭鑿滃搧鎻愮ず"濂楅鍐呭寘鍚湭鍚敭鑿滃搧锛屾棤娉曞惎鍞?
         if(status == StatusConstant.ENABLE){
@@ -211,6 +217,11 @@ public class SetmealServiceImpl implements SetmealService {
      * @param setmeal
      * @return
      */
+    public List<Setmeal> listCache(Long categoryId) {
+        return menuCache.get("setmeal", categoryId, () -> list(Setmeal.builder()
+                .categoryId(categoryId).status(StatusConstant.ENABLE).build()));
+    }
+
     public List<Setmeal> list(Setmeal setmeal) {
         List<Setmeal> list = setmealMapper.list(setmeal);
         return list;
@@ -238,35 +249,7 @@ public class SetmealServiceImpl implements SetmealService {
     }
 
     public SeckillOrderVO seckill(Long setmealId) {
-        Long userId = BaseContext.getCurrentId();
-        String stockKey = RedisKeyConstant.SECKILL_STOCK + setmealId;
-        String userKey = RedisKeyConstant.SECKILL_USERS + setmealId;
-        Long result = stringRedisTemplate.execute(seckillScript, Arrays.asList(stockKey, userKey), userId.toString());
-        if (result == null || result == 1) {
-            throw new OrderBusinessException("setmeal sold out");
-        }
-        if (result == 2) {
-            throw new OrderBusinessException("each user can only buy once");
-        }
-
-        String orderNumber = generateOrderNumber();
-        SeckillOrderMessageDTO messageDTO = SeckillOrderMessageDTO.builder()
-                .userId(userId)
-                .setmealId(setmealId)
-                .orderNumber(orderNumber)
-                .build();
-        try {
-            rabbitTemplate.convertAndSend(MqConstant.ORDER_EXCHANGE, MqConstant.SECKILL_ORDER_ROUTING_KEY, messageDTO);
-        } catch (Exception e) {
-            stringRedisTemplate.opsForValue().increment(stockKey);
-            stringRedisTemplate.opsForSet().remove(userKey, userId.toString());
-            saveMqFailMessage(MqConstant.ORDER_EXCHANGE, MqConstant.SECKILL_ORDER_ROUTING_KEY, messageDTO, e);
-            throw new OrderBusinessException("seckill order submit failed, please retry later");
-        }
-        return SeckillOrderVO.builder()
-                .orderNumber(orderNumber)
-                .message("seckill accepted")
-                .build();
+        throw new OrderBusinessException("请通过限时秒杀活动结算页下单");
     }
 
     @Transactional
@@ -275,45 +258,7 @@ public class SetmealServiceImpl implements SetmealService {
         if (exists != null) {
             return;
         }
-        try {
-            seckillOrderGuardMapper.insertGuard(messageDTO.getUserId(), messageDTO.getSetmealId(),
-                    messageDTO.getOrderNumber());
-        } catch (Exception e) {
-            log.info("duplicate seckill order skipped, userId: {}, setmealId: {}",
-                    messageDTO.getUserId(), messageDTO.getSetmealId());
-            return;
-        }
-
-        Setmeal setmeal = setmealMapper.getById(messageDTO.getSetmealId());
-        if (setmeal == null || !StatusConstant.ENABLE.equals(setmeal.getStatus())) {
-            throw new OrderBusinessException("setmeal is not available");
-        }
-        int affected = setmealMapper.deductStock(messageDTO.getSetmealId(), 1);
-        if (affected == 0) {
-            throw new OrderBusinessException("setmeal stock not enough");
-        }
-
-        Orders order = Orders.builder()
-                .number(messageDTO.getOrderNumber())
-                .userId(messageDTO.getUserId())
-                .status(Orders.PENDING_PAYMENT)
-                .payStatus(Orders.UN_PAID)
-                .orderTime(LocalDateTime.now())
-                .amount(setmeal.getPrice())
-                .build();
-        orderMapper.insert(order);
-
-        OrderDetail orderDetail = OrderDetail.builder()
-                .name(setmeal.getName())
-                .orderId(order.getId())
-                .setmealId(setmeal.getId())
-                .number(1)
-                .amount(setmeal.getPrice())
-                .image(setmeal.getImage())
-                .build();
-        orderDetailMapper.insertBatch(Arrays.asList(orderDetail));
-        rabbitTemplate.convertAndSend(MqConstant.ORDER_DELAY_EXCHANGE, MqConstant.ORDER_DELAY_ROUTING_KEY,
-                messageDTO.getOrderNumber());
+        throw new OrderBusinessException("旧秒杀消息入口已停用，请通过活动结算页重新下单");
     }
 
     public void rollbackSeckillReservation(SeckillOrderMessageDTO messageDTO) {

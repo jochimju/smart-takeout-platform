@@ -54,6 +54,8 @@ public class Orders implements Serializable {
     //涓嬪崟鏃堕棿
     private LocalDateTime orderTime;
 
+    private LocalDateTime expireTime;
+
     //缁撹处鏃堕棿
     private LocalDateTime checkoutTime;
 

@@ -1,0 +1,32 @@
+{
+	"cold":{
+		"contentions":0,
+		"errors":0,
+		"hitRate":0.9,
+		"hits":90,
+		"loads":10,
+		"misses":10,
+		"requests":100,
+		"timeouts":0,
+		"warmupErrors":0,
+		"warmupLoads":0,
+		"warmups":0,
+		"elapsedMs":284.9447,
+		"p95Ms":15.1571
+	},
+	"warm":{
+		"contentions":0,
+		"errors":0,
+		"hitRate":1.0,
+		"hits":100,
+		"loads":0,
+		"misses":0,
+		"requests":100,
+		"timeouts":0,
+		"warmupErrors":0,
+		"warmupLoads":10,
+		"warmups":10,
+		"elapsedMs":81.0949,
+		"p95Ms":1.6718
+	}
+}

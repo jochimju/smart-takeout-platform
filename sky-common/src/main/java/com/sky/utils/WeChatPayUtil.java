@@ -83,6 +83,7 @@ public class WeChatPayUtil {
         CloseableHttpClient httpClient = getClient();
 
         HttpPost httpPost = new HttpPost(url);
+        httpPost.setConfig(requestConfig());
         httpPost.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString());
         httpPost.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
         httpPost.addHeader("Wechatpay-Serial", weChatProperties.getMchSerialNo());
@@ -108,6 +109,7 @@ public class WeChatPayUtil {
         CloseableHttpClient httpClient = getClient();
 
         HttpGet httpGet = new HttpGet(url);
+        httpGet.setConfig(requestConfig());
         httpGet.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString());
         httpGet.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
         httpGet.addHeader("Wechatpay-Serial", weChatProperties.getMchSerialNo());
@@ -231,5 +233,35 @@ public class WeChatPayUtil {
 
         //调用申请退款接口
         return post(REFUNDS, body);
+    }
+
+    public String queryRefund(String refundNumber) throws Exception {
+        if(!refundNumber.matches("[a-zA-Z0-9_-]{1,64}")) throw new IllegalArgumentException("invalid refund number");
+        return get(REFUNDS+"/"+refundNumber);
+    }
+
+    public void verifyNotification(String body,String timestamp,String nonce,String serial,String signature) throws Exception {
+        if(timestamp==null || nonce==null || serial==null || signature==null)
+            throw new SecurityException("payment signature headers missing");
+        long seconds=Long.parseLong(timestamp);
+        if(Math.abs(java.time.Instant.now().getEpochSecond()-seconds)>300)
+            throw new SecurityException("payment notification timestamp expired");
+        X509Certificate certificate;
+        try(FileInputStream input=new FileInputStream(weChatProperties.getWeChatPayCertFilePath())) {
+            certificate=PemUtil.loadCertificate(input);
+        }
+        certificate.checkValidity();
+        if(!certificate.getSerialNumber().toString(16).equalsIgnoreCase(serial))
+            throw new SecurityException("payment platform certificate serial mismatch");
+        Signature verifier=Signature.getInstance("SHA256withRSA");
+        verifier.initVerify(certificate.getPublicKey());
+        verifier.update((timestamp+"\n"+nonce+"\n"+body+"\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        if(!verifier.verify(Base64.getDecoder().decode(signature)))
+            throw new SecurityException("invalid payment notification signature");
+    }
+
+    private org.apache.http.client.config.RequestConfig requestConfig() {
+        return org.apache.http.client.config.RequestConfig.custom().setConnectTimeout(5000)
+            .setConnectionRequestTimeout(5000).setSocketTimeout(10000).build();
     }
 }

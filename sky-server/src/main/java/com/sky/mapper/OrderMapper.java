@@ -82,4 +82,26 @@ public interface OrderMapper {
      * @return
      */
     Integer countByMap(Map map);
+
+    @Select("select * from orders where id=#{id} for update")
+    Orders lockById(Long id);
+    @Select("select * from orders where number=#{number} for update")
+    Orders lockByNumber(String number);
+
+    @org.apache.ibatis.annotations.Update("update orders set status=6,cancel_time=#{now}," +
+        "cancel_reason=case when #{rejected}=false then #{reason} else cancel_reason end," +
+        "rejection_reason=case when #{rejected}=true then #{reason} else rejection_reason end " +
+        "where id=#{id} and status=#{status} and pay_status=#{payStatus} " +
+        "and (#{timeout}=false or (status=1 and pay_status=0 and " +
+        "coalesce(expire_time,date_add(order_time,interval 15 minute))<=#{now}))")
+    int cancelIfCurrent(@Param("id") Long id,@Param("status") Integer status,@Param("payStatus") Integer payStatus,
+        @Param("reason") String reason,@Param("rejected") boolean rejected,@Param("timeout") boolean timeout,
+        @Param("now") LocalDateTime now);
+
+    @org.apache.ibatis.annotations.Update("update orders set status=2,pay_status=1,checkout_time=now() where id=#{id} and status=1 and pay_status=0")
+    int markPaid(Long id);
+
+    @org.apache.ibatis.annotations.Update("update orders set status=#{next},delivery_time=case when #{next}=5 then now() else delivery_time end " +
+        "where id=#{id} and status=#{expected} and pay_status=1")
+    int transition(@Param("id") Long id,@Param("expected") int expected,@Param("next") int next);
 }

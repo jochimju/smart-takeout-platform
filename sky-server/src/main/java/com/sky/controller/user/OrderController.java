@@ -25,6 +25,19 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @GetMapping("/seckill/result")
+    public Result<OrderSubmitVO> seckillResult(@RequestParam String requestId) {
+        return Result.success(seckillService.findRequest(requestId));
+    }
+
+    @Autowired
+    private com.sky.service.SeckillService seckillService;
+
+    @PostMapping("/seckill/submit")
+    @ApiOperation("秒杀活动下单")
+    public Result<OrderSubmitVO> seckillSubmit(@RequestBody com.sky.dto.SeckillOrderSubmitDTO request) {
+        return Result.success(seckillService.seckillOrder(request));
+    }
 
     /**
      * 闁活潿鍔嶉崺娑欑▔鐎ｎ亜绀?
@@ -53,6 +66,17 @@ public class OrderController {
         OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
         log.info("闁汇垻鍠愰崹姘紣閸曨剚鏆滃ù鐘趁煎锕傚及閹惧啿绀嬮柨娑欘劯}", orderPaymentVO);
         return Result.success(orderPaymentVO);
+    }
+
+    /**
+     * Local development mock gateway callback. It is enabled only by the
+     * development payment configuration.
+     */
+    @PutMapping("/payment/mock/confirm")
+    @ApiOperation("confirm mock payment")
+    public Result<String> confirmMockPayment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) {
+        orderService.confirmMockPayment(ordersPaymentDTO.getOrderNumber());
+        return Result.success();
     }
 
     /**

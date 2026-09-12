@@ -57,6 +57,8 @@ public interface SetmealService {
      */
     List<Setmeal> list(Setmeal setmeal);
 
+    List<Setmeal> listCache(Long categoryId);
+
     /**
      * 根据id查询菜品选项
      * @param id

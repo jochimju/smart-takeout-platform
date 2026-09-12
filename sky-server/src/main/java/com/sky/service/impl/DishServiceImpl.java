@@ -12,7 +12,9 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.entity.Setmeal;
+import com.sky.event.DishStatusChangedEvent;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.cache.MenuCache;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
@@ -23,13 +25,14 @@ import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -48,6 +51,10 @@ public class DishServiceImpl implements DishService {
     private SetmealMapper setmealMapper;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private MenuCache menuCache;
 
     /**
      * 新增菜品和对应的口味
@@ -145,6 +152,7 @@ public class DishServiceImpl implements DishService {
      *
      * @param dishDTO
      */
+    @Transactional
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
@@ -174,6 +182,7 @@ public class DishServiceImpl implements DishService {
      */
     @Transactional
     public void startOrStop(Integer status, Long id) {
+        boolean setmealsChanged = false;
         Dish dish = Dish.builder()
                 .id(id)
                 .status(status)
@@ -187,6 +196,7 @@ public class DishServiceImpl implements DishService {
             // select setmeal_id from setmeal_dish where dish_id in (?,?,?)
             List<Long> setmealIds = setmealDishMapper.getSetmealIdsByDishIds(dishIds);
             if (setmealIds != null && setmealIds.size() > 0) {
+                setmealsChanged = true;
                 for (Long setmealId : setmealIds) {
                     Setmeal setmeal = Setmeal.builder()
                             .id(setmealId)
@@ -196,6 +206,7 @@ public class DishServiceImpl implements DishService {
                 }
             }
         }
+        eventPublisher.publishEvent(new DishStatusChangedEvent(setmealsChanged));
     }
 
     /**
@@ -236,50 +247,7 @@ public class DishServiceImpl implements DishService {
     }
 
     public List<DishVO> listWithFlavorCache(Long categoryId) {
-        String key = "dish_" + categoryId;
-        List<DishVO> list = (List<DishVO>) redisTemplate.opsForValue().get(key);
-        if (list != null && list.size() > 0) {
-            return list;
-        }
-
-        String lockKey = RedisKeyConstant.CACHE_LOCK + key;
-        String lockValue = UUID.randomUUID().toString();
-        Boolean locked = redisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, 10, TimeUnit.SECONDS);
-        if (Boolean.FALSE.equals(locked)) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            list = (List<DishVO>) redisTemplate.opsForValue().get(key);
-            if (list != null) {
-                return list;
-            }
-            Dish dish = Dish.builder()
-                    .categoryId(categoryId)
-                    .status(StatusConstant.ENABLE)
-                    .build();
-            return listWithFlavor(dish);
-        }
-
-        try {
-            list = (List<DishVO>) redisTemplate.opsForValue().get(key);
-            if (list != null && list.size() > 0) {
-                return list;
-            }
-            Dish dish = Dish.builder()
-                    .categoryId(categoryId)
-                    .status(StatusConstant.ENABLE)
-                    .build();
-            list = listWithFlavor(dish);
-            redisTemplate.opsForValue().set(key, list, 30, TimeUnit.MINUTES);
-            return list;
-        } finally {
-            Object value = redisTemplate.opsForValue().get(lockKey);
-            if (lockValue.equals(value)) {
-                redisTemplate.delete(lockKey);
-            }
-        }
+        return menuCache.get("dish", categoryId, () -> listWithFlavor(Dish.builder()
+                .categoryId(categoryId).status(StatusConstant.ENABLE).build()));
     }
-
 }

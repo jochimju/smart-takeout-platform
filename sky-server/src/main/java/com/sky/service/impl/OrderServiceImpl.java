@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,10 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+    @Autowired private OrderLifecycleService lifecycle;
+    @Autowired private OrderReliabilityStore reliability;
+
+    @Autowired private SeckillReservationService seckillReservationService;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -74,6 +79,8 @@ public class OrderServiceImpl implements OrderService {
     private RabbitTemplate rabbitTemplate;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Value("${sky.payment.mock-enabled:false}")
+    private boolean mockPaymentEnabled;
 
     /**
      * 闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹寸偟鎳呴柍缁樻閹鏁愭惔婵堢泿缂備讲鍋?
@@ -169,6 +176,7 @@ public class OrderServiceImpl implements OrderService {
             order.setDiscountAmount(discountAmount);
             order.setAmount(originAmount.subtract(discountAmount));
 
+            order.setExpireTime(order.getOrderTime().plusMinutes(15));
             orderMapper.insert(order);
             markCouponUsed(messageDTO.getUserId(), messageDTO.getCouponId(), order.getId());
 
@@ -183,8 +191,7 @@ public class OrderServiceImpl implements OrderService {
 
             orderDetailMapper.insertBatch(orderDetailList);
             shoppingCartMapper.deleteByUserId(messageDTO.getUserId());
-            rabbitTemplate.convertAndSend(MqConstant.ORDER_DELAY_EXCHANGE, MqConstant.ORDER_DELAY_ROUTING_KEY,
-                    messageDTO.getOrderNumber());
+            reliability.scheduleTimeout(order);
         } finally {
             redisTemplate.delete(RedisKeyConstant.ORDER_SUBMITTING + messageDTO.getUserId());
         }
@@ -192,19 +199,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public void cancelTimeoutOrder(String orderNumber) {
-        Orders ordersDB = orderMapper.getByNumber(orderNumber);
-        if (ordersDB == null || !Orders.PENDING_PAYMENT.equals(ordersDB.getStatus())) {
-            return;
-        }
-
-        Orders orders = new Orders();
-        orders.setId(ordersDB.getId());
-        orders.setStatus(Orders.CANCELLED);
-        orders.setCancelReason("payment timeout, auto cancel");
-        orders.setCancelTime(LocalDateTime.now());
-        orderMapper.update(orders);
-        rollbackOrderStock(ordersDB.getId());
-        userCouponMapper.rollbackByOrderId(ordersDB.getId());
+        lifecycle.timeout(orderNumber);
     }
 
     /**
@@ -214,26 +209,23 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
-        // 闂佽崵鍠愮划搴㈡櫠濡ゅ懎绠伴柛娑橈攻濞呯娀鏌ｅΟ鑲╁笡闁稿骸鐭傞幃褰掑炊椤忓嫮姣㈢紓浣割槸濞硷繝寮婚敐澶涚稏妞ゆ巻鍋撳┑鈥茬矙閺屾盯鍩￠崒鐐存儍d
-        Long userId = BaseContext.getCurrentId();
-        User user = userMapper.getById(userId);
-
-        //闂備浇宕垫慨鎾敄閸涙潙鐤ù鍏兼綑閺嬩線鏌曢崼婵囧闁搞倖顨嗛妵鍕籍閸ヨ泛鏁界紓浣筋嚙濡繈寮婚敓鐘茬劦妞ゆ帒瀚烽弫宥嗙箾閸℃ê鐏ョ紒妤嬬節濮婅櫣鎲撮崟顏囧焻闂佺姘︾划楣冨Φ閹邦兘妲堥柕蹇婂墲濞呮牠鎮楅崗澶婁壕闂侀€炲苯澧寸€殿噮鍋婇獮妯兼嫚閼碱剦鍚呴梻渚€鈧稑宓嗛柛瀣躬瀵娊寮撮姀锛勫幐闂侀€炲苯澧存い銏＄☉閳诲酣骞嬪┑鍫仹婵犵數鍋涢悺銊╁吹鎼淬劌纾归柡宥庣仜閿濆憘鏃堝川椤撶媭鏀?
-        JSONObject jsonObject = weChatPayUtil.pay(
-                ordersPaymentDTO.getOrderNumber(), //闂傚倷绀侀幗婊堝窗鎼粹垾娑樷枎閹捐櫕妲┑鐐村灦绾板秵鍒婃總鍛婄厪闊洦娲栧瓭缂備讲鍋撻悗锝庡枟閻?
-                new BigDecimal(0.01), //闂傚倷娴囬妴鈧柛瀣尰閵囧嫰寮介妸褎鍣柣銏╁灡閻╊垰顫忓ú顏勭煑濠㈣泛锕︽导灞筋渻閵堝啫鈧洟宕愰崸妤€鏋佺€广儱娲ｅ▽顏堟煢濡警妲烘い锔惧缁?闂?
-                "Sky take-out order", // order description
-                user.getOpenid() //闂佽娴烽弫濠氬磻婵犲洤绐楅柡鍥╁枔閳瑰秴鈹戦悩鍙夊闁稿鍔戦弻鏇熺節韫囨洜鏆犻梺缁樻尰濞茬喖寮婚敐澶娢╅柕澶堝劤閸樼掸enid
-        );
-
-        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
-            throw new OrderBusinessException("order already paid");
-        }
-
-        OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
-        vo.setPackageStr(jsonObject.getString("package"));
-
+        Long userId=BaseContext.getCurrentId();
+        Orders order=orderMapper.getByNumberAndUserId(ordersPaymentDTO.getOrderNumber(),userId);
+        if(order==null || !Orders.PENDING_PAYMENT.equals(order.getStatus()) || !Orders.UN_PAID.equals(order.getPayStatus())
+            || !LocalDateTime.now().isBefore(OrderLifecycleService.deadline(order)))
+            throw new OrderBusinessException("order is not available for payment");
+        if(mockPaymentEnabled) return OrderPaymentVO.builder().mockPayment(true).build();
+        User user=userMapper.getById(userId);
+        JSONObject result=weChatPayUtil.pay(order.getNumber(),order.getAmount(),"Sky take-out order",user.getOpenid());
+        if(result.getString("code")!=null) throw new OrderBusinessException("payment request failed: "+result.getString("code"));
+        OrderPaymentVO vo=result.toJavaObject(OrderPaymentVO.class);
+        vo.setPackageStr(result.getString("package"));
         return vo;
+    }
+
+    @Override
+    public void confirmMockPayment(String orderNumber) {
+        paySuccess(orderNumber);
     }
 
     /**
@@ -242,29 +234,8 @@ public class OrderServiceImpl implements OrderService {
      * @param outTradeNo
      */
     public void paySuccess(String outTradeNo) {
-        Orders ordersDB = orderMapper.getByNumber(outTradeNo);
-        if (ordersDB == null) {
-            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
-        }
-
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕霉閿濆洤鍔嬪┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒佸垔閺€鍕⒒娴ｅ憡鎯堟繛灞傚€濋幃娲Ω閳轰浇鎽曟繝鐢靛Т鐎氼厽鍒婃總鍛婄厪闊洦娲栧瓭缂備讲鍋撻悗锝庡枟閻撶喖鏌曟繛鍨姎妞ゅ浚鍋勯埞鎴︻敊閼恒儱鈧劖顨ラ悙鈺佷壕濠电偠鎻徊鍧椼€傛禒瀣；闁规儳鐡ㄦ刊鎾偡濞嗗繐顏繛鍫㈠缁绘稓鈧數顭堟牎闁藉啴浜堕弻鈥崇暆閳ь剟宕版惔顭戞晪闁挎繂鐗忛悿鈧柣搴€ラ崘褍顥氬┑鐐舵彧缂嶁偓妞ゎ偄顦靛鍐差煥閸忕姴缍婇幃鈺呭箛娴ｅ搫濮哄┑鐘愁問閸犳骞冮崒鐐靛祦闁逞屽墮闇夐柨婵嗘祩閺嗩垶鏌涚€ｎ偅灏伴柟宄版嚇閹煎湱鎲撮崟顐ゆ闂備浇宕垫慨鐢稿礉瑜斿浠嬪礋椤愵偅瀵岄梺绋跨灱閸嬬偤鍩?
-        Orders orders = Orders.builder()
-                .id(ordersDB.getId())
-                .status(Orders.TO_BE_CONFIRMED)
-                .payStatus(Orders.PAID)
-                .checkoutTime(LocalDateTime.now())
-                .build();
-
-        orderMapper.update(orders);
-        //////////////////////////////////////////////
-        Map map = new HashMap();
-        map.put("type", 1);//濠电姷鏁搁崑鐐哄垂閻㈠憡鍋嬪┑鐘插暙椤曢亶鏌涘☉鍗炵仯閻忓繒鏁婚幃褰掑炊椤忓嫮姣㈤梺閫炲苯澧伴柛蹇旓耿瀵?闂備浇宕甸崑鐐电矙韫囨稑绀夐幖娣妼妗呭┑顔筋焾濞夋稓鐥閺屾洘寰勯崼婵嗗缂備讲鍋撻悗锝庡枟閻撴瑧绱撴担濮戭亝鎱ㄥ澶嬬厱?
-        map.put("orderId", orders.getId());
-        map.put("content", "order number: " + outTradeNo);
-
-        //闂傚倸鍊风欢锟犲磻閸涱喚鈹嶉柧蹇氼潐瀹曟煡鏌涘鍡樞Socket闂備浇顕ф绋匡耿闁秴纾婚柣鏃囧亹瀹撲線鏌涢妷顔煎缂佺嫏鍥ㄧ厪濠㈣泛鐗嗛崝姘辩磼閳ь剛鈧綆鍠楅悡娆戠磽娴ｅ顏呮叏瀹ュ鐓曢柣鏂款殠閸庢棃鏌℃担鍝バゅù鐙呯畵閹崇偤濡烽妷銏犱壕濠电姵纰嶉崐鍨殽閻愯尙浠㈤柣蹇ｄ邯閺屾盯鍩￠崒婧库偓鎺旂磼椤旇娅婃い銏＄☉閳藉顫濋妷銉ゆ闂備浇宕甸崰鎰版偡閵夆晜鍋嬮柛鈩冦仜閺嬪秹鏌熼悜姗嗘當缂佺姵濞婇弻鏇熺箾閻愵剚婢掗梺绋款儐閹稿骞忛崨鏉戞嵍妞ゆ挸顦崕鐢稿蓟?
-        webSocketServer.sendToAllClient(JSON.toJSONString(map));
-        ///////////////////////////////////////////////////
+        if(!mockPaymentEnabled) throw new OrderBusinessException("verified payment receipt required");
+        if(lifecycle.paid(outTradeNo,"mock:"+outTradeNo,null,true)) notifyPaid(outTradeNo);
     }
 
     /**
@@ -334,42 +305,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional
     public void userCancelById(Long id) throws Exception {
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕鈽夐弮鍌涙殜闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
-        Orders ordersDB = orderMapper.getById(id);
-
-        // 闂傚倷绀侀幖顐ょ矙閸曨厽宕叉繝闈涱儐閸嬫ɑ绻涢崱妯虹仸濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡娑㈡煕閺囥垺娑ч柣蹇曞█閺岀喖顢涘▎鎺戝帯闂侀€炲苯澧紒瀣浮閺佸鈹戦悩顐壕?
-        if (ordersDB == null) {
-            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
-        }
-
-        //闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ弬鍨倯闁稿鍔欓弻銈夊传閵夘喗姣岄梺?1闂佽楠搁悘姘熆濮椻偓楠炲﹤顓奸崶褍鐏婂銈嗙墬閸╁啴寮?2闂佽楠搁悘姘熆濮椻偓楠炲﹨绠涢弴鐔告闂佸湱铏庨崰鏍兜閳?3闂佽楠稿﹢閬嶁€﹂崼婵愬殨闁告挷鐒﹂弳婊堟煙缂併垹鏋涚痪顓涘亾?4濠电姷鏁搁崑鐐烘偂閿涘嫮涓嶉柡宥庡幖閻掑灚銇勯幋鐐差嚋妞わ妇鍏橀弻?5闂佽娴烽幊鎾诲箟闄囬妵鎰板礃椤旇棄浠煎銈嗗笒鐎氼剛绮?6闂佽娴烽幊鎾诲箟闄囬妵鎰板礃椤撴粈姹楅梺鎼炲劀閳ь剙危?
-        if (ordersDB.getStatus() > 2) {
-            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-        }
-
-        Orders orders = new Orders();
-        orders.setId(ordersDB.getId());
-
-        // 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ弮鍌ょ劸缂佸墎鍋ら弻娑㈠即閵娿倗鏁栭梺鑲╂嚀婢т粙鍩€椤掆偓閻忔艾顭垮鈧獮濠呯疀閺囩喐娈伴梺鍦檸閸犳牜娑甸埀顒勬⒑閸濆嫭宸濆┑顔碱嚟閻熝囨⒒娴ｇ瓔鍤冮柛蹇旂☉椤啴骞掗弮鍌滅暥闂佸憡绋掑娆撴儗濡ゅ懏鐓涚€广儱鍟俊鍧楀疮閹间焦鈷戦柟绋挎捣閳藉鏌ｉ鐐测偓鎼佸Υ閹烘绀堝ù锝囨嚀閺嗩偅绻涙潏鍓ф偧闁哄拋鍋嗙划缁樼節濮橆厼浠╁┑鐐村灦椤洭鎮為幖浣圭厓鐟滄粓宕楀鈧畷鎴﹀箻鐎靛摜顔?
-        if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
-            //闂備浇宕垫慨鎾敄閸涙潙鐤ù鍏兼綑閺嬩線鏌曢崼婵囧闁搞倖顨嗛妵鍕籍閸ヨ泛鏁界紓浣筋嚙濡繈寮婚敓鐘茬劦妞ゆ帒瀚烽弫宥嗙箾閸℃ê鐏ョ紒妤嬬節濮婄粯绗熼崶褌绨梺绋款儐閹歌崵鎹㈠☉銏犲耿婵炲棗绻嬫竟鏇㈡煟閵忊晛鐏￠柟绋垮暱閻?
-            weChatPayUtil.refund(
-                    ordersDB.getNumber(), //闂傚倷绀侀幗婊堝窗鎼粹垾娑樷枎閹捐櫕妲┑鐐村灦绾板秵鍒婃總鍛婄厪闊洦娲栧瓭缂備讲鍋撻悗锝庡枟閻?
-                    ordersDB.getNumber(), //闂傚倷绀侀幗婊堝窗鎼粹垾娑樷枎閹捐櫕妲┑鐐村灟閸ㄦ椽鎮炴繝姘厓鐟滄粓宕滃▎鎾崇厺閹兼番鍔岀粻姘辨喐瀹ュ洨鐭嗛悗锝庡枟閻?
-                    new BigDecimal(0.01),//闂傚倸鍊风欢锟犲磻閳ь剟鏌涚€ｎ偅灏扮紒缁樼洴瀹曞崬鈽夊杈ㄦ瘒闂備線娼荤徊鍧楀磻閹剧粯鏅柟閭﹀厴閺€浠嬫煙閹冾暢妞わ富鍣ｅ娲川婵犲孩鐣峰┑鐐插级閸ㄥ湱妲?闂?
-                    new BigDecimal(0.01));//闂傚倷绀侀幉锟犫€﹂崶顒€绐楅柡鍥ュ焺閺佸洨鎲搁悧鍫濈瑨缁绢厸鍋撻梻浣告惈濞层垽宕归悷鎵虫瀺闁靛鍎?
-
-            //闂傚倷娴囬妴鈧柛瀣尰閵囧嫰寮介妸褎鍣柣銏╁灡閻╊垶寮婚敐鍛傜喖宕归鎯у缚闂備線鈧偛鑻崢鍛婁繆閻愭潙娴鐐茬墦婵℃悂鍩℃担鍝勬憢闂傚倷绶￠崑鍛矙閺嶎偆鐭?闂傚倸鍊风欢锟犲磻閳ь剟鏌涚€ｎ偅灏扮紒?
-            orders.setPayStatus(Orders.REFUND);
-        }
-
-        // 闂傚倷绀侀幖顐⒚洪妶澶嬪仱闁靛ň鏅涢拑鐔封攽閻樻彃顏┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒傗偓锝庡枟閻撶喐淇婇姘变虎闁绘挻鍔欓弻宥堫檨闁稿繑鐩钘夘吋婢跺﹦鍔﹀銈嗗灱濞夋洟藝閿旂偓鍠愰柡澶嬪閹兼劙鏌嶉挊澶樻█鐎规洜鍘ч埞鎴﹀幢濡崵浼嬮梻鍌欑劍閹爼宕曢搹顐ｅ弿濞村吋娼欓悞鍨亜閹达絾纭舵い锔煎閹叉悂寮堕幐搴㈡倷闂佸疇妫勯ˇ闈涚暦婵傚憡鍋勯柛鎾冲级琚ч梻?
-        orders.setStatus(Orders.CANCELLED);
-        orders.setCancelReason("user cancel");
-        orders.setCancelTime(LocalDateTime.now());
-        orderMapper.update(orders);
-        rollbackOrderStock(ordersDB.getId());
-        userCouponMapper.rollbackByOrderId(ordersDB.getId());
+        lifecycle.cancel(id,"user cancel","USER");
     }
 
     /**
@@ -553,21 +489,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void rollbackOrderStock(Long orderId) {
-        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orderId);
-        if (orderDetailList == null || orderDetailList.size() == 0) {
-            return;
-        }
-        for (OrderDetail detail : orderDetailList) {
-            int number = detail.getNumber() == null ? 0 : detail.getNumber();
-            if (detail.getDishId() != null) {
-                dishMapper.rollbackStock(detail.getDishId(), number);
-            } else if (detail.getSetmealId() != null) {
-                setmealMapper.rollbackStock(detail.getSetmealId(), number);
-            }
-        }
-    }
-
     private void saveMqFailMessage(String exchange, String routingKey, Object body, Exception e) {
         mqFailMessageMapper.insert(MqFailMessage.builder()
                 .exchangeName(exchange)
@@ -604,17 +525,7 @@ public class OrderServiceImpl implements OrderService {
      * @param ordersConfirmDTO
      */
     public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
-        Orders ordersDB = orderMapper.getById(ordersConfirmDTO.getId());
-        if (ordersDB == null || !Orders.TO_BE_CONFIRMED.equals(ordersDB.getStatus())) {
-            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-        }
-
-        Orders orders = Orders.builder()
-                .id(ordersConfirmDTO.getId())
-                .status(Orders.CONFIRMED)
-                .build();
-
-        orderMapper.update(orders);
+        if(orderMapper.transition(ordersConfirmDTO.getId(),2,3)!=1) throw new OrderBusinessException("order state changed");
     }
 
     /**
@@ -624,36 +535,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional
     public void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception {
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕鈽夐弮鍌涙殜闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
-        Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());
-
-        // 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ弮鍌氬付闁活厽顨嗛妵鍕疀閹炬潙娅ょ紓浣哄У鐢繝骞冨Δ鈧埥澶娾枍椤撗傜盎闁挎洏鍨介、鏃堝川椤栨鐏冮梻浣告惈閸燁偊宕愰崫銉ф噮闂傚倷娴囬鏍礂濞戞﹩娓婚柟鐑樻⒐鐎?闂傚倷鐒︾€笛呯矙閹达附鍋嬮柛鈩冪懄椤愪粙鏌ｉ弮鍌氬付缂佺姵濞婇弻鏇熷緞閸繂濮庣紓浣插亾閻庯綆鍠楅悡銉︾箾閹寸儑渚涙俊鑼嚀椤儻顦村┑鐐╁亾閻庤娲╃紞渚€銆佸☉妯锋瀻閹艰揪缍侀悗娲⒒娴ｅ摜绉洪柡鈧潏鈺傛殰闁圭儤鍨归弳?
-        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
-            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-        }
-
-        //闂傚倷娴囬妴鈧柛瀣尰閵囧嫰寮介妸褎鍣柣銏╁灡閻╊垶寮婚敐鍛傜喖宕归鎯у缚闂?
-        Integer payStatus = ordersDB.getPayStatus();
-        if (payStatus == Orders.PAID) {
-            //闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹寸儑渚涢柛鐔锋嚇閺屾稑鈻庤箛锝喰ч梺鍝勬缁矂婀侀梺缁橆焽椤掓煡宕楅鍌滅＜閺夊牄鍔庣粻鐐翠繆椤愶紕绐旈柛鈹惧亾濡炪倖甯掗崐褰掑疮閸濆嫨鈧帒顫濋敐鍛闂備線鈧偛鑻崢鎾煕鐎ｎ偅灏扮紒?
-            String refund = weChatPayUtil.refund(
-                    ordersDB.getNumber(),
-                    ordersDB.getNumber(),
-                    new BigDecimal(0.01),
-                    new BigDecimal(0.01));
-            log.info("refund result: {}", refund);
-        }
-
-        // 闂傚倷绀佺紞濠囧绩鏉堚晜鏆滈柟鐑樺灩閺嗭箓鏌ｉ弬鍨倯妞ゃ儱妫濋弻宥堫檨闁告挻鐩獮澶愭偋閸垻鎳濋梺閫炲苯澧撮柛鈹惧亾濡炪倖鍨煎Λ鍕閹€鏀介柣鎰级椤ョ偤鏌熼柨瀣畼婵″弶鍔曢埞鎴犫偓锝庝簻閸炪劑鏌ｉ悢鍝ユ噧閻庢凹鍓涚划濠囨晝閸屾稑浠繛杈剧秮濞佳囨倶閳哄啠鍋撶憴鍕闁告挾鐘婇梻鍌欑閹碱偄煤閵堝鍋ら柕濞炬櫅閽冪喎鈹戦悩鎻掝仾濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡鐔镐繆椤栨氨浠㈤柣鎾村姍閺屽秷顧侀柛蹇旂洴濮婅棄顓兼径濠勫姦濡炪倖鍨煎▔鏇㈠礉瀹ュ鍊垫慨姗嗗墯椤ャ垻鈧娲╃换婵嗩嚕閹绢喗鍊烽柛娆忣槹閻忔娊姊绘担瑙勫仩闁稿氦娅曢幈銊﹀閺夋垹鍔﹀銈嗗灱濞夋洟藝閿旂偓鍠愰柡澶嬪閹兼劙鏌嶉挊澶樻█鐎规洖銈搁幃銏ゅ礈閸欏－婵嬫⒒?
-        Orders orders = new Orders();
-        orders.setId(ordersDB.getId());
-        orders.setStatus(Orders.CANCELLED);
-        orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());
-        orders.setCancelTime(LocalDateTime.now());
-
-        orderMapper.update(orders);
-        rollbackOrderStock(ordersDB.getId());
-        userCouponMapper.rollbackByOrderId(ordersDB.getId());
+        lifecycle.cancel(ordersRejectionDTO.getId(),ordersRejectionDTO.getRejectionReason(),"REJECT");
     }
 
     /**
@@ -663,34 +545,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional
     public void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception {
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕鈽夐弮鍌涙殜闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
-        Orders ordersDB = orderMapper.getById(ordersCancelDTO.getId());
-        if (ordersDB == null || Orders.CANCELLED.equals(ordersDB.getStatus())
-                || Orders.COMPLETED.equals(ordersDB.getStatus())) {
-            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-        }
-
-        //闂傚倷娴囬妴鈧柛瀣尰閵囧嫰寮介妸褎鍣柣銏╁灡閻╊垶寮婚敐鍛傜喖宕归鎯у缚闂?
-        Integer payStatus = ordersDB.getPayStatus();
-        if (payStatus == 1) {
-            //闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹寸儑渚涢柛鐔锋嚇閺屾稑鈻庤箛锝喰ч梺鍝勬缁矂婀侀梺缁橆焽椤掓煡宕楅鍌滅＜閺夊牄鍔庣粻鐐翠繆椤愶紕绐旈柛鈹惧亾濡炪倖甯掗崐褰掑疮閸濆嫨鈧帒顫濋敐鍛闂備線鈧偛鑻崢鎾煕鐎ｎ偅灏扮紒?
-            String refund = weChatPayUtil.refund(
-                    ordersDB.getNumber(),
-                    ordersDB.getNumber(),
-                    new BigDecimal(0.01),
-                    new BigDecimal(0.01));
-            log.info("refund result: {}", refund);
-        }
-
-        // 缂傚倸鍊烽懗鑸靛垔鐎靛憡顫曢柡鍥ュ灩缁犳牕鈹戦悩鎻掝伀闁告纰嶉妵鍕冀閵娿劌顥濈紓浣稿级鐎笛呮崲濞戙垹绠ｆ繝闈涚墕閳彃顪冮妶鍡樺碍缂傚秴锕ら悾鐑芥晸閻樻彃宓嗛梺闈涚箚閳ь剝灏欑敮娑㈡⒑閼姐倕鏋戞繛鍙夊灩濞嗐垹顫濈捄铏瑰姦濡炪倖鍨煎Λ鍕閹€鏀介柣鎰级椤ョ偤鏌熼柨瀣畼婵″弶鍔曢埞鎴犫偓锝庝簻閸炪劑鏌ｉ悢鍝ユ噧閻庢凹鍓涚划濠囨晝閸屾稑浠繛杈剧秮濞佳囨倶閳哄啠鍋撶憴鍕闁告挾鐘婇梻鍌欑閹碱偄煤閵堝鍋ら柕濞炬櫅閽冪喎鈹戦悩鎻掝仾濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡鐔镐繆椤栨氨浠㈤柣鎾村姍閺屽秷顧侀柛蹇旂洴濮婅棄顓兼径濠勫姦濡炪倖鍨煎▔鏇⑺囬敂鐐枑闁哄瀵ч幖鎰版煃閽樺妯€鐎规洜鍘ч埞鎴﹀幢濡崵浼嬮梻鍌欑劍閹爼宕曢搹顐ｅ弿濞村吋娼欓悞鍨亜閹达絾纭舵い锔煎閹叉悂寮堕幐搴㈡倷闂佸疇妫勯ˇ闈涚暦婵傚憡鍋勯柛鎾冲级琚ч梻?
-        Orders orders = new Orders();
-        orders.setId(ordersCancelDTO.getId());
-        orders.setStatus(Orders.CANCELLED);
-        orders.setCancelReason(ordersCancelDTO.getCancelReason());
-        orders.setCancelTime(LocalDateTime.now());
-        orderMapper.update(orders);
-        rollbackOrderStock(ordersDB.getId());
-        userCouponMapper.rollbackByOrderId(ordersDB.getId());
+        lifecycle.cancel(ordersCancelDTO.getId(),ordersCancelDTO.getCancelReason(),"ADMIN");
     }
 
     /**
@@ -699,20 +554,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      */
     public void delivery(Long id) {
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕鈽夐弮鍌涙殜闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
-        Orders ordersDB = orderMapper.getById(id);
-
-        // 闂傚倷绀侀幖顐ょ矙閸曨厽宕叉繝闈涱儐閸嬫ɑ绻涢崱妯虹仸濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡娑㈡煕閺囥垺娑ч柣蹇曞█閺岀喖顢涘▎鎺戝帯闂侀€炲苯澧紒瀣浮閺佸鈹戦悩顐壕濡炪倕绻愰悧濠囧疾椤掑嫭鍊堕柣鎰ゴ閸嬫捇鎮㈡搴¤婵犵數鍋為崹鍫曞箰鐠囧樊娼栫紓浣股戦崣蹇涙煙闂傚顦︾紒鐘冲灥闇夐柨婵嗘处閻掕法绱掗埀?
-        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.CONFIRMED)) {
-            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-        }
-
-        Orders orders = new Orders();
-        orders.setId(ordersDB.getId());
-        // 闂傚倷绀侀幖顐⒚洪妶澶嬪仱闁靛ň鏅涢拑鐔封攽閻樻彃顏┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒傗偓锝庡枟閻撶喐淇婇姘变虎闁绘挻鍔欓弻?闂傚倷鑳剁划顖炩€﹂崼銉ユ槬闁哄稁鍘奸悞鍨亜閹寸偛顕滅紒浣哄缁绘盯寮堕幋鐑嗘！缂備礁顑呴ˇ鐢稿箖濠婂吘鐔兼嚒閵堝懎濮曢梻鍌氬€风欢锟犲磻閸屾凹娓婚柟鐑橆殕閸?
-        orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
-
-        orderMapper.update(orders);
+        if(orderMapper.transition(id,3,4)!=1) throw new OrderBusinessException("order state changed");
     }
 
     /**
@@ -721,21 +563,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      */
     public void complete(Long id) {
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕鈽夐弮鍌涙殜闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
-        Orders ordersDB = orderMapper.getById(id);
-
-        // 闂傚倷绀侀幖顐ょ矙閸曨厽宕叉繝闈涱儐閸嬫ɑ绻涢崱妯虹仸濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡娑㈡煕閺囥垺娑ч柣蹇曞█閺岀喖顢涘▎鎺戝帯闂侀€炲苯澧紒瀣浮閺佸鈹戦悩顐壕濡炪倕绻愰悧濠囧疾椤掑嫭鍊堕柣鎰ゴ閸嬫捇鎮㈡搴¤婵犵數鍋為崹鍫曞箰鐠囧樊娼栫紓浣股戦崣蹇涙煙闂傚顦︾紒鐘冲灥闇夐柨婵嗘处閻掕法绱掗埀?
-        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {
-            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-        }
-
-        Orders orders = new Orders();
-        orders.setId(ordersDB.getId());
-        // 闂傚倷绀侀幖顐⒚洪妶澶嬪仱闁靛ň鏅涢拑鐔封攽閻樻彃顏┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒傗偓锝庡枟閻撶喐淇婇姘变虎闁绘挻鍔欓弻?闂傚倷鑳剁划顖炩€﹂崼銉ユ槬闁哄稁鍘奸悞鍨亜閹寸偛顕滅紒浣哄缁绘盯寮堕幋鐑嗘！缂備礁顑呴ˇ闈涚暦椤愶箑绀嬫い鎾跺枑椤斿懘姊?
-        orders.setStatus(Orders.COMPLETED);
-        orders.setDeliveryTime(LocalDateTime.now());
-
-        orderMapper.update(orders);
+        if(orderMapper.transition(id,4,5)!=1) throw new OrderBusinessException("order state changed");
     }
 
     /**
@@ -758,4 +586,19 @@ public class OrderServiceImpl implements OrderService {
         webSocketServer.sendToAllClient(JSON.toJSONString(map));
     }
 
+
+    @Override
+    public void paySuccess(String number,String transactionId,BigDecimal amount) {
+        if(lifecycle.paid(number,transactionId,amount,false)) notifyPaid(number);
+    }
+
+    private void notifyPaid(String number) {
+        // Payment is already committed. A notification failure must not reject the callback.
+        try {
+            Orders order=orderMapper.getByNumber(number);
+            Map<String,Object> message=new HashMap<>();
+            message.put("type",1); message.put("orderId",order.getId()); message.put("content","order number: "+number);
+            webSocketServer.sendToAllClient(JSON.toJSONString(message));
+        } catch(Exception e) { log.warn("Payment committed but websocket notification failed: {}",number,e); }
+    }
 }

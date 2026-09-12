@@ -78,7 +78,6 @@ public class DishController {
     @ApiOperation("enable or disable dish")
     public Result<String> startOrStop(@PathVariable Integer status, Long id) {
         dishService.startOrStop(status, id);
-        cleanCache("dish_*");
         return Result.success();
     }
 

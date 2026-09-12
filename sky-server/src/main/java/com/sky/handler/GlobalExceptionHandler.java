@@ -33,6 +33,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler
     public Result exceptionHandler(SQLIntegrityConstraintViolationException ex){  //重载方法
+        log.error("数据库约束异常", ex);
         //Duplicate entry 'zhangsan' for key 'employee.idx_username'
         String message = ex.getMessage(); //获取异常信息
         if(message.contains("Duplicate entry")){  //判断异常信息里是否有Duplicate entry

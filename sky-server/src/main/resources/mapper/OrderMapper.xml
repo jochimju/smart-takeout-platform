@@ -4,11 +4,11 @@
 
     <insert id="insert" parameterType="Orders" useGeneratedKeys="true" keyProperty="id">
         insert into orders
-        (number, status, user_id, address_book_id, order_time, checkout_time, pay_method, pay_status, amount,
+        (number, status, user_id, address_book_id, order_time, expire_time, checkout_time, pay_method, pay_status, amount,
          coupon_id, discount_amount, remark,
          phone, address, consignee, estimated_delivery_time, delivery_status, pack_amount, tableware_number,
          tableware_status)
-        values (#{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{checkoutTime}, #{payMethod},
+        values (#{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{expireTime}, #{checkoutTime}, #{payMethod},
                 #{payStatus}, #{amount}, #{couponId}, #{discountAmount}, #{remark}, #{phone}, #{address}, #{consignee},
                 #{estimatedDeliveryTime}, #{deliveryStatus}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
     </insert>

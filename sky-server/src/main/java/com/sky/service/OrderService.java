@@ -25,10 +25,17 @@ public interface OrderService {
     OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception;
 
     /**
+     * Confirms a payment through the development-only mock payment channel.
+     */
+    void confirmMockPayment(String orderNumber);
+
+    /**
      * 支付成功，修改订单状态
      * @param outTradeNo
      */
     void paySuccess(String outTradeNo);
+
+    void paySuccess(String number,String transactionId,java.math.BigDecimal amount);
 
     /**
      * 用户端订单分页查询

@@ -47,7 +47,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/user/**")
                 .excludePathPatterns("/user/user/login")
-                .excludePathPatterns("/user/shop/status");
+                .excludePathPatterns("/user/shop/status")
+                .excludePathPatterns("/user/seckill/activity/list");
     }
 
     /**
@@ -77,8 +78,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/dishes/**").addResourceLocations("classpath:/static/dishes/");
-        registry.addResourceHandler("/setmeals/**").addResourceLocations("classpath:/static/setmeals/");
     }
     /**
      * 閹碘晛鐫峉pring MVC濡楀棙鐏﹂惃鍕Х閹垵娴嗛崠鏍ф珤
