@@ -27,4 +27,7 @@ public class OrdersPageQueryDTO implements Serializable {
 
     private Long userId;
 
+    /** 用户端是否已将订单从历史列表隐藏，后台查询不设置该条件。 */
+    private Integer userDeleted;
+
 }

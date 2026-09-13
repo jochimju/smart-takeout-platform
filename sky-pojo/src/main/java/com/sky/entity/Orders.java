@@ -72,6 +72,8 @@ public class Orders implements Serializable {
 
     private BigDecimal discountAmount;
 
+    private Long userRedPacketId;
+
     //澶囨敞
     private String remark;
 

@@ -18,9 +18,11 @@ import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
+import com.sky.vo.OrderCheckoutVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.vo.RedPacketCheckoutVO;
 import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -47,6 +49,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+    /** 配送费和打包费只能在服务端结算，不能信任小程序传入的金额。 */
+    private static final BigDecimal DELIVERY_FEE = new BigDecimal("6.00");
+    private static final BigDecimal PACK_FEE_PER_ITEM = new BigDecimal("1.00");
     @Autowired private OrderLifecycleService lifecycle;
     @Autowired private OrderReliabilityStore reliability;
 
@@ -65,6 +70,8 @@ public class OrderServiceImpl implements OrderService {
     private CouponMapper couponMapper;
     @Autowired
     private UserCouponMapper userCouponMapper;
+    @Autowired
+    private RedPacketMapper redPacketMapper;
     @Autowired
     private MqFailMessageMapper mqFailMessageMapper;
     @Autowired
@@ -88,6 +95,7 @@ public class OrderServiceImpl implements OrderService {
      * @param ordersSubmitDTO
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {
         Long userId = BaseContext.getCurrentId();
 
@@ -109,6 +117,17 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderBusinessException("order is processing, do not submit repeatedly");
         }
 
+        BigDecimal foodAmount = calculateCartAmount(shoppingCartList);
+        if (ordersSubmitDTO.getCouponId() != null && ordersSubmitDTO.getUserRedPacketId() != null) {
+            throw new OrderBusinessException("coupon and red packet cannot be used together");
+        }
+        BigDecimal discountAmount = calculateDiscount(userId, ordersSubmitDTO.getCouponId(), foodAmount)
+                .add(calculateRedPacketDiscount(userId, ordersSubmitDTO.getUserRedPacketId(), foodAmount));
+        int packAmount = calculatePackAmount(shoppingCartList);
+        BigDecimal payableAmount = foodAmount.subtract(discountAmount)
+                .add(BigDecimal.valueOf(packAmount).multiply(PACK_FEE_PER_ITEM))
+                .add(DELIVERY_FEE);
+
         String orderNumber = generateOrderNumber();
         OrderSubmitMessageDTO messageDTO = OrderSubmitMessageDTO.builder()
                 .userId(userId)
@@ -119,23 +138,22 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryStatus(ordersSubmitDTO.getDeliveryStatus())
                 .tablewareNumber(ordersSubmitDTO.getTablewareNumber())
                 .tablewareStatus(ordersSubmitDTO.getTablewareStatus())
-                .packAmount(ordersSubmitDTO.getPackAmount())
+                .packAmount(packAmount)
                 .orderNumber(orderNumber)
                 .couponId(ordersSubmitDTO.getCouponId())
+                .userRedPacketId(ordersSubmitDTO.getUserRedPacketId())
                 .build();
 
-        try {
-            rabbitTemplate.convertAndSend(MqConstant.ORDER_EXCHANGE, MqConstant.ORDER_SUBMIT_ROUTING_KEY, messageDTO);
-        } catch (Exception e) {
-            redisTemplate.delete(submittingKey);
-            saveMqFailMessage(MqConstant.ORDER_EXCHANGE, MqConstant.ORDER_SUBMIT_ROUTING_KEY, messageDTO, e);
-            throw new OrderBusinessException("order submit accepted failed, please retry later");
-        }
+        // Reservation, stock deduction and order persistence must succeed together.
+        // The RabbitMQ consumer remains compatible with messages already in the queue.
+        createOrderFromMessage(messageDTO);
+        Orders created = orderMapper.getByNumber(orderNumber);
 
         return OrderSubmitVO.builder()
                 .orderNumber(orderNumber)
-                .orderAmount(calculateCartAmount(shoppingCartList))
+                .orderAmount(payableAmount)
                 .orderTime(LocalDateTime.now())
+                .id(created == null ? null : created.getId())
                 .build();
     }
 
@@ -171,14 +189,26 @@ public class OrderServiceImpl implements OrderService {
             order.setPayStatus(Orders.UN_PAID);
             order.setOrderTime(LocalDateTime.now());
             BigDecimal originAmount = calculateCartAmount(shoppingCartList);
-            BigDecimal discountAmount = calculateDiscount(messageDTO.getUserId(), messageDTO.getCouponId(), originAmount);
+            if (messageDTO.getCouponId() != null && messageDTO.getUserRedPacketId() != null) {
+                throw new OrderBusinessException("coupon and red packet cannot be used together");
+            }
+            BigDecimal discountAmount = calculateDiscount(messageDTO.getUserId(), messageDTO.getCouponId(), originAmount)
+                    .add(calculateRedPacketDiscount(messageDTO.getUserId(), messageDTO.getUserRedPacketId(), originAmount));
+            int packAmount = calculatePackAmount(shoppingCartList);
             order.setCouponId(messageDTO.getCouponId());
+            order.setUserRedPacketId(messageDTO.getUserRedPacketId());
             order.setDiscountAmount(discountAmount);
-            order.setAmount(originAmount.subtract(discountAmount));
+            // amount 是实际支付金额：菜品金额 - 优惠 + 打包费 + 配送费。
+            // 前端传入的 amount、packAmount 均不参与结算，避免被篡改。
+            order.setPackAmount(packAmount);
+            order.setAmount(originAmount.subtract(discountAmount)
+                    .add(BigDecimal.valueOf(packAmount).multiply(PACK_FEE_PER_ITEM))
+                    .add(DELIVERY_FEE));
 
             order.setExpireTime(order.getOrderTime().plusMinutes(15));
             orderMapper.insert(order);
             markCouponUsed(messageDTO.getUserId(), messageDTO.getCouponId(), order.getId());
+            reserveRedPacket(messageDTO.getUserId(), messageDTO.getUserRedPacketId(), order.getId());
 
             List<OrderDetail> orderDetailList = new ArrayList<>();
             for (ShoppingCart cart : shoppingCartList) {
@@ -200,6 +230,29 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void cancelTimeoutOrder(String orderNumber) {
         lifecycle.timeout(orderNumber);
+    }
+
+    @Override
+    public OrderCheckoutVO checkout() {
+        Long userId = BaseContext.getCurrentId();
+        ShoppingCart cart = new ShoppingCart();
+        cart.setUserId(userId);
+        List<ShoppingCart> items = shoppingCartMapper.list(cart);
+        if (items == null || items.isEmpty()) {
+            throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
+        }
+        BigDecimal food = calculateCartAmount(items);
+        int pack = calculatePackAmount(items);
+        List<UserRedPacket> packets = redPacketMapper.availableByUser(userId);
+        Long defaultId = packets.isEmpty() ? null : packets.get(0).getId();
+        BigDecimal discount = defaultId == null ? BigDecimal.ZERO : packets.get(0).getAmount().min(food);
+        List<RedPacketCheckoutVO> vos = packets.stream().map(p -> RedPacketCheckoutVO.builder()
+                .id(p.getId()).amount(p.getAmount()).expireTime(p.getExpireTime()).build()).collect(Collectors.toList());
+        return OrderCheckoutVO.builder().foodAmount(food)
+                .packAmount(BigDecimal.valueOf(pack).multiply(PACK_FEE_PER_ITEM))
+                .deliveryAmount(DELIVERY_FEE).discountAmount(discount)
+                .payableAmount(food.subtract(discount).add(BigDecimal.valueOf(pack).multiply(PACK_FEE_PER_ITEM)).add(DELIVERY_FEE))
+                .defaultRedPacketId(defaultId).redPackets(vos).build();
     }
 
     /**
@@ -253,6 +306,7 @@ public class OrderServiceImpl implements OrderService {
         OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
         ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
         ordersPageQueryDTO.setStatus(status);
+        ordersPageQueryDTO.setUserDeleted(0);
 
         // 闂傚倷绀侀幉锛勬暜閹烘嚦娑樷攽鐎ｎ€儱顭块懜闈涘缂佺嫏鍥ㄧ厓闁靛鍎辩痪褎銇勯幇顏嗙煓闁哄矉绱曟禒锔炬嫚閹绘帒袚婵?
         Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
@@ -306,6 +360,22 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void userCancelById(Long id) throws Exception {
         lifecycle.cancel(id,"user cancel","USER");
+    }
+
+    @Override
+    @Transactional
+    public void deleteHistoryOrder(Long id) {
+        Long userId = BaseContext.getCurrentId();
+        Orders order = orderMapper.getById(id);
+        if (order == null || !userId.equals(order.getUserId())) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        if (!Orders.COMPLETED.equals(order.getStatus()) && !Orders.CANCELLED.equals(order.getStatus())) {
+            throw new OrderBusinessException("仅已完成或已取消的订单可以删除");
+        }
+        if (orderMapper.hideForUser(id, userId) != 1) {
+            throw new OrderBusinessException("订单已删除或状态已发生变化");
+        }
     }
 
     /**
@@ -407,6 +477,14 @@ public class OrderServiceImpl implements OrderService {
         return amount;
     }
 
+    private int calculatePackAmount(List<ShoppingCart> shoppingCartList) {
+        return shoppingCartList.stream()
+                .map(ShoppingCart::getNumber)
+                .filter(java.util.Objects::nonNull)
+                .mapToInt(Integer::intValue)
+                .sum();
+    }
+
     private BigDecimal queryCurrentPrice(ShoppingCart cart) {
         if (cart.getDishId() != null) {
             Dish dish = dishMapper.getById(cart.getDishId());
@@ -456,6 +534,27 @@ public class OrderServiceImpl implements OrderService {
             return originAmount;
         }
         return discount;
+    }
+
+    private BigDecimal calculateRedPacketDiscount(Long userId, Long redPacketId, BigDecimal foodAmount) {
+        if (redPacketId == null) {
+            return BigDecimal.ZERO;
+        }
+        UserRedPacket packet = redPacketMapper.byIdAndUser(redPacketId, userId);
+        if (packet == null || !UserRedPacket.UNUSED.equals(packet.getStatus())
+                || packet.getExpireTime() == null || !packet.getExpireTime().isAfter(LocalDateTime.now())) {
+            throw new OrderBusinessException("red packet unavailable");
+        }
+        return packet.getAmount().min(foodAmount);
+    }
+
+    private void reserveRedPacket(Long userId, Long redPacketId, Long orderId) {
+        if (redPacketId == null) {
+            return;
+        }
+        if (redPacketMapper.reserve(redPacketId, userId, orderId) != 1) {
+            throw new OrderBusinessException("red packet already used or expired");
+        }
     }
 
     private void markCouponUsed(Long userId, Long couponId, Long orderId) {

@@ -75,6 +75,10 @@ public class OrderLifecycleService {
             }
         }
         coupons.rollbackByOrderId(order.getId());
+        if (order.getUserRedPacketId() != null) {
+            jdbc.update("update user_red_packet set status=case when expire_time>now() then 0 else 3 end, food_order_id=null, used_time=null where food_order_id=? and status=1",
+                    order.getId());
+        }
         if(Orders.PAID.equals(order.getPayStatus())) {
             List<Map<String,Object>> receipt=jdbc.queryForList("select * from order_payment_receipt where order_number=?",order.getNumber());
             // Never infer a historical payment channel from today's mock switch.
@@ -119,6 +123,9 @@ public class OrderLifecycleService {
         if(!Orders.PENDING_PAYMENT.equals(order.getStatus()) || !Orders.UN_PAID.equals(order.getPayStatus()))
             throw new OrderBusinessException("payment state requires reconciliation");
         if(orders.markPaid(order.getId())!=1) throw new OrderBusinessException("payment state changed");
+        if (order.getUserRedPacketId() != null) {
+            jdbc.update("update user_red_packet set status=2,used_time=now() where food_order_id=? and status=1", order.getId());
+        }
         jobs.done("timeout:"+number);
         return true;
     }

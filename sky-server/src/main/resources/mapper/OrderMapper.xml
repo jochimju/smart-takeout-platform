@@ -5,11 +5,11 @@
     <insert id="insert" parameterType="Orders" useGeneratedKeys="true" keyProperty="id">
         insert into orders
         (number, status, user_id, address_book_id, order_time, expire_time, checkout_time, pay_method, pay_status, amount,
-         coupon_id, discount_amount, remark,
+         coupon_id, discount_amount, user_red_packet_id, remark,
          phone, address, consignee, estimated_delivery_time, delivery_status, pack_amount, tableware_number,
          tableware_status)
         values (#{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{expireTime}, #{checkoutTime}, #{payMethod},
-                #{payStatus}, #{amount}, #{couponId}, #{discountAmount}, #{remark}, #{phone}, #{address}, #{consignee},
+                #{payStatus}, #{amount}, #{couponId}, #{discountAmount}, #{userRedPacketId}, #{remark}, #{phone}, #{address}, #{consignee},
                 #{estimatedDeliveryTime}, #{deliveryStatus}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
     </insert>
 
@@ -55,6 +55,9 @@
             </if>
             <if test="userId != null">
                 and user_id = #{userId}
+            </if>
+            <if test="userDeleted != null">
+                and user_deleted = #{userDeleted}
             </if>
             <if test="status != null">
                 and status = #{status}

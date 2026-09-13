@@ -13,6 +13,8 @@ public interface OrderService {
      */
     OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO);
 
+    OrderCheckoutVO checkout();
+
     void createOrderFromMessage(OrderSubmitMessageDTO orderSubmitMessageDTO);
 
     void cancelTimeoutOrder(String orderNumber);
@@ -58,6 +60,9 @@ public interface OrderService {
      * @param id
      */
     void userCancelById(Long id) throws Exception;
+
+    /** 用户从历史订单中删除已完成或已取消的订单。 */
+    void deleteHistoryOrder(Long id);
 
     /**
      * 再来一单

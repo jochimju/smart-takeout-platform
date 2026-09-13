@@ -25,4 +25,5 @@ public class OrderSubmitMessageDTO implements Serializable {
     private Integer packAmount;
     private String orderNumber;
     private Long couponId;
+    private Long userRedPacketId;
 }

@@ -53,6 +53,12 @@ public class OrderController {
         return Result.success(orderSubmitVO);
     }
 
+    @GetMapping("/checkout")
+    @ApiOperation("preview order checkout")
+    public Result<com.sky.vo.OrderCheckoutVO> checkout() {
+        return Result.success(orderService.checkout());
+    }
+
     /**
      * 閻犱降鍨瑰畷鐔煎绩椤栨瑧甯?
      *
@@ -116,6 +122,13 @@ public class OrderController {
     @ApiOperation("cancel order")
     public Result cancel(@PathVariable("id") Long id) throws Exception {
         orderService.userCancelById(id);
+        return Result.success();
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("delete a completed or cancelled order from user history")
+    public Result deleteHistoryOrder(@PathVariable("id") Long id) {
+        orderService.deleteHistoryOrder(id);
         return Result.success();
     }
 

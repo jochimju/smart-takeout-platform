@@ -45,6 +45,11 @@ public interface OrderMapper {
     @Select("select * from orders where id=#{id}")
     Orders getById(Long id);
 
+    /** 仅允许订单本人隐藏已完成或已取消的订单。 */
+    @org.apache.ibatis.annotations.Update("update orders set user_deleted=1 " +
+            "where id=#{id} and user_id=#{userId} and status in (5,6) and user_deleted=0")
+    int hideForUser(@Param("id") Long id, @Param("userId") Long userId);
+
     /**
      * 根据状态统计订单数量
      * @param status

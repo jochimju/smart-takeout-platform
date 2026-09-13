@@ -30,4 +30,10 @@ public class OrdersSubmitDTO implements Serializable {
     private BigDecimal amount;
 
     private Long couponId;
+
+    /**
+     * A concrete red-packet asset. Null means that the user chose not to use one.
+     * This is intentionally not the legacy coupon template id.
+     */
+    private Long userRedPacketId;
 }

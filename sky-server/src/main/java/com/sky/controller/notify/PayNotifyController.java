@@ -26,6 +26,8 @@ import java.util.HashMap;
 public class PayNotifyController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private com.sky.service.RedPacketService redPacketService;
     @Autowired private com.sky.utils.WeChatPayUtil payment;
     @Autowired
     private WeChatProperties weChatProperties;
@@ -48,8 +50,11 @@ public class PayNotifyController {
         JSONObject amount=receipt.getJSONObject("amount");
         if(amount==null || !"CNY".equals(amount.getString("currency")) || amount.getBigDecimal("total")==null)
             throw new SecurityException("payment amount missing or currency mismatch");
-        orderService.paySuccess(receipt.getString("out_trade_no"),receipt.getString("transaction_id"),
-            amount.getBigDecimal("total").movePointLeft(2));
+        String outTradeNo = receipt.getString("out_trade_no");
+        java.math.BigDecimal paidAmount = amount.getBigDecimal("total").movePointLeft(2);
+        if (!redPacketService.paySuccess(outTradeNo, receipt.getString("transaction_id"), paidAmount)) {
+            orderService.paySuccess(outTradeNo, receipt.getString("transaction_id"), paidAmount);
+        }
         responseToWeixin(response);
     }
 
