@@ -44,7 +44,7 @@ public class SeckillCache {
         List<String> args=new ArrayList<>(Arrays.asList(a.getStockVersion().toString(),a.getStatus().toString(),
             a.getSetmealId().toString(),String.valueOf(a.getBeginTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
             String.valueOf(a.getEndTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),a.getRemainingStock().toString()));
-        for(SeckillReservation user:guards.users(a.getSetmealId())) {
+        for(SeckillReservation user:guards.users(a.getId())) {
             args.add(user.getUserId().toString()); args.add(user.getOrderNumber());
         }
         if(!Long.valueOf(1).equals(redis.execute(REBUILD,keys(a.getId()),args.toArray())))

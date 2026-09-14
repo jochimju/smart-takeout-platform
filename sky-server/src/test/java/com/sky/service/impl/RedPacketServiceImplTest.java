@@ -31,16 +31,18 @@ class RedPacketServiceImplTest {
         RedPacketPackage item = new RedPacketPackage();
         item.setId(1L);
         item.setSalePrice(new BigDecimal("10.00"));
-        item.setPacketCount(5);
+        item.setPacketCount(2);
         item.setPacketAmount(new BigDecimal("5.00"));
         item.setValidMonths(1);
-        when(mapper.activePackage(1L)).thenReturn(item);
+        item.setPurchaseLimitPerUser(1);
+        when(mapper.lockActivePackage(1L)).thenReturn(item);
+        when(mapper.reserveBudget(eq(1L), eq(new BigDecimal("10.00")))).thenReturn(1);
 
         RedPacketPurchaseDTO dto = new RedPacketPurchaseDTO();
         dto.setPackageId(1L);
         assertEquals(new BigDecimal("10.00"), service.createPurchase(dto).getPayAmount());
         verify(mapper).insertPurchase(argThat(order -> order.getUserId().equals(7L)
-                && order.getPacketCountSnapshot() == 5
+                && order.getPacketCountSnapshot() == 2
                 && new BigDecimal("5.00").equals(order.getPacketAmountSnapshot())));
     }
 
@@ -54,10 +56,13 @@ class RedPacketServiceImplTest {
         order.setPayAmount(new BigDecimal("10.00"));
         order.setPacketCountSnapshot(5);
         order.setPacketAmountSnapshot(new BigDecimal("5.00"));
+        order.setPacketTotalAmountSnapshot(new BigDecimal("25.00"));
         order.setValidMonthsSnapshot(1);
         order.setStatus(RedPacketPurchaseOrder.PENDING);
+        order.setExpireTime(LocalDateTime.now().plusMinutes(10));
         when(mapper.lockPurchase("RP-test")).thenReturn(order);
         when(mapper.markPurchasePaid(eq(20L), eq("wx-transaction"), any(LocalDateTime.class))).thenReturn(1);
+        when(mapper.settleBudget(eq(1L), eq(new BigDecimal("25.00")))).thenReturn(1);
 
         assertTrue(service.paySuccess("RP-test", "wx-transaction", new BigDecimal("10.00")));
         verify(mapper, times(5)).insertUserRedPacket(argThat(packet ->

@@ -38,8 +38,18 @@ public class RedPacketServiceImpl implements RedPacketService {
     @Transactional(rollbackFor = Exception.class)
     public RedPacketPurchaseVO createPurchase(RedPacketPurchaseDTO dto) {
         if (dto == null || dto.getPackageId() == null) throw new OrderBusinessException("red packet package is required");
-        RedPacketPackage item = redPackets.activePackage(dto.getPackageId());
+        RedPacketPackage item = redPackets.lockActivePackage(dto.getPackageId());
         if (item == null) throw new OrderBusinessException("red packet package is unavailable");
+        BigDecimal totalAmount = item.getPacketAmount().multiply(BigDecimal.valueOf(item.getPacketCount()));
+        if (item.getSalePrice().compareTo(totalAmount) < 0) {
+            throw new OrderBusinessException("red packet package price is below its face value");
+        }
+        if (redPackets.countPurchasedOrPending(BaseContext.getCurrentId(), item.getId()) >= item.getPurchaseLimitPerUser()) {
+            throw new OrderBusinessException("purchase limit reached for this red packet package");
+        }
+        if (redPackets.reserveBudget(item.getId(), totalAmount) != 1) {
+            throw new OrderBusinessException("red packet package budget is exhausted");
+        }
         RedPacketPurchaseOrder order = new RedPacketPurchaseOrder();
         order.setOrderNo("RP" + System.currentTimeMillis() + UUID.randomUUID().toString().replace("-", "").substring(0, 8));
         order.setUserId(BaseContext.getCurrentId());
@@ -47,9 +57,11 @@ public class RedPacketServiceImpl implements RedPacketService {
         order.setPayAmount(item.getSalePrice());
         order.setPacketCountSnapshot(item.getPacketCount());
         order.setPacketAmountSnapshot(item.getPacketAmount());
+        order.setPacketTotalAmountSnapshot(totalAmount);
         order.setValidMonthsSnapshot(item.getValidMonths());
         order.setStatus(RedPacketPurchaseOrder.PENDING);
         order.setCreateTime(LocalDateTime.now());
+        order.setExpireTime(order.getCreateTime().plusMinutes(15));
         redPackets.insertPurchase(order);
         return RedPacketPurchaseVO.builder().purchaseOrderNo(order.getOrderNo()).payAmount(order.getPayAmount()).build();
     }
@@ -57,7 +69,8 @@ public class RedPacketServiceImpl implements RedPacketService {
     @Override
     public OrderPaymentVO payment(String purchaseOrderNo) throws Exception {
         RedPacketPurchaseOrder order = redPackets.purchaseByNumber(purchaseOrderNo);
-        if (order == null || !BaseContext.getCurrentId().equals(order.getUserId()) || !RedPacketPurchaseOrder.PENDING.equals(order.getStatus())) {
+        if (order == null || !BaseContext.getCurrentId().equals(order.getUserId()) || !RedPacketPurchaseOrder.PENDING.equals(order.getStatus())
+                || !order.getExpireTime().isAfter(LocalDateTime.now())) {
             throw new OrderBusinessException("red packet purchase order is not payable");
         }
         if (mockPaymentEnabled) {
@@ -94,8 +107,16 @@ public class RedPacketServiceImpl implements RedPacketService {
             return true;
         }
         if (!RedPacketPurchaseOrder.PENDING.equals(order.getStatus())) throw new OrderBusinessException("red packet purchase order state invalid");
+        if (!order.getExpireTime().isAfter(LocalDateTime.now())) {
+            // The scheduled closer performs the state change and budget release in its
+            // own transaction. Do not issue packets for a late payment callback.
+            throw new OrderBusinessException("red packet purchase order expired");
+        }
         LocalDateTime paidAt = LocalDateTime.now();
         if (redPackets.markPurchasePaid(order.getId(), transactionId, paidAt) != 1) throw new OrderBusinessException("red packet payment state changed");
+        if (redPackets.settleBudget(order.getPackageId(), order.getPacketTotalAmountSnapshot()) != 1) {
+            throw new OrderBusinessException("red packet package budget state changed");
+        }
         for (int sequence = 1; sequence <= order.getPacketCountSnapshot(); sequence++) {
             UserRedPacket packet = new UserRedPacket();
             packet.setUserId(order.getUserId());

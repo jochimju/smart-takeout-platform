@@ -54,7 +54,9 @@ public class RabbitMqConfiguration {
 
     @Bean
     public Queue orderSubmitQueue() {
-        return QueueBuilder.durable(MqConstant.ORDER_SUBMIT_QUEUE).build();
+        return QueueBuilder.durable(MqConstant.ORDER_SUBMIT_QUEUE)
+                .deadLetterExchange(MqConstant.ORDER_FAILURE_EXCHANGE)
+                .deadLetterRoutingKey(MqConstant.ORDER_FAILURE_ROUTING_KEY).build();
     }
 
     @Bean
@@ -64,12 +66,29 @@ public class RabbitMqConfiguration {
 
     @Bean
     public Queue seckillOrderQueue() {
-        return QueueBuilder.durable(MqConstant.SECKILL_ORDER_QUEUE).build();
+        return QueueBuilder.durable(MqConstant.SECKILL_ORDER_QUEUE)
+                .deadLetterExchange(MqConstant.ORDER_FAILURE_EXCHANGE)
+                .deadLetterRoutingKey(MqConstant.ORDER_FAILURE_ROUTING_KEY).build();
     }
 
     @Bean
     public Binding seckillOrderBinding() {
         return BindingBuilder.bind(seckillOrderQueue()).to(orderExchange()).with(MqConstant.SECKILL_ORDER_ROUTING_KEY);
+    }
+
+    @Bean
+    public DirectExchange orderFailureExchange() {
+        return new DirectExchange(MqConstant.ORDER_FAILURE_EXCHANGE, true, false);
+    }
+
+    @Bean
+    public Queue orderFailureQueue() {
+        return QueueBuilder.durable(MqConstant.ORDER_FAILURE_QUEUE).build();
+    }
+
+    @Bean
+    public Binding orderFailureBinding() {
+        return BindingBuilder.bind(orderFailureQueue()).to(orderFailureExchange()).with(MqConstant.ORDER_FAILURE_ROUTING_KEY);
     }
 
     @Bean

@@ -16,6 +16,11 @@ public class MqConstant {
     public static final String SECKILL_ORDER_QUEUE = "sky.seckill.order.queue";
     public static final String SECKILL_ORDER_ROUTING_KEY = "seckill.order";
 
+    /** Failed async commands are retained for investigation and controlled replay. */
+    public static final String ORDER_FAILURE_EXCHANGE = "sky.order.failure.exchange";
+    public static final String ORDER_FAILURE_QUEUE = "sky.order.failure.queue";
+    public static final String ORDER_FAILURE_ROUTING_KEY = "order.failed";
+
     private MqConstant() {
     }
 }

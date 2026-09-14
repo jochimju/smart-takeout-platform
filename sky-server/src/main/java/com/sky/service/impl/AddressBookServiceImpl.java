@@ -1,7 +1,9 @@
 package com.sky.service.impl;
 
 import com.sky.context.BaseContext;
+import com.sky.constant.MessageConstant;
 import com.sky.entity.AddressBook;
+import com.sky.exception.AddressBookBusinessException;
 import com.sky.mapper.AddressBookMapper;
 import com.sky.service.AddressBookService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +46,7 @@ public class AddressBookServiceImpl implements AddressBookService {
      * @return
      */
     public AddressBook getById(Long id) {
-        AddressBook addressBook = addressBookMapper.getById(id);
-        return addressBook;
+        return requireOwnedAddress(id);
     }
 
     /**
@@ -54,7 +55,14 @@ public class AddressBookServiceImpl implements AddressBookService {
      * @param addressBook
      */
     public void update(AddressBook addressBook) {
-        addressBookMapper.update(addressBook);
+        if (addressBook == null || addressBook.getId() == null) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
+        requireOwnedAddress(addressBook.getId());
+        addressBook.setUserId(BaseContext.getCurrentId());
+        if (addressBookMapper.update(addressBook) != 1) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
     }
 
     /**
@@ -64,6 +72,10 @@ public class AddressBookServiceImpl implements AddressBookService {
      */
     @Transactional
     public void setDefault(AddressBook addressBook) {
+        if (addressBook == null || addressBook.getId() == null) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
+        requireOwnedAddress(addressBook.getId());
         //1、将当前用户的所有地址修改为非默认地址 update address_book set is_default = ? where user_id = ?
         addressBook.setIsDefault(0);
         addressBook.setUserId(BaseContext.getCurrentId());
@@ -71,7 +83,9 @@ public class AddressBookServiceImpl implements AddressBookService {
 
         //2、将当前地址改为默认地址 update address_book set is_default = ? where id = ?
         addressBook.setIsDefault(1);
-        addressBookMapper.update(addressBook);
+        if (addressBookMapper.update(addressBook) != 1) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
     }
 
     /**
@@ -80,7 +94,20 @@ public class AddressBookServiceImpl implements AddressBookService {
      * @param id
      */
     public void deleteById(Long id) {
-        addressBookMapper.deleteById(id);
+        if (addressBookMapper.deleteByIdAndUserId(id, BaseContext.getCurrentId()) != 1) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
+    }
+
+    private AddressBook requireOwnedAddress(Long id) {
+        if (id == null) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
+        AddressBook addressBook = addressBookMapper.getByIdAndUserId(id, BaseContext.getCurrentId());
+        if (addressBook == null) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
+        return addressBook;
     }
 
 }

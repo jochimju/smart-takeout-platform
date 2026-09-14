@@ -22,6 +22,7 @@ class DishStatusCacheTest {
     private AnnotationConfigApplicationContext context;
     private DishService service;
     private RedisTemplate redis;
+    private com.sky.cache.MenuCache menuCache;
     private CacheManager caches;
     private SetmealMapper setmeals;
     private TransactionTemplate transaction;
@@ -31,13 +32,13 @@ class DishStatusCacheTest {
         context = new AnnotationConfigApplicationContext(Config.class);
         service = context.getBean(DishService.class);
         redis = context.getBean(RedisTemplate.class);
+        menuCache = context.getBean(com.sky.cache.MenuCache.class);
         clearInvocations(redis); // 排除 Spring 初始化 Bean 的生命周期调用。
         caches = context.getBean(CacheManager.class);
         setmeals = context.getBean(SetmealMapper.class);
         transaction = new TransactionTemplate(context.getBean(TestTransactionManager.class));
         when(context.getBean(SetmealDishMapper.class).getSetmealIdsByDishIds(Collections.singletonList(1L)))
                 .thenReturn(Collections.singletonList(9L));
-        when(redis.keys("dish_*")).thenReturn(Collections.singleton("dish_2"));
         caches.getCache("setmealCache").put(3L, "old-menu");
         caches.getCache("userSetmealCache").put(3L, "old-result");
     }
@@ -55,7 +56,7 @@ class DishStatusCacheTest {
             verifyNoInteractions(redis);
             return null;
         });
-        verify(redis).delete(Collections.singleton("dish_2"));
+        verify(menuCache).invalidateDishes();
         assertNull(caches.getCache("setmealCache").get(3L));
         assertNull(caches.getCache("userSetmealCache").get(3L));
     }
@@ -67,14 +68,14 @@ class DishStatusCacheTest {
             status.setRollbackOnly();
             return null;
         });
-        verifyNoInteractions(redis);
+        verifyNoInteractions(menuCache);
         assertCachesPresent();
     }
 
     @Test
     void enablingDishDoesNotEvictUnchangedSetmeals() {
         service.startOrStop(StatusConstant.ENABLE, 1L);
-        verify(redis).delete(Collections.singleton("dish_2"));
+        verify(menuCache).invalidateDishes();
         verifyNoInteractions(setmeals);
         assertCachesPresent();
     }
@@ -84,7 +85,7 @@ class DishStatusCacheTest {
         when(context.getBean(SetmealDishMapper.class).getSetmealIdsByDishIds(anyList()))
                 .thenReturn(Collections.emptyList());
         service.startOrStop(StatusConstant.DISABLE, 1L);
-        verify(redis).delete(Collections.singleton("dish_2"));
+        verify(menuCache).invalidateDishes();
         assertCachesPresent();
     }
 
@@ -92,7 +93,7 @@ class DishStatusCacheTest {
     void databaseFailureDoesNotEvictCaches() {
         doThrow(new IllegalStateException("database failure")).when(setmeals).update(any(Setmeal.class));
         assertThrows(IllegalStateException.class, () -> service.startOrStop(StatusConstant.DISABLE, 1L));
-        verifyNoInteractions(redis);
+        verifyNoInteractions(menuCache);
         assertCachesPresent();
     }
 

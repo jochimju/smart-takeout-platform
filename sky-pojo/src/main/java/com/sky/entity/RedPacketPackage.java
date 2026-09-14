@@ -13,6 +13,10 @@ public class RedPacketPackage {
     private BigDecimal packetAmount;
     private Integer validMonths;
     private Integer status;
+    private Integer purchaseLimitPerUser;
+    private BigDecimal budgetAmount;
+    private BigDecimal reservedAmount;
+    private BigDecimal issuedAmount;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

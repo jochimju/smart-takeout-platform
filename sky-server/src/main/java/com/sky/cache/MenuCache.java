@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 
 @Component
 public class MenuCache {
+    private static final String DISH_CACHE_VERSION_KEY = "dish:cache:version";
     private final RedisTemplate redis;
     private final RedisCacheLock lock;
     private final MenuCacheMetrics metrics;
@@ -26,11 +27,15 @@ public class MenuCache {
     public <T> List<T> warm(String kind, Long categoryId, Supplier<List<T>> loader) {
         return query(kind, categoryId, loader, true);
     }
+    /** O(1) logical invalidation: old, versioned entries expire naturally. */
+    public void invalidateDishes() {
+        redis.opsForValue().increment(DISH_CACHE_VERSION_KEY);
+    }
     private <T> List<T> query(String kind, Long categoryId, Supplier<List<T>> loader, boolean warm) {
         if (categoryId == null || !("dish".equals(kind) || "setmeal".equals(kind))) {
             throw new BaseException("请选择有效的菜单分类");
         }
-        String key = "dish".equals(kind) ? "dish_" + categoryId : "userSetmealCache::" + categoryId;
+        String key = "dish".equals(kind) ? dishKey(categoryId) : "userSetmealCache::" + categoryId;
         metrics.increment(kind, warm ? "warmups" : "requests");
         boolean first = true;
         boolean contended = false;
@@ -73,6 +78,14 @@ public class MenuCache {
             metrics.increment(kind, warm ? "warmupErrors" : "errors");
             throw ex;
         }
+    }
+    private String dishKey(Long categoryId) {
+        Object version = redis.opsForValue().get(DISH_CACHE_VERSION_KEY);
+        if (version == null) {
+            redis.opsForValue().setIfAbsent(DISH_CACHE_VERSION_KEY, "1");
+            version = "1";
+        }
+        return "dish:v" + version + ":" + categoryId;
     }
     @SuppressWarnings("unchecked")
     private <T> List<T> read(String kind, String key) {

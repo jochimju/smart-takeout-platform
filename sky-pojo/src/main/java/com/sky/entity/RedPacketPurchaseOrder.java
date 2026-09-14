@@ -16,9 +16,11 @@ public class RedPacketPurchaseOrder {
     private BigDecimal payAmount;
     private Integer packetCountSnapshot;
     private BigDecimal packetAmountSnapshot;
+    private BigDecimal packetTotalAmountSnapshot;
     private Integer validMonthsSnapshot;
     private Integer status;
     private String transactionId;
     private LocalDateTime createTime;
     private LocalDateTime paidTime;
+    private LocalDateTime expireTime;
 }

@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -79,6 +78,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private SetmealMapper setmealMapper;
     @Autowired
+    private OrderSubmitRequestMapper orderSubmitRequestMapper;
+    @Autowired
     private WeChatPayUtil weChatPayUtil;
     @Autowired
     private WebSocketServer webSocketServer;
@@ -98,11 +99,17 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {
         Long userId = BaseContext.getCurrentId();
+        validateRequestId(ordersSubmitDTO);
+        OrderSubmitVO previous = findSubmittedOrder(userId, ordersSubmitDTO.getRequestId());
+        if (previous != null) {
+            return previous;
+        }
 
-        AddressBook addressBook = addressBookMapper.getById(ordersSubmitDTO.getAddressBookId());
+        AddressBook addressBook = addressBookMapper.getByIdAndUserId(ordersSubmitDTO.getAddressBookId(), userId);
         if (addressBook == null) {
             throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
         }
+        ensureShopOpen();
 
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUserId(userId);
@@ -111,11 +118,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
         }
 
-        String submittingKey = RedisKeyConstant.ORDER_SUBMITTING + userId;
-        Boolean firstSubmit = redisTemplate.opsForValue().setIfAbsent(submittingKey, "1", 10, TimeUnit.SECONDS);
-        if (Boolean.FALSE.equals(firstSubmit)) {
-            throw new OrderBusinessException("order is processing, do not submit repeatedly");
-        }
+        validateCartItems(shoppingCartList);
 
         BigDecimal foodAmount = calculateCartAmount(shoppingCartList);
         if (ordersSubmitDTO.getCouponId() != null && ordersSubmitDTO.getUserRedPacketId() != null) {
@@ -129,6 +132,13 @@ public class OrderServiceImpl implements OrderService {
                 .add(DELIVERY_FEE);
 
         String orderNumber = generateOrderNumber();
+        if (orderSubmitRequestMapper.claim(userId, ordersSubmitDTO.getRequestId(), orderNumber) != 1) {
+            OrderSubmitVO submitted = findSubmittedOrder(userId, ordersSubmitDTO.getRequestId());
+            if (submitted != null) {
+                return submitted;
+            }
+            throw new OrderBusinessException("order is processing, please retry later");
+        }
         OrderSubmitMessageDTO messageDTO = OrderSubmitMessageDTO.builder()
                 .userId(userId)
                 .addressBookId(ordersSubmitDTO.getAddressBookId())
@@ -159,27 +169,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public void createOrderFromMessage(OrderSubmitMessageDTO messageDTO) {
-        try {
-            Orders exists = orderMapper.getByNumber(messageDTO.getOrderNumber());
-            if (exists != null) {
-                return;
-            }
+        Orders exists = orderMapper.getByNumber(messageDTO.getOrderNumber());
+        if (exists != null) {
+            return;
+        }
 
-            AddressBook addressBook = addressBookMapper.getById(messageDTO.getAddressBookId());
-            if (addressBook == null) {
-                throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
-            }
+        AddressBook addressBook = addressBookMapper.getByIdAndUserId(messageDTO.getAddressBookId(), messageDTO.getUserId());
+        if (addressBook == null) {
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        }
 
-            ShoppingCart shoppingCart = new ShoppingCart();
-            shoppingCart.setUserId(messageDTO.getUserId());
-            List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
-            if (shoppingCartList == null || shoppingCartList.size() == 0) {
-                throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
-            }
-            deductCartStock(shoppingCartList);
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUserId(messageDTO.getUserId());
+        List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
+        if (shoppingCartList == null || shoppingCartList.size() == 0) {
+            throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
+        }
+        ensureShopOpen();
+        validateCartItems(shoppingCartList);
+        deductCartStock(shoppingCartList);
 
-            Orders order = new Orders();
-            BeanUtils.copyProperties(messageDTO, order);
+        Orders order = new Orders();
+        BeanUtils.copyProperties(messageDTO, order);
             order.setPhone(addressBook.getPhone());
             order.setAddress(addressBook.getDetail());
             order.setConsignee(addressBook.getConsignee());
@@ -221,10 +232,7 @@ public class OrderServiceImpl implements OrderService {
 
             orderDetailMapper.insertBatch(orderDetailList);
             shoppingCartMapper.deleteByUserId(messageDTO.getUserId());
-            reliability.scheduleTimeout(order);
-        } finally {
-            redisTemplate.delete(RedisKeyConstant.ORDER_SUBMITTING + messageDTO.getUserId());
-        }
+        reliability.scheduleTimeout(order);
     }
 
     @Transactional
@@ -339,7 +347,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public OrderVO details(Long id) {
         // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕鈽夐弮鍌涙殜闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
-        Orders orders = orderMapper.getById(id);
+        Orders orders = requireOwnedOrder(id);
 
         // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲閻庢碍宀搁弻鏇熷緞濡厧甯ラ梺鍛婅壘閸婂潡寮诲☉妯滄梹鎷呴崷顓фК婵＄偑鍊栧ú锕傚窗濡ゅ懎绠氶柡鍐ㄧ墕缁秹鏌涚仦鍓с€掗柡鍡欏█濮婃椽宕楅悡搴殝缂備緡鍠栭惌鍌炵嵁?婵犵數濞€濞佳囧磹瑜版帇鈧啯绻濋崶浣告喘閹晫绮欓崹顔兼尋闂佺澹堥幓顏嗗緤閸ф鍎?
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
@@ -386,6 +394,7 @@ public class OrderServiceImpl implements OrderService {
     public void repetition(Long id) {
         // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛仴濞存粌缍婇弻鐔煎箚瑜嶉弳杈ㄣ亜閵堝懏鍤囬柡宀嬬秮閿濈偤顢楅埀顒佷繆娴犲鐓曢柍鍝勫€块幖鈺?
         Long userId = BaseContext.getCurrentId();
+        requireOwnedOrder(id);
 
         // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕霉閿濆洤鍔嬪┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒佸垔閺€鍕⒒娴ｅ憡鎯堥悶姘煎亰瀹曟洟骞橀鍛櫔濠德板€曠€氥劍绂嶈ぐ鎺撶厵闁诡垎鍐╂瘣濡炪們鍊曢幊姗€骞冪憴鍕闂傚牊绋撴禒濂告倵鐟欏嫭绀堥柛鐘虫崌楠炲繘鎮╃紒妯绘珕闂佽姤锚椤︻垱绔?
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
@@ -488,15 +497,15 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal queryCurrentPrice(ShoppingCart cart) {
         if (cart.getDishId() != null) {
             Dish dish = dishMapper.getById(cart.getDishId());
-            if (dish == null) {
-                throw new OrderBusinessException("dish not found");
+            if (dish == null || !Integer.valueOf(1).equals(dish.getStatus())) {
+                throw new OrderBusinessException("dish is unavailable");
             }
             return dish.getPrice() == null ? BigDecimal.ZERO : dish.getPrice();
         }
         if (cart.getSetmealId() != null) {
             Setmeal setmeal = setmealMapper.getById(cart.getSetmealId());
-            if (setmeal == null) {
-                throw new OrderBusinessException("setmeal not found");
+            if (setmeal == null || !Integer.valueOf(1).equals(setmeal.getStatus())) {
+                throw new OrderBusinessException("setmeal is unavailable");
             }
             return setmeal.getPrice() == null ? BigDecimal.ZERO : setmeal.getPrice();
         }
@@ -573,7 +582,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void deductCartStock(List<ShoppingCart> shoppingCartList) {
         for (ShoppingCart cart : shoppingCartList) {
-            int number = cart.getNumber() == null ? 0 : cart.getNumber();
+            int number = cart.getNumber();
             if (cart.getDishId() != null) {
                 int affected = dishMapper.deductStock(cart.getDishId(), number);
                 if (affected == 0) {
@@ -672,10 +681,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public void reminder(Long id) {
         // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡娑㈡煕閺囥垺娑ч柣蹇曞█閺岀喖顢涘▎鎺戝帯闂侀€炲苯澧紒瀣浮閺佸鈹戦悩顐壕?
-        Orders orders = orderMapper.getById(id);
-        if (orders == null) {
-            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
-        }
+        Orders orders = requireOwnedOrder(id);
 
         //闂傚倷鑳剁涵鍫曞疾閻愬樊娴栭柕濞у棗小闂佽崵鍋炲濉⊿ocket闂備浇顕ф绋匡耿闁秴纾婚柣鏃囧亹瀹撲線鏌涢妷顔煎缁炬儳鍚嬮妵鍕箳閸℃ぞ澹曢柣?
         Map map = new HashMap();
@@ -699,5 +705,52 @@ public class OrderServiceImpl implements OrderService {
             message.put("type",1); message.put("orderId",order.getId()); message.put("content","order number: "+number);
             webSocketServer.sendToAllClient(JSON.toJSONString(message));
         } catch(Exception e) { log.warn("Payment committed but websocket notification failed: {}",number,e); }
+    }
+
+    private void validateRequestId(OrdersSubmitDTO dto) {
+        if (dto == null || dto.getRequestId() == null || !dto.getRequestId().matches("[A-Za-z0-9_-]{16,64}")) {
+            throw new OrderBusinessException("requestId is required");
+        }
+    }
+
+    private OrderSubmitVO findSubmittedOrder(Long userId, String requestId) {
+        String orderNumber = orderSubmitRequestMapper.findOrderNumber(userId, requestId);
+        if (orderNumber == null) {
+            return null;
+        }
+        Orders order = orderMapper.getByNumberAndUserId(orderNumber, userId);
+        if (order == null) {
+            return null;
+        }
+        return OrderSubmitVO.builder().id(order.getId()).orderNumber(order.getNumber())
+                .orderAmount(order.getAmount()).orderTime(order.getOrderTime()).build();
+    }
+
+    private void ensureShopOpen() {
+        Object status = redisTemplate.opsForValue().get(RedisKeyConstant.SHOP_STATUS);
+        if (!Integer.valueOf(1).equals(status)) {
+            throw new OrderBusinessException("shop is closed");
+        }
+    }
+
+    private void validateCartItems(List<ShoppingCart> items) {
+        for (ShoppingCart cart : items) {
+            if (cart.getNumber() == null || cart.getNumber() <= 0) {
+                throw new OrderBusinessException("item quantity must be positive");
+            }
+            boolean dish = cart.getDishId() != null;
+            boolean setmeal = cart.getSetmealId() != null;
+            if (dish == setmeal) {
+                throw new OrderBusinessException("invalid shopping cart item");
+            }
+        }
+    }
+
+    private Orders requireOwnedOrder(Long id) {
+        Orders order = orderMapper.getByIdAndUserId(id, BaseContext.getCurrentId());
+        if (order == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        return order;
     }
 }

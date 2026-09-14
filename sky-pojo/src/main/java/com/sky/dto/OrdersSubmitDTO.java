@@ -9,6 +9,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class OrdersSubmitDTO implements Serializable {
+    /**
+     * Client-generated idempotency key. One key is bound to one user order and
+     * must be retained while retrying a request after a network failure.
+     */
+    private String requestId;
+
     //鍦板潃绨縤d
     private Long addressBookId;
     //浠樻鏂瑰紡

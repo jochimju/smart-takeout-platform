@@ -4,17 +4,16 @@ import com.sky.event.DishStatusChangedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import java.util.Set;
+import com.sky.cache.MenuCache;
 
 @Component
 public class DishStatusCacheListener {
     @Autowired
-    private RedisTemplate redisTemplate;
+    private MenuCache menuCache;
     @Autowired
     private CacheManager cacheManager;
 
@@ -22,10 +21,7 @@ public class DishStatusCacheListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void invalidate(DishStatusChangedEvent event) {
         try {
-            Set keys = redisTemplate.keys("dish_*");
-            if (keys != null && !keys.isEmpty()) {
-                redisTemplate.delete(keys);
-            }
+            menuCache.invalidateDishes();
         } finally {
             // 与套餐管理接口采用相同的缓存区域，覆盖关联套餐所在的所有分类。
             if (event.isSetmealsChanged()) {

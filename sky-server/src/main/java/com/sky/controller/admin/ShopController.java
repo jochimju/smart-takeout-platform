@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.result.Result;
+import com.sky.constant.RedisKeyConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ShopController {
 
-    public static final String KEY = "SHOP_STATUS";
+    public static final String KEY = RedisKeyConstant.SHOP_STATUS;
     private static final Integer DEFAULT_STATUS = 1;
 
     @Autowired
@@ -27,6 +28,9 @@ public class ShopController {
     @PutMapping("/{status}")
     @ApiOperation("set shop status")
     public Result setStatus(@PathVariable Integer status) {
+        if (!Integer.valueOf(0).equals(status) && !Integer.valueOf(1).equals(status)) {
+            return Result.error("shop status must be 0 or 1");
+        }
         log.info("set shop status: {}", status == 1 ? "open" : "closed");
         redisTemplate.opsForValue().set(KEY, status);
         return Result.success();

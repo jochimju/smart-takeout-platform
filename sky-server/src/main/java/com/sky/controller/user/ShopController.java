@@ -1,6 +1,7 @@
 package com.sky.controller.user;
 
 import com.sky.result.Result;
+import com.sky.constant.RedisKeyConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class ShopController {
 
-    public static final String KEY = "SHOP_STATUS";
+    public static final String KEY = RedisKeyConstant.SHOP_STATUS;
     private static final Integer DEFAULT_STATUS = 1;
 
     @Autowired

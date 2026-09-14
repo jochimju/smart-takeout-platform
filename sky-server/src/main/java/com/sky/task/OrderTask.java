@@ -28,11 +28,11 @@ public class OrderTask {
         LocalDateTime time = LocalDateTime.now().plusMinutes(-60);
         List<Orders> ordersList = orderMapper.getByStatusAndOrdertimeLT(Orders.DELIVERY_IN_PROGRESS, time);
 
-        if(ordersList != null && ordersList.size() > 0){
-            ordersList.forEach(order -> {
-                order.setStatus(Orders.COMPLETED);
-                orderMapper.transition(order.getId(),Orders.DELIVERY_IN_PROGRESS,Orders.COMPLETED);
-            });
+        if(ordersList != null && !ordersList.isEmpty()) {
+            // 配送超时只能作为运营告警，不能替代骑手/用户确认等履约凭证。
+            // 订单继续保持配送中，等待明确的完成事件。
+            log.warn("{} delivery orders have been in progress for more than 60 minutes; no automatic completion is performed",
+                    ordersList.size());
         }
     }
 

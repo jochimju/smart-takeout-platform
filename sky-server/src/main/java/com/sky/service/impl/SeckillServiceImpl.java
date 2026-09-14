@@ -83,8 +83,8 @@ public class SeckillServiceImpl implements SeckillService {
         }
         if(seckillActivityMapper.reserve(activity.getId())!=1) throw new OrderBusinessException("库存不足或活动已结束");
         String number=createOrderNumber();
-        try { seckillOrderGuardMapper.insertGuard(userId,setmeal.getId(),number); }
-        catch(DuplicateKeyException e) { throw new OrderBusinessException("您已购买过该秒杀套餐"); }
+        try { seckillOrderGuardMapper.insertGuard(userId,activity.getId(),setmeal.getId(),number); }
+        catch(DuplicateKeyException e) { throw new OrderBusinessException("您已购买过该秒杀活动"); }
         LocalDateTime now=LocalDateTime.now();
         Orders order=buildOrder(request,userId,address,setmeal,activity.getSeckillPrice(),number,now);
         order.setExpireTime(now.plusMinutes(15));
