@@ -36,7 +36,10 @@ public interface SeckillService {
 
     List<SeckillActivityVO> listActivities();
 
-    void saveActivity(SeckillActivityDTO activityDTO);
+    /**
+     * 保存活动并返回活动编号，管理端可据此立即预热库存。
+     */
+    Long saveActivity(SeckillActivityDTO activityDTO);
 
     void deleteActivity(Long activityId);
     void adjustStock(Long activityId, int targetTotal, int expectedTotal);

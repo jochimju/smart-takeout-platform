@@ -37,9 +37,12 @@ public class OrdersSubmitDTO implements Serializable {
 
     private Long couponId;
 
-    /**
-     * A concrete red-packet asset. Null means that the user chose not to use one.
-     * This is intentionally not the legacy coupon template id.
-     */
+    /** A concrete red-packet asset, not the legacy coupon template id. */
     private Long userRedPacketId;
+
+    /**
+     * False means the user explicitly chose not to use a red packet. Null keeps
+     * the default behavior: automatically use the earliest-expiring one.
+     */
+    private Boolean useRedPacket;
 }

@@ -47,11 +47,11 @@ public class SeckillActivityController {
 
     @PostMapping
     @ApiOperation("创建秒杀活动")
-    public Result create(@RequestBody SeckillActivityDTO activity) { seckillService.saveActivity(activity); return Result.success(); }
+    public Result<Long> create(@RequestBody SeckillActivityDTO activity) { return Result.success(seckillService.saveActivity(activity)); }
 
     @PutMapping
     @ApiOperation("修改秒杀活动")
-    public Result update(@RequestBody SeckillActivityDTO activity) { seckillService.saveActivity(activity); return Result.success(); }
+    public Result<Long> update(@RequestBody SeckillActivityDTO activity) { return Result.success(seckillService.saveActivity(activity)); }
 
     @DeleteMapping("/{activityId}")
     @ApiOperation("删除秒杀活动")

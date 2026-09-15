@@ -124,8 +124,10 @@ public class OrderServiceImpl implements OrderService {
         if (ordersSubmitDTO.getCouponId() != null && ordersSubmitDTO.getUserRedPacketId() != null) {
             throw new OrderBusinessException("coupon and red packet cannot be used together");
         }
+        Long userRedPacketId = resolveRedPacketId(userId, ordersSubmitDTO.getCouponId(),
+                ordersSubmitDTO.getUserRedPacketId(), ordersSubmitDTO.getUseRedPacket());
         BigDecimal discountAmount = calculateDiscount(userId, ordersSubmitDTO.getCouponId(), foodAmount)
-                .add(calculateRedPacketDiscount(userId, ordersSubmitDTO.getUserRedPacketId(), foodAmount));
+                .add(calculateRedPacketDiscount(userId, userRedPacketId, foodAmount));
         int packAmount = calculatePackAmount(shoppingCartList);
         BigDecimal payableAmount = foodAmount.subtract(discountAmount)
                 .add(BigDecimal.valueOf(packAmount).multiply(PACK_FEE_PER_ITEM))
@@ -151,7 +153,8 @@ public class OrderServiceImpl implements OrderService {
                 .packAmount(packAmount)
                 .orderNumber(orderNumber)
                 .couponId(ordersSubmitDTO.getCouponId())
-                .userRedPacketId(ordersSubmitDTO.getUserRedPacketId())
+                .userRedPacketId(userRedPacketId)
+                .useRedPacket(ordersSubmitDTO.getUseRedPacket())
                 .build();
 
         // Reservation, stock deduction and order persistence must succeed together.
@@ -203,11 +206,13 @@ public class OrderServiceImpl implements OrderService {
             if (messageDTO.getCouponId() != null && messageDTO.getUserRedPacketId() != null) {
                 throw new OrderBusinessException("coupon and red packet cannot be used together");
             }
+            Long userRedPacketId = resolveRedPacketId(messageDTO.getUserId(), messageDTO.getCouponId(),
+                    messageDTO.getUserRedPacketId(), messageDTO.getUseRedPacket());
             BigDecimal discountAmount = calculateDiscount(messageDTO.getUserId(), messageDTO.getCouponId(), originAmount)
-                    .add(calculateRedPacketDiscount(messageDTO.getUserId(), messageDTO.getUserRedPacketId(), originAmount));
+                    .add(calculateRedPacketDiscount(messageDTO.getUserId(), userRedPacketId, originAmount));
             int packAmount = calculatePackAmount(shoppingCartList);
             order.setCouponId(messageDTO.getCouponId());
-            order.setUserRedPacketId(messageDTO.getUserRedPacketId());
+            order.setUserRedPacketId(userRedPacketId);
             order.setDiscountAmount(discountAmount);
             // amount 是实际支付金额：菜品金额 - 优惠 + 打包费 + 配送费。
             // 前端传入的 amount、packAmount 均不参与结算，避免被篡改。
@@ -219,7 +224,7 @@ public class OrderServiceImpl implements OrderService {
             order.setExpireTime(order.getOrderTime().plusMinutes(15));
             orderMapper.insert(order);
             markCouponUsed(messageDTO.getUserId(), messageDTO.getCouponId(), order.getId());
-            reserveRedPacket(messageDTO.getUserId(), messageDTO.getUserRedPacketId(), order.getId());
+            reserveRedPacket(messageDTO.getUserId(), userRedPacketId, order.getId());
 
             List<OrderDetail> orderDetailList = new ArrayList<>();
             for (ShoppingCart cart : shoppingCartList) {
@@ -261,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryAmount(DELIVERY_FEE).discountAmount(discount)
                 .payableAmount(food.subtract(discount).add(BigDecimal.valueOf(pack).multiply(PACK_FEE_PER_ITEM)).add(DELIVERY_FEE))
                 .defaultRedPacketId(defaultId).redPackets(vos).build();
-    }
+    }t
 
     /**
      * 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ弮鍌氬付缂備讲鏅滈妵鍕冀閵娧勫櫘闁?
@@ -555,6 +560,22 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderBusinessException("red packet unavailable");
         }
         return packet.getAmount().min(foodAmount);
+    }
+
+    /**
+     * The default is to use a red packet. Only an explicit false from the
+     * checkout page disables it; this keeps a failed client-side preview from
+     * silently charging the user the full price.
+     */
+    private Long resolveRedPacketId(Long userId, Long couponId, Long requestedRedPacketId, Boolean useRedPacket) {
+        if (couponId != null || Boolean.FALSE.equals(useRedPacket)) {
+            return null;
+        }
+        if (requestedRedPacketId != null) {
+            return requestedRedPacketId;
+        }
+        List<UserRedPacket> packets = redPacketMapper.availableByUser(userId);
+        return packets.isEmpty() ? null : packets.get(0).getId();
     }
 
     private void reserveRedPacket(Long userId, Long redPacketId, Long orderId) {

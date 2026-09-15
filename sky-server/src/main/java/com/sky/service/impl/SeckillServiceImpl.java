@@ -9,6 +9,7 @@ import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import com.sky.entity.SeckillActivity;
 import com.sky.entity.Setmeal;
+import com.sky.entity.UserRedPacket;
 import com.sky.exception.OrderBusinessException;
 import com.sky.mapper.AddressBookMapper;
 import com.sky.mapper.OrderDetailMapper;
@@ -16,6 +17,7 @@ import com.sky.mapper.OrderMapper;
 import com.sky.mapper.SeckillActivityMapper;
 import com.sky.mapper.SeckillOrderGuardMapper;
 import com.sky.mapper.SetmealMapper;
+import com.sky.mapper.RedPacketMapper;
 import com.sky.service.SeckillService;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.SeckillActivityVO;
@@ -46,6 +48,7 @@ public class SeckillServiceImpl implements SeckillService {
     @Autowired private OrderReliabilityStore jobs;
     @Autowired private SeckillCache cache;
     @Autowired private com.sky.mapper.SeckillReservationMapper reservationMapper;
+    @Autowired private RedPacketMapper redPacketMapper;
 
 
     
@@ -67,7 +70,9 @@ public class SeckillServiceImpl implements SeckillService {
             return submitVO(existing);
         }
         validateActivityAndSetmeal(activity,request.getSetmealId());
-        java.math.BigDecimal payable=activity.getSeckillPrice().add(new java.math.BigDecimal("7.00"));
+        Long userRedPacketId=resolveRedPacketId(userId,request.getUserRedPacketId(),request.getUseRedPacket());
+        java.math.BigDecimal discount=calculateRedPacketDiscount(userId,userRedPacketId,activity.getSeckillPrice());
+        java.math.BigDecimal payable=activity.getSeckillPrice().subtract(discount).add(new java.math.BigDecimal("7.00"));
         if(request.getAmount()!=null && request.getAmount().compareTo(payable)!=0)
             throw new OrderBusinessException("秒杀价格已变更，请返回重新选择套餐");
         Setmeal setmeal=setmealMapper.getById(request.getSetmealId());
@@ -86,9 +91,10 @@ public class SeckillServiceImpl implements SeckillService {
         try { seckillOrderGuardMapper.insertGuard(userId,activity.getId(),setmeal.getId(),number); }
         catch(DuplicateKeyException e) { throw new OrderBusinessException("您已购买过该秒杀活动"); }
         LocalDateTime now=LocalDateTime.now();
-        Orders order=buildOrder(request,userId,address,setmeal,activity.getSeckillPrice(),number,now);
+        Orders order=buildOrder(request,userId,address,setmeal,activity.getSeckillPrice(),discount,userRedPacketId,number,now);
         order.setExpireTime(now.plusMinutes(15));
         orderMapper.insert(order);
+        reserveRedPacket(userId,userRedPacketId,order.getId());
         reservationMapper.insert(number,activity.getId(),setmeal.getId(),userId);
         reservationMapper.setRequest(number,request.getRequestId(),fingerprint);
         orderDetailMapper.insertBatch(Collections.singletonList(OrderDetail.builder().name(setmeal.getName())
@@ -132,7 +138,7 @@ public class SeckillServiceImpl implements SeckillService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveActivity(SeckillActivityDTO dto) {
+    public Long saveActivity(SeckillActivityDTO dto) {
         if (dto == null || dto.getSetmealId() == null || dto.getStock() == null || dto.getStock() < 0 ||
                 dto.getSeckillPrice() == null || dto.getSeckillPrice().signum() < 0 ||
                 dto.getBeginTime() == null || dto.getEndTime() == null || !dto.getEndTime().isAfter(dto.getBeginTime())) {
@@ -160,8 +166,15 @@ public class SeckillServiceImpl implements SeckillService {
             if(previous==null) throw new OrderBusinessException("秒杀活动不存在");
             if(!previous.getSetmealId().equals(activity.getSetmealId())) throw new OrderBusinessException("已创建活动不能更换套餐");
             if(!previous.getStock().equals(activity.getStock())) throw new OrderBusinessException("请通过库存调整接口修改总库存");
+            // 一人一单资格绑定活动 ID。旧活动一旦已有购买记录，不能通过编辑将其重新启用，
+            // 否则历史购买用户会继续被拦截，与“新一轮秒杀”的业务语义不一致。
+            boolean hasPurchases=reservationMapper.countForActivity(previous.getId())>0;
+            boolean wasInactive=!StatusConstant.ENABLE.equals(previous.getStatus()) || !previous.getEndTime().isAfter(LocalDateTime.now());
+            if(hasPurchases && wasInactive && StatusConstant.ENABLE.equals(activity.getStatus()))
+                throw new OrderBusinessException("已有购买记录的活动不能重新上架，请使用“再次上架”创建新活动");
             seckillActivityMapper.update(activity);
         }
+        return activity.getId();
     }
 
     @Override
@@ -170,7 +183,10 @@ public class SeckillServiceImpl implements SeckillService {
         SeckillActivity activity=seckillActivityMapper.lock(activityId);
         if(activity==null) return;
         if(reservationMapper.countForActivity(activityId)>0) throw new OrderBusinessException("已有订单的活动只能停用，不能删除");
-        seckillActivityMapper.deleteById(activityId);
+        if (seckillActivityMapper.deleteById(activityId) != 1) {
+            throw new OrderBusinessException("秒杀活动删除失败，请刷新后重试");
+        }
+        cache.evict(activityId);
     }
 
     
@@ -205,10 +221,12 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     private Orders buildOrder(SeckillOrderSubmitDTO request, Long userId, AddressBook address, Setmeal setmeal,
-                              java.math.BigDecimal seckillPrice, String number, LocalDateTime now) {
+                              java.math.BigDecimal seckillPrice, java.math.BigDecimal discount, Long userRedPacketId,
+                              String number, LocalDateTime now) {
         return Orders.builder().number(number).userId(userId).addressBookId(address.getId())
                 .status(Orders.PENDING_PAYMENT).payStatus(Orders.UN_PAID).payMethod(request.getPayMethod())
-                .amount(seckillPrice.add(new java.math.BigDecimal("7.00"))).discountAmount(java.math.BigDecimal.ZERO)
+                .amount(seckillPrice.subtract(discount).add(new java.math.BigDecimal("7.00"))).discountAmount(discount)
+                .userRedPacketId(userRedPacketId)
                 .remark(request.getRemark()).phone(address.getPhone()).address(address.getDetail())
                 .consignee(address.getConsignee()).orderTime(now).estimatedDeliveryTime(request.getEstimatedDeliveryTime())
                 // 结算页未传配送和餐具选项时使用默认值，避免写入 NOT NULL 列失败。
@@ -216,6 +234,26 @@ public class SeckillServiceImpl implements SeckillService {
                 .packAmount(1)
                 .tablewareNumber(request.getTablewareNumber() == null ? 0 : request.getTablewareNumber())
                 .tablewareStatus(request.getTablewareStatus() == null ? 1 : request.getTablewareStatus()).build();
+    }
+
+    private Long resolveRedPacketId(Long userId, Long requestedId, Boolean useRedPacket) {
+        if (Boolean.FALSE.equals(useRedPacket)) return null;
+        if (requestedId != null) return requestedId;
+        List<UserRedPacket> packets=redPacketMapper.availableByUser(userId);
+        return packets.isEmpty() ? null : packets.get(0).getId();
+    }
+
+    private java.math.BigDecimal calculateRedPacketDiscount(Long userId, Long redPacketId, java.math.BigDecimal foodAmount) {
+        if (redPacketId == null) return java.math.BigDecimal.ZERO;
+        UserRedPacket packet=redPacketMapper.byIdAndUser(redPacketId,userId);
+        if (packet==null || !UserRedPacket.UNUSED.equals(packet.getStatus()) || packet.getExpireTime()==null
+                || !packet.getExpireTime().isAfter(LocalDateTime.now())) throw new OrderBusinessException("红包不可用，请重新选择");
+        return packet.getAmount().min(foodAmount);
+    }
+
+    private void reserveRedPacket(Long userId, Long redPacketId, Long orderId) {
+        if (redPacketId != null && redPacketMapper.reserve(redPacketId,userId,orderId)!=1)
+            throw new OrderBusinessException("红包已被使用或已过期");
     }
 
     private long toMillis(LocalDateTime time) { return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(); }

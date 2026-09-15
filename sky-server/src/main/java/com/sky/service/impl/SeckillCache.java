@@ -53,4 +53,9 @@ public class SeckillCache {
     public Long reserve(SeckillActivity a,Long user,String request) {
         return redis.execute(RESERVE,keys(a.getId()),a.getStockVersion().toString(),a.getSetmealId().toString(),user.toString(),request);
     }
+
+    /** Removes all Redis state for a deleted activity. */
+    public void evict(Long activityId) {
+        redis.delete(keys(activityId));
+    }
 }

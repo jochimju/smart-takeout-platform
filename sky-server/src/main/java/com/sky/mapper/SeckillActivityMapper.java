@@ -55,7 +55,7 @@ public interface SeckillActivityMapper {
     void update(SeckillActivity activity);
 
     @Delete("delete from seckill_activity where id=#{activityId}")
-    void deleteById(@Param("activityId") Long activityId);
+    int deleteById(@Param("activityId") Long activityId);
 
     /** 到期活动自动下架；C 端列表和 Lua 时间校验仍会即时生效。 */
     @Update("update seckill_activity set status=0, update_time=now() where status=1 and end_time < now()")
