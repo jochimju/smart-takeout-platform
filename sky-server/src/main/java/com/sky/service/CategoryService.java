@@ -45,5 +45,5 @@ public interface CategoryService {
      * @param type
      * @return
      */
-    List<Category> list(Integer type);
+    List<Category> list(Integer type, Long canteenId);
 }

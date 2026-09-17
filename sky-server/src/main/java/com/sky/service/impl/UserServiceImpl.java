@@ -12,6 +12,7 @@ import com.sky.service.UserService;
 import com.sky.utils.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,8 @@ public class UserServiceImpl implements UserService {
     private WeChatProperties weChatProperties;
     @Autowired
     private UserMapper userMapper;
+    @Value("${sky.wechat.mock-login-enabled:false}")
+    private boolean mockLoginEnabled;
 
     /**
      * 微信登录
@@ -36,7 +39,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     public User wxLogin(UserLoginDTO userLoginDTO) {
-        String openid = getOpenid(userLoginDTO.getCode());
+        String openid = mockLoginEnabled ? "local-mini-program-user" : getOpenid(userLoginDTO.getCode());
 
         //判断openid是否为空，如果为空表示登录失败，抛出业务异常
         if(openid == null){

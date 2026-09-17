@@ -14,6 +14,8 @@ import com.sky.entity.Orders;
 import com.sky.entity.Dish;
 import com.sky.entity.MqFailMessage;
 import com.sky.entity.Setmeal;
+import com.sky.entity.Category;
+import com.sky.entity.Canteen;
 import com.sky.entity.SetmealDish;
 import com.sky.exception.OrderBusinessException;
 import com.sky.exception.DeletionNotAllowedException;
@@ -25,6 +27,8 @@ import com.sky.mapper.MqFailMessageMapper;
 import com.sky.mapper.SeckillOrderGuardMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
+import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.CanteenMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
 import com.sky.vo.DishItemVO;
@@ -63,6 +67,10 @@ public class SetmealServiceImpl implements SetmealService {
     @Autowired
     private DishMapper dishMapper;
     @Autowired
+    private CategoryMapper categoryMapper;
+    @Autowired
+    private CanteenMapper canteenMapper;
+    @Autowired
     private OrderMapper orderMapper;
     @Autowired
     private OrderDetailMapper orderDetailMapper;
@@ -87,6 +95,8 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Transactional
     public void saveWithDish(SetmealDTO setmealDTO) {
+        normalizeStock(setmealDTO);
+        validateSetmealOwnership(setmealDTO, null);
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
 
@@ -97,9 +107,7 @@ public class SetmealServiceImpl implements SetmealService {
         Long setmealId = setmeal.getId();
 
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
-        setmealDishes.forEach(setmealDish -> {
-            setmealDish.setSetmealId(setmealId);
-        });
+        bindSetmealDishes(setmealDishes, setmealId, setmeal.getCanteenId());
 
         //淇濆瓨濂楅鍜岃彍鍝佺殑鍏宠仈鍏崇郴
         setmealDishMapper.insertBatch(setmealDishes);
@@ -165,6 +173,8 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Transactional
     public void update(SetmealDTO setmealDTO) {
+        validateStock(setmealDTO.getStock());
+        validateSetmealOwnership(setmealDTO, setmealDTO == null ? null : setmealDTO.getId());
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
 
@@ -178,11 +188,70 @@ public class SetmealServiceImpl implements SetmealService {
         setmealDishMapper.deleteBySetmealId(setmealId);
 
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
-        setmealDishes.forEach(setmealDish -> {
-            setmealDish.setSetmealId(setmealId);
-        });
+        bindSetmealDishes(setmealDishes, setmealId, setmeal.getCanteenId());
         //3銆侀噸鏂版彃鍏ュ椁愬拰鑿滃搧鐨勫叧鑱斿叧绯伙紝鎿嶄綔setmeal_dish琛紝鎵цinsert
         setmealDishMapper.insertBatch(setmealDishes);
+    }
+
+    /**
+     * 兼容未升级的管理端：新增时没有填写库存则按 0 入库，避免将 null 写入 NOT NULL 字段。
+     */
+    private void normalizeStock(SetmealDTO setmealDTO) {
+        if (setmealDTO.getStock() == null) {
+            setmealDTO.setStock(0);
+        }
+        validateStock(setmealDTO.getStock());
+    }
+
+    private void validateStock(Integer stock) {
+        if (stock != null && stock < 0) {
+            throw new OrderBusinessException("库存不能小于 0");
+        }
+    }
+
+    /** 套餐和它选择的全部菜品必须在同一家餐厅，防止套餐拼入其他餐厅的库存。 */
+    private void validateSetmealOwnership(SetmealDTO setmealDTO, Long existingSetmealId) {
+        if (setmealDTO == null || setmealDTO.getCategoryId() == null) {
+            throw new OrderBusinessException("请选择套餐分类");
+        }
+        Long canteenId = setmealDTO.getCanteenId();
+        if (existingSetmealId != null) {
+            Setmeal existing = setmealMapper.getById(existingSetmealId);
+            if (existing == null) throw new OrderBusinessException("套餐不存在");
+            if (canteenId != null && !canteenId.equals(existing.getCanteenId())) {
+                throw new OrderBusinessException("套餐不允许跨餐厅迁移，请在目标餐厅新建套餐");
+            }
+            canteenId = existing.getCanteenId();
+            setmealDTO.setCanteenId(canteenId);
+        }
+        if (canteenId == null) throw new OrderBusinessException("请选择所属餐厅后再维护套餐");
+        Canteen canteen = canteenMapper.getById(canteenId);
+        if (canteen == null || !Integer.valueOf(1).equals(canteen.getStatus())) {
+            throw new OrderBusinessException("所属餐厅不存在或已停用");
+        }
+        Category category = categoryMapper.getById(setmealDTO.getCategoryId());
+        if (category == null || category.getType() == null || category.getType() != 2 || !canteenId.equals(category.getCanteenId())) {
+            throw new OrderBusinessException("套餐分类不属于当前餐厅");
+        }
+        List<SetmealDish> dishes = setmealDTO.getSetmealDishes();
+        if (dishes == null || dishes.isEmpty()) throw new OrderBusinessException("套餐至少需要一份菜品");
+        for (SetmealDish item : dishes) {
+            Dish dish = item == null || item.getDishId() == null ? null : dishMapper.getById(item.getDishId());
+            if (dish == null || !canteenId.equals(dish.getCanteenId())) {
+                throw new OrderBusinessException("套餐菜品不属于当前餐厅");
+            }
+        }
+    }
+
+    /**
+     * 将已经通过归属校验的套餐明细写入同一餐厅上下文。
+     * 客户端传来的 canteenId 不作为可信来源，统一以套餐实际归属覆盖。
+     */
+    private void bindSetmealDishes(List<SetmealDish> setmealDishes, Long setmealId, Long canteenId) {
+        setmealDishes.forEach(setmealDish -> {
+            setmealDish.setSetmealId(setmealId);
+            setmealDish.setCanteenId(canteenId);
+        });
     }
 
     /**

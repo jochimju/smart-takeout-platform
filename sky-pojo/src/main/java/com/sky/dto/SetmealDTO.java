@@ -15,6 +15,9 @@ public class SetmealDTO implements Serializable {
     //分类id
     private Long categoryId;
 
+    // 所属餐厅（食堂）
+    private Long canteenId;
+
     //套餐名称
     private String name;
 
@@ -23,6 +26,9 @@ public class SetmealDTO implements Serializable {
 
     //状态 0:停用 1:启用
     private Integer status;
+
+    //可售库存
+    private Integer stock;
 
     //描述信息
     private String description;

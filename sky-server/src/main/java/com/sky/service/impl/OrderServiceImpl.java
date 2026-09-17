@@ -16,6 +16,7 @@ import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
+import com.sky.service.RestaurantAvailabilityService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderCheckoutVO;
@@ -23,6 +24,7 @@ import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import com.sky.vo.RedPacketCheckoutVO;
+import com.sky.vo.RestaurantVO;
 import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -78,6 +80,10 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private SetmealMapper setmealMapper;
     @Autowired
+    private RestaurantMapper restaurantMapper;
+    @Autowired
+    private RestaurantAvailabilityService restaurantAvailabilityService;
+    @Autowired
     private OrderSubmitRequestMapper orderSubmitRequestMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
@@ -119,6 +125,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         validateCartItems(shoppingCartList);
+        RestaurantVO restaurant = resolveCartRestaurant(shoppingCartList);
+        if (ordersSubmitDTO.getCanteenId() != null && !ordersSubmitDTO.getCanteenId().equals(restaurant.getId())) {
+            throw new OrderBusinessException("购物车不属于当前餐厅，请返回菜单页重新选择");
+        }
+        restaurantAvailabilityService.requireOpen(restaurant.getId());
 
         BigDecimal foodAmount = calculateCartAmount(shoppingCartList);
         if (ordersSubmitDTO.getCouponId() != null && ordersSubmitDTO.getUserRedPacketId() != null) {
@@ -155,6 +166,8 @@ public class OrderServiceImpl implements OrderService {
                 .couponId(ordersSubmitDTO.getCouponId())
                 .userRedPacketId(userRedPacketId)
                 .useRedPacket(ordersSubmitDTO.getUseRedPacket())
+                .canteenId(restaurant.getId())
+                .canteenName(restaurant.getName())
                 .build();
 
         // Reservation, stock deduction and order persistence must succeed together.
@@ -184,21 +197,30 @@ public class OrderServiceImpl implements OrderService {
 
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUserId(messageDTO.getUserId());
+        shoppingCart.setCanteenId(messageDTO.getCanteenId());
         List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
         if (shoppingCartList == null || shoppingCartList.size() == 0) {
             throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
         }
         ensureShopOpen();
         validateCartItems(shoppingCartList);
+        RestaurantVO restaurant = resolveCartRestaurant(shoppingCartList);
+        restaurantAvailabilityService.requireOpen(restaurant.getId());
+        if (!restaurant.getId().equals(messageDTO.getCanteenId())) {
+            throw new OrderBusinessException("CART_RESTAURANT_CONFLICT");
+        }
         deductCartStock(shoppingCartList);
 
         Orders order = new Orders();
         BeanUtils.copyProperties(messageDTO, order);
             order.setPhone(addressBook.getPhone());
-            order.setAddress(addressBook.getDetail());
+            // 保存完整地址快照，订单详情不能只留下用户填写的"详细地址"。
+            order.setAddress(fullAddress(addressBook));
             order.setConsignee(addressBook.getConsignee());
             order.setNumber(messageDTO.getOrderNumber());
             order.setUserId(messageDTO.getUserId());
+            order.setCanteenId(restaurant.getId());
+            order.setCanteenName(restaurant.getName());
             order.setStatus(Orders.PENDING_PAYMENT);
             order.setPayStatus(Orders.UN_PAID);
             order.setOrderTime(LocalDateTime.now());
@@ -245,6 +267,17 @@ public class OrderServiceImpl implements OrderService {
         lifecycle.timeout(orderNumber);
     }
 
+    private String fullAddress(AddressBook addressBook) {
+        return valueOf(addressBook.getProvinceName())
+                + valueOf(addressBook.getCityName())
+                + valueOf(addressBook.getDistrictName())
+                + valueOf(addressBook.getDetail());
+    }
+
+    private String valueOf(String value) {
+        return value == null ? "" : value.trim();
+    }
+
     @Override
     public OrderCheckoutVO checkout() {
         Long userId = BaseContext.getCurrentId();
@@ -266,7 +299,7 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryAmount(DELIVERY_FEE).discountAmount(discount)
                 .payableAmount(food.subtract(discount).add(BigDecimal.valueOf(pack).multiply(PACK_FEE_PER_ITEM)).add(DELIVERY_FEE))
                 .defaultRedPacketId(defaultId).redPackets(vos).build();
-    }t
+    }
 
     /**
      * 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ弮鍌氬付缂備讲鏅滈妵鍕冀閵娧勫櫘闁?
@@ -360,9 +393,33 @@ public class OrderServiceImpl implements OrderService {
         // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸偅鏅┑顔筋焾妞村憡鍒婃總鍛婄厪闊洦娲栧瓭缂備讲鍋撻悗锝庡枟閻撴洘绻涢崱妤呯崪鐎规悶鍎甸弻娑樷枎韫囨挴鎸冮梺褰掝棑婵炩偓闁轰礁鍊块幐濠冨緞婵犲偆妫堥梻浣筋嚙缁绘劗鎹㈢€ｎ€㈠綊宕堕锕€顦扮换婵嬪炊瑜忛ˇ顐︽⒑鐠嬪骸瀚€濞撳垾rVO濠德板€楁慨鐑藉磻閻愬搫纾块柤娴嬫櫆瀹曟煡鏌熸潏鍓х暠闁?
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(orders, orderVO);
+        // 旧订单缺少快照时，仅用于本次展示补全；不回写数据库，避免以当前地址篡改历史订单。
+        if (orders.getAddressBookId() != null &&
+                (isBlank(orderVO.getAddress()) || isLegacyDetailAddress(orderVO.getAddress(), orders))) {
+            AddressBook addressBook = addressBookMapper.getByIdAndUserId(orders.getAddressBookId(), orders.getUserId());
+            if (addressBook != null) {
+                orderVO.setAddress(fullAddress(addressBook));
+            }
+        }
+        if (isBlank(orderVO.getCanteenName()) && orders.getCanteenId() != null) {
+            RestaurantVO restaurant = restaurantMapper.getEnabledById(orders.getCanteenId());
+            if (restaurant != null) {
+                orderVO.setCanteenName(restaurant.getName());
+            }
+        }
         orderVO.setOrderDetailList(orderDetailList);
 
         return orderVO;
+    }
+
+    private boolean isLegacyDetailAddress(String orderAddress, Orders order) {
+        if (order.getAddressBookId() == null) return false;
+        AddressBook addressBook = addressBookMapper.getByIdAndUserId(order.getAddressBookId(), order.getUserId());
+        return addressBook != null && orderAddress.equals(valueOf(addressBook.getDetail()));
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     /**
@@ -396,13 +453,29 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param id
      */
-    public void repetition(Long id) {
+    public RestaurantVO repetition(Long id) {
         // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛仴濞存粌缍婇弻鐔煎箚瑜嶉弳杈ㄣ亜閵堝懏鍤囬柡宀嬬秮閿濈偤顢楅埀顒佷繆娴犲鐓曢柍鍝勫€块幖鈺?
         Long userId = BaseContext.getCurrentId();
-        requireOwnedOrder(id);
+        Orders order = requireOwnedOrder(id);
 
         // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕霉閿濆洤鍔嬪┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒佸垔閺€鍕⒒娴ｅ憡鎯堥悶姘煎亰瀹曟洟骞橀鍛櫔濠德板€曠€氥劍绂嶈ぐ鎺撶厵闁诡垎鍐╂瘣濡炪們鍊曢幊姗€骞冪憴鍕闂傚牊绋撴禒濂告倵鐟欏嫭绀堥柛鐘虫崌楠炲繘鎮╃紒妯绘珕闂佽姤锚椤︻垱绔?
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+        if (CollectionUtils.isEmpty(orderDetailList)) {
+            throw new OrderBusinessException("原订单没有可复购的商品");
+        }
+
+        Long canteenId = resolveOrderCanteenId(order, orderDetailList);
+        RestaurantVO restaurant = restaurantMapper.getEnabledById(canteenId);
+        if (restaurant == null) {
+            throw new OrderBusinessException("原订单所属餐厅已不可用，暂时不能再来一单");
+        }
+        restaurantAvailabilityService.describe(restaurant);
+        if (!"OPEN".equals(restaurant.getBusinessStatus())) {
+            throw new OrderBusinessException("原订单所属餐厅当前休息中，暂时不能再来一单");
+        }
+
+        // 复购应完整替换当前购物车，避免旧购物车商品或餐厅信息混入。
+        shoppingCartMapper.deleteByUserId(userId);
 
         // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸偅鏅ｉ悷婊呭鐢帞娑甸埀顒勬⒑閸濆嫭绀屾俊鎻掓嚇瀹曞灚绻濋崶銊у幍濡炪倖鐗楃喊宥夊闯鐟欏嫨浜滈柡鍥ュ妼閺嬨倝鏌熼崨濠傛诞婵℃崘椴哥换娑㈠级閹寸儐妫﹀Δ鐘靛仦閸ㄥ潡鏁愰悙渚晣闁挎稑瀚峰Σ褰掓⒑閼姐倕校闁告棑绠撳畷銏ゆ倷椤掍焦鐝烽梺鍦焾鐎涒晜鎱ㄥ鍫熺叆闁哄洦顨呮禍鎯ь渻閵堝棙澶勯柛鐘冲哺楠?
         List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(x -> {
@@ -411,6 +484,7 @@ public class OrderServiceImpl implements OrderService {
             // 闂備浇顕х换鎰崲閹邦儵娑樜旈崘鈺傛濡炪倖鍔戦崐鏍ㄥ垔婵傚憡鐓忛煫鍥ㄦ礀瀛濈紓浣插亾閻庯綆鍠楅崑锝夋煕閵壯冨幋婵＄虎鍣ｉ弻娑欐償閿涘嫮顔掗梺鍝勮嫰閼活垶鎮惧┑瀣妞ゆ帊闄嶉埀顒€鍟村鍝勑ч崶褍顬堥柣搴㈠嚬閸ㄧ敻濡甸幇顒夊悑濠㈣泛锕ｇ槐鑸电箾鏉堝墽绉繛鎾虫贡閹广垽宕卞☉娆戝幍濡炪倖鎸嗛崘顏冩闂備線娼荤徊楣冨箖閸屾凹鍤曟い鎺戝缁狙勭箾閸℃瑥浜炬禍娑㈡⒒娴ｅ憡鍟為悽顖滃枎閳绘柨鈽夐姀鐘虫К閻庡厜鍋撻柍褜鍓熼獮蹇氥亹閹烘繃鏅ｉ梺缁樕戠粊鎾箰閸涘瓨鐓涘璺鸿嫰閸撳磭绱掗悩鍐茬伌妞ゃ垺宀搁、娆撴倷椤掆偓椤曪繝姊洪悙钘夊姤閻忓浚浜畷?
             BeanUtils.copyProperties(x, shoppingCart, "id");
             shoppingCart.setUserId(userId);
+            shoppingCart.setCanteenId(canteenId);
             shoppingCart.setCreateTime(LocalDateTime.now());
 
             return shoppingCart;
@@ -418,6 +492,37 @@ public class OrderServiceImpl implements OrderService {
 
         // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸繄鐛ュ┑顔姐仜閸嬫捇鏌熼銊ユ搐閻撴盯鏌涢弴銊ュ闁烩晛鍟撮弻锝嗘償閿濆棙姣勫銈冨灩閿曨亪骞愰崨鏉戠妞ゆ牗姘ㄩ濂告偡濠婂懎顣奸悽顖涘笒閳诲秹濡堕崱娆戭啎闂佹寧绻傞悧婊堝吹濞嗗繆鏀芥い鏃€鍎虫禒杈┾偓瑙勬礃瀹€鎼佸箖瑜斿畷濂告偄閸撴彃鏅欓梻鍌欒兌椤㈠﹪顢氶弽顓炵獥闁哄稁鍋夋慨?
         shoppingCartMapper.insertBatch(shoppingCartList);
+        return restaurant;
+    }
+
+    /** 为旧订单补推餐厅；新订单优先使用下单时保存的餐厅快照。 */
+    private Long resolveOrderCanteenId(Orders order, List<OrderDetail> orderDetails) {
+        if (order.getCanteenId() != null) {
+            return order.getCanteenId();
+        }
+
+        Long resolvedCanteenId = null;
+        for (OrderDetail orderDetail : orderDetails) {
+            Long itemCanteenId = null;
+            if (orderDetail.getDishId() != null) {
+                Dish dish = dishMapper.getById(orderDetail.getDishId());
+                itemCanteenId = dish == null ? null : dish.getCanteenId();
+            } else if (orderDetail.getSetmealId() != null) {
+                Setmeal setmeal = setmealMapper.getById(orderDetail.getSetmealId());
+                itemCanteenId = setmeal == null ? null : setmeal.getCanteenId();
+            }
+            if (itemCanteenId == null) {
+                throw new OrderBusinessException("原订单缺少餐厅信息，无法再来一单");
+            }
+            if (resolvedCanteenId != null && !resolvedCanteenId.equals(itemCanteenId)) {
+                throw new OrderBusinessException("原订单包含不同餐厅的商品，无法再来一单");
+            }
+            resolvedCanteenId = itemCanteenId;
+        }
+        if (resolvedCanteenId == null) {
+            throw new OrderBusinessException("原订单缺少餐厅信息，无法再来一单");
+        }
+        return resolvedCanteenId;
     }
 
     /**
@@ -765,6 +870,71 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderBusinessException("invalid shopping cart item");
             }
         }
+    }
+
+    /** 一次结算只能使用一家餐厅的购物车；餐厅营业状态以餐厅下至少一个档口营业为准。 */
+    private RestaurantVO resolveCartRestaurant(List<ShoppingCart> items) {
+        Long canteenId = null;
+        for (ShoppingCart item : items) {
+            if (item.getCanteenId() == null) {
+                throw new OrderBusinessException("CART_RESTAURANT_MISSING");
+            }
+            if (canteenId == null) {
+                canteenId = item.getCanteenId();
+            } else if (!canteenId.equals(item.getCanteenId())) {
+                throw new OrderBusinessException("CART_RESTAURANT_CONFLICT");
+            }
+        }
+        RestaurantVO restaurant = restaurantMapper.getEnabledById(canteenId);
+        if (restaurant == null) {
+            throw new OrderBusinessException("RESTAURANT_NOT_FOUND");
+        }
+        if (!"OPEN".equals(restaurant.getBusinessStatus())) {
+            throw new OrderBusinessException("RESTAURANT_CLOSED");
+        }
+        return restaurant;
+    }
+
+    /**
+     * 管理端订单详情。
+     *
+     * details() 复用的是 C 端的 requireOwnedOrder()，它会按 user_id 过滤；
+     * 但管理端 JWT 里放进的 BaseContext.getCurrentId() 是员工 id（empId），
+     * 与订单的 user_id 永远不相等，因此 /admin/order/details/{id} 恒返回
+     * order not found。管理端需要按主键直接取，不做归属校验。
+     */
+    @Override
+    public OrderVO adminDetails(Long id) {
+        Orders orders = orderMapper.getById(id);
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        return buildAdminOrderVO(orders);
+    }
+
+    /** 组装订单详情 VO（与 details() 中的内联组装逻辑保持一致）。 */
+    private OrderVO buildAdminOrderVO(Orders orders) {
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
+
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders, orderVO);
+        // 旧订单缺少快照时，仅用于本次展示补全；不回写数据库，避免以当前地址篡改历史订单。
+        if (orders.getAddressBookId() != null &&
+                (isBlank(orderVO.getAddress()) || isLegacyDetailAddress(orderVO.getAddress(), orders))) {
+            AddressBook addressBook = addressBookMapper.getByIdAndUserId(orders.getAddressBookId(), orders.getUserId());
+            if (addressBook != null) {
+                orderVO.setAddress(fullAddress(addressBook));
+            }
+        }
+        if (isBlank(orderVO.getCanteenName()) && orders.getCanteenId() != null) {
+            RestaurantVO restaurant = restaurantMapper.getEnabledById(orders.getCanteenId());
+            if (restaurant != null) {
+                orderVO.setCanteenName(restaurant.getName());
+            }
+        }
+        orderVO.setOrderDetailList(orderDetailList);
+
+        return orderVO;
     }
 
     private Orders requireOwnedOrder(Long id) {

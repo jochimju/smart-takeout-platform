@@ -12,13 +12,18 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.entity.Setmeal;
+import com.sky.entity.Category;
+import com.sky.entity.Canteen;
 import com.sky.event.DishStatusChangedEvent;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.exception.OrderBusinessException;
 import com.sky.cache.MenuCache;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
+import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.CanteenMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -50,6 +55,10 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private SetmealMapper setmealMapper;
     @Autowired
+    private CategoryMapper categoryMapper;
+    @Autowired
+    private CanteenMapper canteenMapper;
+    @Autowired
     private RedisTemplate redisTemplate;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -63,6 +72,8 @@ public class DishServiceImpl implements DishService {
      */
     @Transactional //因为同时要操作多个表，所以要保持数据的一致性，需要加@Transactional注解
     public void saveWithFlavor(DishDTO dishDTO) {  //同时操作菜品表和口味表
+        normalizeStock(dishDTO);
+        validateDishOwnership(dishDTO, null);
 
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
@@ -154,6 +165,8 @@ public class DishServiceImpl implements DishService {
      */
     @Transactional
     public void updateWithFlavor(DishDTO dishDTO) {
+        validateStock(dishDTO.getStock());
+        validateDishOwnership(dishDTO, dishDTO == null ? null : dishDTO.getId());
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
 
@@ -171,6 +184,48 @@ public class DishServiceImpl implements DishService {
             });
             //向口味表插入n条数据
             dishFlavorMapper.insertBatch(flavors);
+        }
+    }
+
+    /**
+     * 兼容未升级的管理端：新增时没有填写库存则按 0 入库，避免将 null 写入 NOT NULL 字段。
+     */
+    private void normalizeStock(DishDTO dishDTO) {
+        if (dishDTO.getStock() == null) {
+            dishDTO.setStock(0);
+        }
+        validateStock(dishDTO.getStock());
+    }
+
+    private void validateStock(Integer stock) {
+        if (stock != null && stock < 0) {
+            throw new OrderBusinessException("库存不能小于 0");
+        }
+    }
+
+    /** 新增必须显式选择餐厅；编辑则始终沿用原餐厅，不能借编辑跨餐厅搬运菜品。 */
+    private void validateDishOwnership(DishDTO dishDTO, Long existingDishId) {
+        if (dishDTO == null || dishDTO.getCategoryId() == null) {
+            throw new OrderBusinessException("请选择菜品分类");
+        }
+        Long canteenId = dishDTO.getCanteenId();
+        if (existingDishId != null) {
+            Dish existing = dishMapper.getById(existingDishId);
+            if (existing == null) throw new OrderBusinessException("菜品不存在");
+            if (canteenId != null && !canteenId.equals(existing.getCanteenId())) {
+                throw new OrderBusinessException("菜品不允许跨餐厅迁移，请在目标餐厅新建菜品");
+            }
+            canteenId = existing.getCanteenId();
+            dishDTO.setCanteenId(canteenId);
+        }
+        if (canteenId == null) throw new OrderBusinessException("请选择所属餐厅后再维护菜品");
+        Canteen canteen = canteenMapper.getById(canteenId);
+        if (canteen == null || !Integer.valueOf(1).equals(canteen.getStatus())) {
+            throw new OrderBusinessException("所属餐厅不存在或已停用");
+        }
+        Category category = categoryMapper.getById(dishDTO.getCategoryId());
+        if (category == null || category.getType() == null || category.getType() != 1 || !canteenId.equals(category.getCanteenId())) {
+            throw new OrderBusinessException("菜品分类不属于当前餐厅");
         }
     }
 

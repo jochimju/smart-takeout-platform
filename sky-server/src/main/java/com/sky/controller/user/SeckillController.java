@@ -19,7 +19,7 @@ public class SeckillController {
 
     @GetMapping("/list")
     @ApiOperation("查询可展示的秒杀套餐")
-    public Result<List<SeckillActivityVO>> list() {
-        return Result.success(seckillService.listAvailableActivities());
+    public Result<List<SeckillActivityVO>> list(Long canteenId) {
+        return Result.success(seckillService.listAvailableActivities(canteenId));
     }
 }

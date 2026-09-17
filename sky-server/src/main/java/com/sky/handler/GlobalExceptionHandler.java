@@ -41,6 +41,8 @@ public class GlobalExceptionHandler {
             String username = split[2]; //username ： “'zhangsan'”
             String msg = username + MessageConstant.ALREADY_EXISTS;
             return Result.error(msg);
+        }else if(message.contains("Column 'stock' cannot be null")){
+            return Result.error("库存不能为空");
         }else{
             return Result.error(MessageConstant.UNKNOWN_ERROR);
         }

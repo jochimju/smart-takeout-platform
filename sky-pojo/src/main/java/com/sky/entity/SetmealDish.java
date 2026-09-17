@@ -27,6 +27,12 @@ public class SetmealDish implements Serializable {
     //菜品id
     private Long dishId;
 
+    /**
+     * 所属餐厅（食堂）。套餐、菜品和这条明细必须保持一致，
+     * 用于在持久化层阻止跨餐厅组套餐。
+     */
+    private Long canteenId;
+
     //菜品名称 （冗余字段）
     private String name;
 

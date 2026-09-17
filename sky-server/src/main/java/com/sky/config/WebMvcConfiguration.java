@@ -48,6 +48,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/user/**")
                 .excludePathPatterns("/user/user/login")
                 .excludePathPatterns("/user/shop/status")
+                // 餐厅列表和菜单在登录前就要展示；加购、下单等接口仍然必须携带用户令牌。
+                .excludePathPatterns("/user/restaurants/**")
                 .excludePathPatterns("/user/seckill/activity/list");
     }
 

@@ -33,7 +33,8 @@ public class MenuCacheWarmup {
         int completed = 0;
         int failed = 0;
         try {
-            List<Category> active = categories.list(null); // SQL 仅返回启用分类。
+            // 预热全部餐厅的启用分类；具体 C 端查询仍由餐厅接口按 canteenId 过滤。
+            List<Category> active = categories.list(null, null);
             for (Category category : active) {
                 try {
                     if (Integer.valueOf(1).equals(category.getType())) {

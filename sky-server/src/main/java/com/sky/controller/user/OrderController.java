@@ -8,6 +8,7 @@ import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.vo.RestaurantVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -140,9 +141,8 @@ public class OrderController {
      */
     @PostMapping("/repetition/{id}")
     @ApiOperation("reorder")
-    public Result repetition(@PathVariable Long id) {
-        orderService.repetition(id);
-        return Result.success();
+    public Result<RestaurantVO> repetition(@PathVariable Long id) {
+        return Result.success(orderService.repetition(id));
     }
     /**
      * 闁活潿鍔嶉崺娑㈠磼椤掆偓瀹?

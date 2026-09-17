@@ -32,7 +32,7 @@ public interface SeckillService {
      */
     Integer getSeckillStock(Long activityId);
 
-    List<SeckillActivityVO> listAvailableActivities();
+    List<SeckillActivityVO> listAvailableActivities(Long canteenId);
 
     List<SeckillActivityVO> listActivities();
 

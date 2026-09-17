@@ -42,8 +42,8 @@ public interface SeckillActivityMapper {
     @Select("select a.id, a.setmeal_id setmealId, s.name setmealName, s.image, s.price originalPrice, " +
             "a.seckill_price seckillPrice, a.remaining_stock stock, a.remaining_stock remainingStock, s.monthly_sales monthlySales, a.purchase_limit purchaseLimit, a.begin_time beginTime, a.end_time endTime, a.status " +
             "from seckill_activity a join setmeal s on s.id=a.setmeal_id " +
-            "where a.status=1 and a.end_time >= now() order by a.begin_time asc")
-    List<SeckillActivityVO> listAvailable();
+            "where a.status=1 and a.end_time >= now() and (#{canteenId} is null or s.canteen_id = #{canteenId}) order by a.begin_time asc")
+    List<SeckillActivityVO> listAvailable(@Param("canteenId") Long canteenId);
 
     @Insert("insert into seckill_activity (setmeal_id, stock, remaining_stock, stock_version, purchase_limit, seckill_price, begin_time, end_time, status, create_time, update_time) " +
             "values (#{setmealId}, #{stock}, #{stock}, 0, #{purchaseLimit}, #{seckillPrice}, #{beginTime}, #{endTime}, #{status}, now(), now())")

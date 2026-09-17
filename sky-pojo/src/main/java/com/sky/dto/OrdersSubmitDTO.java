@@ -35,6 +35,9 @@ public class OrdersSubmitDTO implements Serializable {
     //鎬婚噾棰?
     private BigDecimal amount;
 
+    /** 小程序结算页当前餐厅；必须与购物车实际归属一致。 */
+    private Long canteenId;
+
     private Long couponId;
 
     /** A concrete red-packet asset, not the legacy coupon template id. */

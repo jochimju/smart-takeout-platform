@@ -4,6 +4,7 @@ import com.sky.entity.ShoppingCart;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import java.util.List;
 
@@ -30,8 +31,8 @@ public interface ShoppingCartMapper {
      *
      * @param shoppingCart
      */
-    @Insert("insert into shopping_cart (name, user_id, dish_id, setmeal_id, dish_flavor, number, amount, image, create_time) " +
-            " values (#{name},#{userId},#{dishId},#{setmealId},#{dishFlavor},#{number},#{amount},#{image},#{createTime})")
+    @Insert("insert into shopping_cart (name, user_id, dish_id, setmeal_id, canteen_id, dish_flavor, number, amount, image, create_time) " +
+            " values (#{name},#{userId},#{dishId},#{setmealId},#{canteenId},#{dishFlavor},#{number},#{amount},#{image},#{createTime})")
     void insert(ShoppingCart shoppingCart);
 
     /**
@@ -41,6 +42,9 @@ public interface ShoppingCartMapper {
      */
     @Delete("delete from shopping_cart where user_id = #{userId}")
     void deleteByUserId(Long userId);
+
+    @Select("select canteen_id from shopping_cart where user_id = #{userId} order by create_time asc limit 1")
+    Long findCanteenIdByUserId(Long userId);
 
     /**
      * 根据购物车记录 id 删除商品。

@@ -15,6 +15,8 @@ public class DishDTO implements Serializable {
     private String name;
     //菜品分类id
     private Long categoryId;
+    // 所属餐厅（食堂）
+    private Long canteenId;
     //菜品价格
     private BigDecimal price;
     //图片
@@ -23,6 +25,8 @@ public class DishDTO implements Serializable {
     private String description;
     //0 停售 1 起售
     private Integer status;
+    //可售库存
+    private Integer stock;
     //口味
     private List<DishFlavor> flavors = new ArrayList<>();
 

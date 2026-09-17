@@ -61,7 +61,9 @@ public class OrderController {
     @GetMapping("/details/{id}")
     @ApiOperation("order details")
     public Result<OrderVO> details(@PathVariable("id") Long id) {
-        OrderVO orderVO = orderService.details(id);
+        // 管理端必须走 adminDetails：details() 会按 C 端的 user_id 过滤，
+        // 而管理端上下文里是员工 id，会导致恒返回 order not found。
+        OrderVO orderVO = orderService.adminDetails(id);
         return Result.success(orderVO);
     }
 

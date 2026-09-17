@@ -9,6 +9,9 @@ import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.exception.OrderBusinessException;
+import com.sky.entity.Canteen;
+import com.sky.mapper.CanteenMapper;
 import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
@@ -34,12 +37,18 @@ public class CategoryServiceImpl implements CategoryService {
     private DishMapper dishMapper;
     @Autowired
     private SetmealMapper setmealMapper;
+    @Autowired
+    private CanteenMapper canteenMapper;
 
     /**
      * 新增分类
      * @param categoryDTO
      */
     public void save(CategoryDTO categoryDTO) {
+        validateCanteen(categoryDTO == null ? null : categoryDTO.getCanteenId());
+        if (categoryDTO.getType() == null || (categoryDTO.getType() != 1 && categoryDTO.getType() != 2)) {
+            throw new OrderBusinessException("分类类型只能是菜品分类或套餐分类");
+        }
         Category category = new Category();
         //属性拷贝
         BeanUtils.copyProperties(categoryDTO, category);
@@ -96,6 +105,20 @@ public class CategoryServiceImpl implements CategoryService {
      * @param categoryDTO
      */
     public void update(CategoryDTO categoryDTO) {
+        if (categoryDTO == null || categoryDTO.getId() == null) {
+            throw new OrderBusinessException("分类不存在");
+        }
+        Category existing = categoryMapper.getById(categoryDTO.getId());
+        if (existing == null) {
+            throw new OrderBusinessException("分类不存在");
+        }
+        if (existing.getCanteenId() == null) {
+            throw new OrderBusinessException("历史分类尚未归属餐厅，请在目标餐厅新建分类");
+        }
+        // 菜单归属一旦建立不允许通过编辑迁移，避免历史菜品/套餐被拆到另一餐厅。
+        if (categoryDTO.getCanteenId() != null && !categoryDTO.getCanteenId().equals(existing.getCanteenId())) {
+            throw new OrderBusinessException("分类不允许跨餐厅迁移，请在目标餐厅新建分类");
+        }
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO,category);
 
@@ -126,7 +149,17 @@ public class CategoryServiceImpl implements CategoryService {
      * @param type
      * @return
      */
-    public List<Category> list(Integer type) {
-        return categoryMapper.list(type);
+    public List<Category> list(Integer type, Long canteenId) {
+        return categoryMapper.list(type, canteenId);
+    }
+
+    private void validateCanteen(Long canteenId) {
+        if (canteenId == null) {
+            throw new OrderBusinessException("请选择所属餐厅后再维护菜单");
+        }
+        Canteen canteen = canteenMapper.getById(canteenId);
+        if (canteen == null || !Integer.valueOf(1).equals(canteen.getStatus())) {
+            throw new OrderBusinessException("所属餐厅不存在或已停用");
+        }
     }
 }

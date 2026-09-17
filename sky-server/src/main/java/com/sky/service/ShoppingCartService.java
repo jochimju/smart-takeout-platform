@@ -12,6 +12,8 @@ public interface ShoppingCartService {
      */
     void addShoppingCart(ShoppingCartDTO shoppingCartDTO);
 
+    void switchRestaurantAndAdd(ShoppingCartDTO shoppingCartDTO);
+
     /**
      * 减少购物车中一个商品的数量；数量为 1 时删除该商品。
      */

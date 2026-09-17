@@ -34,6 +34,13 @@ public class ShoppingCartController {
         return Result.success();
     }
 
+    @PostMapping("/switch")
+    @ApiOperation("清空原餐厅购物车并加入新餐厅商品")
+    public Result<String> switchRestaurant(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+        shoppingCartService.switchRestaurantAndAdd(shoppingCartDTO);
+        return Result.success();
+    }
+
     @PostMapping("/sub")
     @ApiOperation("sub shopping cart")
     public Result<String> sub(@RequestBody ShoppingCartDTO shoppingCartDTO) {

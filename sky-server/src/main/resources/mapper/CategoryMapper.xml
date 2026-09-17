@@ -12,6 +12,9 @@
             <if test="type != null">
                 and type = #{type}
             </if>
+            <if test="canteenId != null">
+                and canteen_id = #{canteenId}
+            </if>
         </where>
         order by sort asc , create_time desc
     </select>
@@ -46,6 +49,9 @@
         where status = 1
         <if test="type != null">
             and type = #{type}
+        </if>
+        <if test="canteenId != null">
+            and canteen_id = #{canteenId}
         </if>
         order by sort asc,create_time desc
     </select>

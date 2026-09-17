@@ -12,6 +12,9 @@
             <if test="categoryId != null">
                 category_id = #{categoryId},
             </if>
+            <if test="canteenId != null">
+                canteen_id = #{canteenId},
+            </if>
             <if test="price != null">
                 price = #{price},
             </if>
@@ -39,17 +42,17 @@
 
     <insert id="insert" parameterType="Setmeal" useGeneratedKeys="true" keyProperty="id">
         insert into setmeal
-        (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user, stock)
-        values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime},
+        (category_id, canteen_id, name, price, status, description, image, create_time, update_time, create_user, update_user, stock)
+        values (#{categoryId}, #{canteenId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime},
                 #{createUser}, #{updateUser}, #{stock})
     </insert>
 
     <insert id="insertBatch" parameterType="list">
         insert into setmeal_dish
-        (setmeal_id,dish_id,name,price,copies)
+        (setmeal_id,dish_id,canteen_id,name,price,copies)
         values
         <foreach collection="setmealDishes" item="sd" separator=",">
-            (#{sd.setmealId},#{sd.dishId},#{sd.name},#{sd.price},#{sd.copies})
+            (#{sd.setmealId},#{sd.dishId},#{sd.canteenId},#{sd.name},#{sd.price},#{sd.copies})
         </foreach>
     </insert>
 
@@ -72,6 +75,9 @@
             <if test="categoryId != null">
                 and s.category_id = #{categoryId}
             </if>
+            <if test="canteenId != null">
+                and s.canteen_id = #{canteenId}
+            </if>
         </where>
         order by s.create_time desc
     </select>
@@ -87,6 +93,9 @@
             </if>
             <if test="status != null">
                 and status = #{status}
+            </if>
+            <if test="canteenId != null">
+                and canteen_id = #{canteenId}
             </if>
         </where>
     </select>

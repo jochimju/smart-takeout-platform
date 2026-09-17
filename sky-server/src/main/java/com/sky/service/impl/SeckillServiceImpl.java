@@ -18,8 +18,11 @@ import com.sky.mapper.SeckillActivityMapper;
 import com.sky.mapper.SeckillOrderGuardMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.mapper.RedPacketMapper;
+import com.sky.mapper.RestaurantMapper;
+import com.sky.service.RestaurantAvailabilityService;
 import com.sky.service.SeckillService;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.RestaurantVO;
 import com.sky.vo.SeckillActivityVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,8 @@ public class SeckillServiceImpl implements SeckillService {
     @Autowired private SeckillCache cache;
     @Autowired private com.sky.mapper.SeckillReservationMapper reservationMapper;
     @Autowired private RedPacketMapper redPacketMapper;
+    @Autowired private RestaurantMapper restaurantMapper;
+    @Autowired private RestaurantAvailabilityService restaurantAvailabilityService;
 
 
     
@@ -77,6 +82,15 @@ public class SeckillServiceImpl implements SeckillService {
             throw new OrderBusinessException("秒杀价格已变更，请返回重新选择套餐");
         Setmeal setmeal=setmealMapper.getById(request.getSetmealId());
         if(setmeal==null || !StatusConstant.ENABLE.equals(setmeal.getStatus())) throw new OrderBusinessException("秒杀套餐不可购买");
+        if (request.getCanteenId() != null && !request.getCanteenId().equals(setmeal.getCanteenId())) {
+            throw new OrderBusinessException("秒杀套餐不属于当前餐厅，请返回重新选择");
+        }
+        if (request.getCanteenId() != null && !request.getCanteenId().equals(setmeal.getCanteenId())) {
+            throw new OrderBusinessException("秒杀套餐不属于当前餐厅，请返回重新选择");
+        }
+        if (request.getCanteenId() != null && !request.getCanteenId().equals(setmeal.getCanteenId())) {
+            throw new OrderBusinessException("秒杀套餐不属于当前餐厅，请返回重新选择");
+        }
         AddressBook address=addressBookMapper.getById(request.getAddressBookId());
         if(address==null || !userId.equals(address.getUserId())) throw new OrderBusinessException("收货地址不存在");
         // Rebuild under the activity row lock, so stale/failed Redis predebits never become authoritative.
@@ -122,8 +136,8 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     @Override
-    public List<SeckillActivityVO> listAvailableActivities() {
-        List<SeckillActivityVO> activities = seckillActivityMapper.listAvailable();
+    public List<SeckillActivityVO> listAvailableActivities(Long canteenId) {
+        List<SeckillActivityVO> activities = seckillActivityMapper.listAvailable(canteenId);
         for (SeckillActivityVO activity : activities) {
             activity.setBeginTimestamp(toMillis(activity.getBeginTime()));
             activity.setEndTimestamp(toMillis(activity.getEndTime()));
@@ -223,17 +237,30 @@ public class SeckillServiceImpl implements SeckillService {
     private Orders buildOrder(SeckillOrderSubmitDTO request, Long userId, AddressBook address, Setmeal setmeal,
                               java.math.BigDecimal seckillPrice, java.math.BigDecimal discount, Long userRedPacketId,
                               String number, LocalDateTime now) {
+        RestaurantVO restaurant = restaurantMapper.getEnabledById(setmeal.getCanteenId());
+        if (restaurant == null) throw new OrderBusinessException("RESTAURANT_NOT_FOUND");
+        restaurantAvailabilityService.requireOpen(restaurant.getId());
         return Orders.builder().number(number).userId(userId).addressBookId(address.getId())
+                .canteenId(restaurant.getId()).canteenName(restaurant.getName())
                 .status(Orders.PENDING_PAYMENT).payStatus(Orders.UN_PAID).payMethod(request.getPayMethod())
                 .amount(seckillPrice.subtract(discount).add(new java.math.BigDecimal("7.00"))).discountAmount(discount)
                 .userRedPacketId(userRedPacketId)
-                .remark(request.getRemark()).phone(address.getPhone()).address(address.getDetail())
+                .remark(request.getRemark()).phone(address.getPhone()).address(fullAddress(address))
                 .consignee(address.getConsignee()).orderTime(now).estimatedDeliveryTime(request.getEstimatedDeliveryTime())
                 // 结算页未传配送和餐具选项时使用默认值，避免写入 NOT NULL 列失败。
                 .deliveryStatus(request.getDeliveryStatus() == null ? 1 : request.getDeliveryStatus())
                 .packAmount(1)
                 .tablewareNumber(request.getTablewareNumber() == null ? 0 : request.getTablewareNumber())
                 .tablewareStatus(request.getTablewareStatus() == null ? 1 : request.getTablewareStatus()).build();
+    }
+
+    private String fullAddress(AddressBook address) {
+        return valueOf(address.getProvinceName()) + valueOf(address.getCityName())
+                + valueOf(address.getDistrictName()) + valueOf(address.getDetail());
+    }
+
+    private String valueOf(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private Long resolveRedPacketId(Long userId, Long requestedId, Boolean useRedPacket) {

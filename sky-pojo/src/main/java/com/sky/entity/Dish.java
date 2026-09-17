@@ -27,6 +27,9 @@ public class Dish implements Serializable {
     //鑿滃搧鍒嗙被id
     private Long categoryId;
 
+    //餐厅（食堂）id
+    private Long canteenId;
+
     //鑿滃搧浠锋牸
     private BigDecimal price;
 

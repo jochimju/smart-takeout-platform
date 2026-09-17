@@ -20,6 +20,9 @@ public class Category implements Serializable {
     //类型: 1菜品分类 2套餐分类
     private Integer type;
 
+    // 餐厅（食堂）id。分类是餐厅菜单树的第一层归属。
+    private Long canteenId;
+
     //分类名称
     private String name;
 

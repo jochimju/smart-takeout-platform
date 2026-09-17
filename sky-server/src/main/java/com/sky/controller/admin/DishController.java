@@ -6,6 +6,8 @@ import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
+import com.sky.entity.Dish;
+import com.sky.constant.StatusConstant;
 import com.sky.cache.MenuCache;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -82,8 +84,12 @@ public class DishController {
 
     @GetMapping("/list")
     @ApiOperation("list dishes by category")
-    public Result<List<DishVO>> list(Long categoryId) {
-        List<DishVO> list = dishService.listWithFlavorCache(categoryId);
+    public Result<List<DishVO>> list(Long categoryId, String name, Long canteenId) {
+        // 分类下拉读取可走缓存；套餐挑选菜品的关键词/餐厅过滤必须实时按条件查询。
+        List<DishVO> list = (name == null && canteenId == null)
+                ? dishService.listWithFlavorCache(categoryId)
+                : dishService.listWithFlavor(Dish.builder()
+                    .categoryId(categoryId).name(name).canteenId(canteenId).status(StatusConstant.ENABLE).build());
         return Result.success(list);
     }
 

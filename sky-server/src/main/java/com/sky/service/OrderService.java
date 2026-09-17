@@ -56,6 +56,13 @@ public interface OrderService {
     OrderVO details(Long id);
 
     /**
+     * 管理端查询订单详情：管理员可查看任意订单，不做订单归属校验
+     * @param id
+     * @return
+     */
+    OrderVO adminDetails(Long id);
+
+    /**
      * 用户取消订单
      * @param id
      */
@@ -69,7 +76,10 @@ public interface OrderService {
      *
      * @param id
      */
-    void repetition(Long id);
+    /**
+     * 将历史订单恢复到当前用户购物车，并返回该订单所属的餐厅。
+     */
+    RestaurantVO repetition(Long id);
 
     /**
      * 条件搜索订单

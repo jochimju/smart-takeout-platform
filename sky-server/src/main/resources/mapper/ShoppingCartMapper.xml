@@ -13,6 +13,9 @@
             <if test="setmealId != null">
                 and setmeal_id = #{setmealId}
             </if>
+            <if test="canteenId != null">
+                and canteen_id = #{canteenId}
+            </if>
             <if test="dishFlavor != null">
                 and dish_flavor = #{dishFlavor}
             </if>
@@ -22,10 +25,10 @@
 
     <insert id="insertBatch" parameterType="list">
         insert into shopping_cart
-        (name, image, user_id, dish_id, setmeal_id, dish_flavor, number, amount, create_time)
+        (name, image, user_id, dish_id, setmeal_id, canteen_id, dish_flavor, number, amount, create_time)
         values
         <foreach collection="shoppingCartList" item="sc" separator=",">
-            (#{sc.name},#{sc.image},#{sc.userId},#{sc.dishId},#{sc.setmealId},#{sc.dishFlavor},#{sc.number},#{sc.amount},#{sc.createTime})
+            (#{sc.name},#{sc.image},#{sc.userId},#{sc.dishId},#{sc.setmealId},#{sc.canteenId},#{sc.dishFlavor},#{sc.number},#{sc.amount},#{sc.createTime})
         </foreach>
     </insert>
 </mapper>
