@@ -48,10 +48,6 @@ public class Orders implements Serializable {
     //涓嬪崟鐢ㄦ埛id
     private Long userId;
 
-    /** 下单餐厅快照。 */
-    private Long canteenId;
-    private String canteenName;
-
     //鍦板潃id
     private Long addressBookId;
 

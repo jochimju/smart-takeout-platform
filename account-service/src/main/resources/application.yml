@@ -1,0 +1,65 @@
+server:
+  port: ${SKY_ACCOUNT_PORT:8082}
+
+spring:
+  application:
+    name: account-service
+  config:
+    import: ${NACOS_CONFIG_IMPORT:optional:nacos:account-service.yml}
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME:}
+      password: ${NACOS_PASSWORD:}
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://${SKY_DB_HOST:localhost}:${SKY_DB_PORT:3306}/${SKY_ACCOUNT_DB:sky_take_out_account}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${SKY_DB_USER:root}
+      password: ${SKY_DB_PASSWORD:}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.sky.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  pattern:
+    level: "%5p [trace=%X{traceId:-}]"
+
+sky:
+  internal:
+    token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}
+  jwt:
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:itcast}
+    admin-ttl: 7200000
+    admin-token-name: token
+    user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
+    user-ttl: 7200000
+    user-token-name: authentication
+  wechat:
+    appid: ${SKY_WECHAT_APPID:}
+    secret: ${SKY_WECHAT_SECRET:}
+    # 仅本地开发：开启后使用固定 openid 登录，不再调用微信 jscode2session。
+    # 生产环境必须保持 false，并通过环境变量或配置中心提供真实 appid / secret。
+    mock-login-enabled: ${SKY_WECHAT_MOCK_LOGIN:false}
+    # mock 登录使用的 openid：配置成已有用户的 openid 即可复用其历史订单、地址等数据。
+    mock-openid: ${SKY_WECHAT_MOCK_OPENID:mock-local-openid}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

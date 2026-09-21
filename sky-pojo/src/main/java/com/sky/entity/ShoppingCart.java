@@ -34,9 +34,6 @@ public class ShoppingCart implements Serializable {
     //套餐id
     private Long setmealId;
 
-    //餐厅（食堂）id
-    private Long canteenId;
-
     //口味
     private String dishFlavor;
 

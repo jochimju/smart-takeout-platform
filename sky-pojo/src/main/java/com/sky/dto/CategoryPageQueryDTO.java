@@ -19,7 +19,4 @@ public class CategoryPageQueryDTO implements Serializable {
     //分类类型 1菜品分类  2套餐分类
     private Integer type;
 
-    // 所属餐厅（食堂）
-    private Long canteenId;
-
 }

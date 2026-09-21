@@ -1,0 +1,87 @@
+server:
+  port: ${SKY_GATEWAY_PORT:8080}
+
+spring:
+  application:
+    name: gateway-service
+  config:
+    import: ${NACOS_CONFIG_IMPORT:optional:nacos:gateway-service.yml}
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME:}
+      password: ${NACOS_PASSWORD:}
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: account-admin
+              uri: lb://${SKY_ACCOUNT_ROUTE:account-service}
+              order: -20
+              predicates:
+                - Path=/admin/employee,/admin/employee/**
+              filters:
+                - name: RequestRateLimiter
+                  args: &rate-limiter
+                    key-resolver: "#{@clientAddressKeyResolver}"
+                    redis-rate-limiter.replenishRate: ${SKY_GATEWAY_RATE:100}
+                    redis-rate-limiter.burstCapacity: ${SKY_GATEWAY_BURST:200}
+            - id: account-user
+              uri: lb://${SKY_ACCOUNT_ROUTE:account-service}
+              order: -20
+              predicates:
+                - Path=/user/user,/user/user/**,/user/addressBook,/user/addressBook/**
+              filters:
+                - name: RequestRateLimiter
+                  args: *rate-limiter
+            - id: notification-websocket
+              uri: lb:ws://notification-service
+              order: -10
+              predicates:
+                - Path=/ws/**
+            - id: trade-docs
+              uri: lb://trade-service
+              order: -5
+              predicates:
+                - Path=/doc.html,/webjars/**,/v3/api-docs/**,/swagger-ui/**,/favicon.ico
+            - id: catalog-admin
+              uri: lb://catalog-service
+              order: -10
+              predicates:
+                - Path=/admin/category/**,/admin/dish/**,/admin/setmeal/**,/admin/common/**,/admin/cache/**,/admin/restaurant,/admin/restaurant/**
+              filters:
+                - name: RequestRateLimiter
+                  args: *rate-limiter
+            - id: catalog-user
+              uri: lb://catalog-service
+              order: -10
+              predicates:
+                - Path=/user/category/**,/user/dish/**,/user/setmeal/**,/user/restaurants,/user/restaurants/**,/dishes/**,/setmeals/**
+              filters:
+                - name: RequestRateLimiter
+                  args: *rate-limiter
+            - id: trade-http
+              uri: lb://trade-service
+              predicates:
+                - Path=/admin/**,/user/**,/notify/**
+              filters:
+                - name: RequestRateLimiter
+                  args: *rate-limiter
+
+  data:
+    redis:
+      host: ${SKY_REDIS_HOST:127.0.0.1}
+      port: ${SKY_REDIS_PORT:6379}
+      password: ${SKY_REDIS_PASSWORD:}
+      database: ${SKY_GATEWAY_REDIS_DATABASE:11}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

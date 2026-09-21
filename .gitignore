@@ -7,6 +7,8 @@
 # IDE and editor settings
 .idea/
 .vscode/
+.run/
+.runtime/
 *.iml
 .project
 .classpath
@@ -23,6 +25,12 @@ logs/
 !*.example
 sky-server/src/main/resources/application-dev.yml
 sky-server/src/main/resources/application-local.yml
+trade-service/src/main/resources/application-dev.yml
+trade-service/src/main/resources/application-local.yml
+catalog-service/src/main/resources/application-dev.yml
+catalog-service/src/main/resources/application-local.yml
+account-service/src/main/resources/application-dev.yml
+account-service/src/main/resources/application-local.yml
 *.pem
 *.key
 *.p12

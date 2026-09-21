@@ -1,0 +1,43 @@
+server:
+  port: ${SKY_NOTIFICATION_PORT:8084}
+spring:
+  application:
+    name: notification-service
+  config:
+    import: ${NACOS_CONFIG_IMPORT:optional:nacos:notification-service.yml}
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME:}
+      password: ${NACOS_PASSWORD:}
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+  data:
+    redis:
+      host: ${SKY_REDIS_HOST:127.0.0.1}
+      port: ${SKY_REDIS_PORT:6379}
+      password: ${SKY_REDIS_PASSWORD:}
+      database: ${SKY_NOTIFICATION_REDIS_DATABASE:13}
+  rabbitmq:
+    host: ${SKY_RABBIT_HOST:127.0.0.1}
+    port: ${SKY_RABBIT_PORT:5672}
+    username: ${SKY_RABBIT_USER:guest}
+    password: ${SKY_RABBIT_PASSWORD:guest}
+    virtual-host: ${SKY_RABBIT_VHOST:/}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+sky:
+  internal:
+    token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}

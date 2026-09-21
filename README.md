@@ -29,16 +29,21 @@
 
 ```text
 sky-take-out-jjs
-├── sky-common   # Shared constants, utilities, exceptions, and configuration properties
-├── sky-pojo     # Entities, DTOs, and view objects
-└── sky-server   # Spring Boot application, REST APIs, persistence, messaging, and resources
+├── gateway-service  # Public HTTP and WebSocket entry point, port 8080
+├── account-service  # Users, employees, permissions, addresses, port 8082
+├── catalog-service  # Categories, dishes, set meals, images and menu cache, port 8083
+├── trade-service    # Cart, orders, inventory, marketing and payment, port 8081
+├── notification-service # RabbitMQ events and WebSocket delivery, port 8084
+├── sky-contracts    # Feign DTOs and business event contracts
+├── sky-common       # Shared infrastructure utilities
+└── sky-pojo         # Existing business models used within the services
 ```
 
 ## Tech Stack
 
 | Area | Technologies |
 | --- | --- |
-| Backend | Java 8, Spring Boot 2.7, Spring MVC, Spring Cache |
+| Backend | Java 17, Spring Boot 3.5, Spring Cloud 2025.0, Spring Cloud Alibaba 2025.0, Gateway, OpenFeign, Nacos |
 | Persistence | MySQL, MyBatis-Plus, Druid, Flyway |
 | Middleware | Redis, RabbitMQ |
 | Security & API | JWT, Knife4j / Swagger |
@@ -48,32 +53,37 @@ sky-take-out-jjs
 
 ### Prerequisites
 
-- JDK 8+
-- Maven 3.6+
+- JDK 17+
+- Maven 3.9+
 - MySQL 8+
 - Redis 6+
 - RabbitMQ 3+
+- Nacos 2.5+ or a compatible 3.x release
 
 ### 1. Configure local services
 
 Copy the example configuration and supply local credentials:
 
 ```bash
-cp sky-server/src/main/resources/application-dev.example.yml sky-server/src/main/resources/application-dev.yml
+cp trade-service/src/main/resources/application-dev.example.yml trade-service/src/main/resources/application-dev.yml
 ```
 
 `application-dev.yml` is deliberately ignored by Git. Do not commit credentials, certificates, or private keys.
 
-Create a MySQL database matching the `sky.datasource.database` value. Flyway applies the schema migration at startup.
+Create the trade database matching `sky.datasource.database`. Copy account tables with `tools/MigrateAccountData.java`, then copy catalog tables into `sky_take_out_catalog` with `tools/MigrateCatalogData.java`. Stop writes during each cutover and set `SKY_DB_PASSWORD` for services that read credentials from environment variables.
 
 ### 2. Run the application
 
 ```bash
-mvn clean package -DskipTests
-mvn -pl sky-server -am spring-boot:run
+mvn clean package
+java -jar account-service/target/account-service-1.0-SNAPSHOT.jar
+java -jar catalog-service/target/catalog-service-1.0-SNAPSHOT.jar
+java -jar trade-service/target/trade-service-1.0-SNAPSHOT.jar
+java -jar notification-service/target/notification-service-1.0-SNAPSHOT.jar
+java -jar gateway-service/target/gateway-service-1.0-SNAPSHOT.jar
 ```
 
-The service starts on `http://localhost:8080` by default. API documentation is available through the configured Knife4j endpoint after startup.
+Start MySQL, Redis, RabbitMQ, and Nacos first. The gateway serves the existing public paths on `http://localhost:8080`. Set the same `SKY_INTERNAL_TOKEN` and JWT secret variables on account, catalog and trade services. See [local startup and regression guide](docs/微服务本地启动与回归.md) for details.
 
 ## Key Design Notes
 
@@ -83,7 +93,7 @@ The service starts on `http://localhost:8080` by default. API documentation is a
 | Flash-sale set meals | Redis + Lua atomically checks inventory and duplicate orders, then publishes a message for asynchronous persistence |
 | Unpaid orders | RabbitMQ TTL and dead-letter queues trigger timeout cancellation and rollback processing |
 | Coupon claims | Database conditional updates prevent issuing more coupons than available stock |
-| Order notifications | WebSocket pushes order status events to the management client |
+| Order notifications | Trade Outbox publishes RabbitMQ events; Redis Pub/Sub fans them out to WebSocket sessions on notification instances |
 
 ## Repository Hygiene
 
