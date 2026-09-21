@@ -40,8 +40,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             //褰撳墠鎷︽埅鍒扮殑涓嶆槸鍔ㄦ€佹柟娉曪紝鐩存帴鏀捐
             return true;
-        }
-
+}
         //1銆佷粠璇锋眰澶翠腑鑾峰彇浠ょ墝
         String token = request.getHeader(jwtProperties.getAdminTokenName());
 
@@ -75,4 +74,3 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         return permissionMapper.countEmployeePermission(empId, method, path) > 0;
     }
 }
-
