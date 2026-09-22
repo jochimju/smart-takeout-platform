@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "account-service", configuration = AccountFeignConfiguration.class)
+@FeignClient(name = "account-service", configuration = AccountFeignConfiguration.class,
+        fallbackFactory = AccountClientFallbackFactory.class)
 public interface AccountClient {
     @GetMapping("/internal/account/users/{id}")
     AccountUserView user(@PathVariable("id") Long id);

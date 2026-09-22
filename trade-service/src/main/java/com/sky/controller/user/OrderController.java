@@ -53,6 +53,12 @@ public class OrderController {
         return Result.success(orderSubmitVO);
     }
 
+    @GetMapping("/submit-result")
+    @ApiOperation("query asynchronously submitted order result")
+    public Result<OrderSubmitVO> submitResult(@RequestParam String requestId) {
+        return Result.success(orderService.findSubmitResult(requestId));
+    }
+
     @GetMapping("/checkout")
     @ApiOperation("preview order checkout")
     public Result<com.sky.vo.OrderCheckoutVO> checkout() {

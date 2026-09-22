@@ -5,11 +5,15 @@
     <parent><groupId>com.sky</groupId><artifactId>sky-take-out</artifactId><version>1.0-SNAPSHOT</version></parent>
     <artifactId>notification-service</artifactId>
     <dependencies>
+        <dependency><groupId>com.sky</groupId><artifactId>sky-common</artifactId><version>${project.version}</version></dependency>
         <dependency><groupId>com.sky</groupId><artifactId>sky-contracts</artifactId><version>${project.version}</version></dependency>
         <dependency><groupId>com.alibaba</groupId><artifactId>fastjson</artifactId></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-websocket</artifactId></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>
+        <dependency><groupId>io.micrometer</groupId><artifactId>micrometer-registry-prometheus</artifactId></dependency>
+        <dependency><groupId>io.micrometer</groupId><artifactId>micrometer-tracing-bridge-otel</artifactId></dependency>
+        <dependency><groupId>io.opentelemetry</groupId><artifactId>opentelemetry-exporter-otlp</artifactId></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-redis</artifactId></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-amqp</artifactId></dependency>
         <dependency><groupId>com.alibaba.cloud</groupId><artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId></dependency>

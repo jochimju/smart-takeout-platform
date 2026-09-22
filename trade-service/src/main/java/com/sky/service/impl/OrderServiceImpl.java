@@ -1,6 +1,5 @@
 package com.sky.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -27,7 +26,6 @@ import com.sky.vo.RedPacketCheckoutVO;
 import com.sky.contract.account.AccountAddressView;
 import com.sky.contract.account.AccountUserView;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +52,6 @@ public class OrderServiceImpl implements OrderService {
     private static final BigDecimal DELIVERY_FEE = new BigDecimal("6.00");
     private static final BigDecimal PACK_FEE_PER_ITEM = new BigDecimal("1.00");
     @Autowired private OrderLifecycleService lifecycle;
-    @Autowired private OrderReliabilityStore reliability;
 
     @Autowired private SeckillReservationService seckillReservationService;
     @Autowired
@@ -72,8 +69,6 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private RedPacketMapper redPacketMapper;
     @Autowired
-    private MqFailMessageMapper mqFailMessageMapper;
-    @Autowired
     private CatalogQuoteService catalogQuoteService;
     @Autowired
     private TradeInventoryService tradeInventoryService;
@@ -84,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private BusinessEventOutbox businessEventOutbox;
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private com.sky.service.mq.OrderMessagePublisher orderMessagePublisher;
     @Autowired
     private RedisTemplate redisTemplate;
     @Value("${sky.payment.mock-enabled:false}")
@@ -105,35 +100,6 @@ public class OrderServiceImpl implements OrderService {
             return previous;
         }
 
-        AccountAddressView addressBook = accountClient.address(userId, ordersSubmitDTO.getAddressBookId());
-        if (addressBook == null) {
-            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
-        }
-        ensureShopOpen();
-
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setUserId(userId);
-        List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
-        if (shoppingCartList == null || shoppingCartList.size() == 0) {
-            throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
-        }
-
-        validateCartItems(shoppingCartList);
-        catalogQuoteService.refresh(shoppingCartList);
-
-        BigDecimal foodAmount = calculateCartAmount(shoppingCartList);
-        if (ordersSubmitDTO.getCouponId() != null && ordersSubmitDTO.getUserRedPacketId() != null) {
-            throw new OrderBusinessException("coupon and red packet cannot be used together");
-        }
-        Long userRedPacketId = resolveRedPacketId(userId, ordersSubmitDTO.getCouponId(),
-                ordersSubmitDTO.getUserRedPacketId(), ordersSubmitDTO.getUseRedPacket());
-        BigDecimal discountAmount = calculateDiscount(userId, ordersSubmitDTO.getCouponId(), foodAmount)
-                .add(calculateRedPacketDiscount(userId, userRedPacketId, foodAmount));
-        int packAmount = calculatePackAmount(shoppingCartList);
-        BigDecimal payableAmount = foodAmount.subtract(discountAmount)
-                .add(BigDecimal.valueOf(packAmount).multiply(PACK_FEE_PER_ITEM))
-                .add(DELIVERY_FEE);
-
         String orderNumber = generateOrderNumber();
         if (orderSubmitRequestMapper.claim(userId, ordersSubmitDTO.getRequestId(), orderNumber) != 1) {
             OrderSubmitVO submitted = findSubmittedOrder(userId, ordersSubmitDTO.getRequestId());
@@ -151,24 +117,31 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryStatus(ordersSubmitDTO.getDeliveryStatus())
                 .tablewareNumber(ordersSubmitDTO.getTablewareNumber())
                 .tablewareStatus(ordersSubmitDTO.getTablewareStatus())
-                .packAmount(packAmount)
+                .packAmount(ordersSubmitDTO.getPackAmount())
                 .orderNumber(orderNumber)
                 .couponId(ordersSubmitDTO.getCouponId())
-                .userRedPacketId(userRedPacketId)
+                .userRedPacketId(ordersSubmitDTO.getUserRedPacketId())
                 .useRedPacket(ordersSubmitDTO.getUseRedPacket())
                 .build();
 
-        // Reservation, stock deduction and order persistence must succeed together.
-        // The RabbitMQ consumer remains compatible with messages already in the queue.
-        createOrderFromMessage(messageDTO);
-        Orders created = orderMapper.getByNumber(orderNumber);
+        // The request is accepted quickly; cart validation, pricing, stock
+        // deduction and persistence execute in the idempotent MQ consumer.
+        orderMessagePublisher.submitAfterCommit(messageDTO);
 
         return OrderSubmitVO.builder()
                 .orderNumber(orderNumber)
-                .orderAmount(payableAmount)
+                .orderAmount(null)
                 .orderTime(LocalDateTime.now())
-                .id(created == null ? null : created.getId())
+                .id(null)
                 .build();
+    }
+
+    @Override
+    public OrderSubmitVO findSubmitResult(String requestId) {
+        if (BaseContext.getCurrentId() == null || requestId == null || !requestId.matches("[A-Za-z0-9_-]{16,64}")) {
+            throw new OrderBusinessException("requestId is required");
+        }
+        return findSubmittedOrder(BaseContext.getCurrentId(), requestId);
     }
 
     @Transactional
@@ -239,7 +212,9 @@ public class OrderServiceImpl implements OrderService {
 
             orderDetailMapper.insertBatch(orderDetailList);
             shoppingCartMapper.deleteByUserId(messageDTO.getUserId());
-        reliability.scheduleTimeout(order);
+        // Publish only after the order transaction commits.  The delay queue's
+        // 15-minute TTL dead-letters it to the cancellation consumer.
+        orderMessagePublisher.timeoutAfterCommit(order.getNumber());
     }
 
     @Transactional
@@ -587,18 +562,6 @@ public class OrderServiceImpl implements OrderService {
         if (affected == 0) {
             throw new OrderBusinessException("coupon already used");
         }
-    }
-
-    private void saveMqFailMessage(String exchange, String routingKey, Object body, Exception e) {
-        mqFailMessageMapper.insert(MqFailMessage.builder()
-                .exchangeName(exchange)
-                .routingKey(routingKey)
-                .messageBody(JSON.toJSONString(body))
-                .failReason(e.getMessage())
-                .status(0)
-                .retryCount(0)
-                .createTime(LocalDateTime.now())
-                .build());
     }
 
     /**

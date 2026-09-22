@@ -8,6 +8,8 @@ import com.sky.entity.MqFailMessage;
 import com.sky.mapper.MqFailMessageMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -45,7 +48,16 @@ public class MqFailMessageRetryTask {
     private void retryOne(MqFailMessage message) {
         try {
             Object payload = parsePayload(message);
-            rabbitTemplate.convertAndSend(message.getExchangeName(), message.getRoutingKey(), payload);
+            CorrelationData correlation = new CorrelationData("retry:" + message.getId());
+            rabbitTemplate.convertAndSend(message.getExchangeName(), message.getRoutingKey(), payload, outgoing -> {
+                outgoing.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                outgoing.getMessageProperties().setMessageId(String.valueOf(message.getId()));
+                return outgoing;
+            }, correlation);
+            CorrelationData.Confirm confirm = correlation.getFuture().get(5, TimeUnit.SECONDS);
+            if (!confirm.isAck() || correlation.getReturned() != null) {
+                throw new IllegalStateException("broker did not confirm/rout retry message");
+            }
             mqFailMessageMapper.markSuccess(message.getId(), LocalDateTime.now());
         } catch (Exception e) {
             log.warn("retry mq fail message failed, id: {}", message.getId(), e);

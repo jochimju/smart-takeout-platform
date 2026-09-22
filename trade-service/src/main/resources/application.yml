@@ -8,6 +8,8 @@ spring:
     import: ${NACOS_CONFIG_IMPORT:optional:nacos:trade-service.yml}
   cloud:
     openfeign:
+      micrometer:
+        enabled: true
       client:
         config:
           account-service:
@@ -16,6 +18,31 @@ spring:
           catalog-service:
             connectTimeout: 1000
             readTimeout: 2500
+    sentinel:
+      eager: true
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD:127.0.0.1:8858}
+      datasource:
+        feign-flow:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+            namespace: ${NACOS_NAMESPACE:}
+            username: ${NACOS_USERNAME:}
+            password: ${NACOS_PASSWORD:}
+            data-id: ${SKY_SENTINEL_TRADE_FLOW_DATA_ID:trade-service-sentinel-flow.json}
+            group-id: ${SKY_SENTINEL_GROUP:DEFAULT_GROUP}
+            data-type: json
+            rule-type: flow
+        feign-degrade:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+            namespace: ${NACOS_NAMESPACE:}
+            username: ${NACOS_USERNAME:}
+            password: ${NACOS_PASSWORD:}
+            data-id: ${SKY_SENTINEL_TRADE_DEGRADE_DATA_ID:trade-service-sentinel-degrade.json}
+            group-id: ${SKY_SENTINEL_GROUP:DEFAULT_GROUP}
+            data-type: json
+            rule-type: degrade
     nacos:
       username: ${NACOS_USERNAME:}
       password: ${NACOS_PASSWORD:}
@@ -49,8 +76,11 @@ spring:
     virtual-host: ${sky.rabbitmq.virtual-host}
     publisher-confirm-type: correlated
     publisher-returns: true
+    template:
+      observation-enabled: true
     listener:
       simple:
+        observation-enabled: true
         acknowledge-mode: manual
         retry:
           enabled: true
@@ -66,6 +96,33 @@ spring:
     # Existing databases retain their history, while all migrations still present are validated.
     ignore-migration-patterns: "*:missing"
     locations: classpath:db/migration
+feign:
+  # Sentinel provides fallbackFactory execution; circuitbreaker rules are loaded from Nacos.
+  sentinel:
+    enabled: true
+  circuitbreaker:
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  tracing:
+    sampling:
+      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 mybatis-plus:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml

@@ -32,6 +32,9 @@ public class RabbitMqConfiguration {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         rabbitTemplate.setMandatory(true);
+        // This template is defined manually, so enable Micrometer observation here
+        // instead of relying on Spring Boot's RabbitTemplate auto-configuration.
+        rabbitTemplate.setObservationEnabled(true);
         rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
             if (!ack) {
                 log.error("rabbitmq message publish failed, correlationData: {}, cause: {}", correlationData, cause);

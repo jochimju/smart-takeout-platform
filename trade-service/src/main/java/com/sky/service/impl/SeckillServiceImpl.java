@@ -51,6 +51,7 @@ public class SeckillServiceImpl implements SeckillService {
     @Autowired private SeckillCache cache;
     @Autowired private com.sky.mapper.SeckillReservationMapper reservationMapper;
     @Autowired private RedPacketMapper redPacketMapper;
+    @Autowired private com.sky.service.mq.OrderMessagePublisher orderMessagePublisher;
 
 
     
@@ -102,8 +103,9 @@ public class SeckillServiceImpl implements SeckillService {
         reservationMapper.setRequest(number,request.getRequestId(),fingerprint);
         orderDetailMapper.insertBatch(Collections.singletonList(OrderDetail.builder().name(setmeal.getName())
             .orderId(order.getId()).setmealId(setmeal.getId()).number(1).amount(activity.getSeckillPrice()).image(setmeal.getImage()).build()));
-        // The timeout event commits with the order; a broker outage cannot lose it.
-        jobs.scheduleTimeout(order);
+        // The persistent publish record is committed with the order, then the
+        // RabbitMQ delay queue dead-letters it after fifteen minutes.
+        orderMessagePublisher.timeoutAfterCommit(order.getNumber());
         return submitVO(order);
     }
 

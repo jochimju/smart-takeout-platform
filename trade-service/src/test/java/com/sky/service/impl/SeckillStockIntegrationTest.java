@@ -7,6 +7,7 @@ import com.sky.dto.SeckillOrderSubmitDTO;
 import com.sky.entity.*;
 import com.sky.mapper.*;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.service.mq.OrderMessagePublisher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.mybatis.spring.*;
@@ -36,7 +37,7 @@ class SeckillStockIntegrationTest {
  static String schema,base,user,password; static JdbcTemplate jdbc; static DriverManagerDataSource ds;
  static DataSourceTransactionManager tm; static SqlSessionTemplate sql; static SeckillServiceImpl service;
  static SeckillCache cache; static StringRedisTemplate redis; static LettuceConnectionFactory connection;
- static OrderLifecycleService lifecycle; static OrderReliabilityStore jobs; static String prefix;
+ static OrderLifecycleService lifecycle; static OrderReliabilityStore jobs; static OrderMessagePublisher publisher; static String prefix;
  @BeforeAll static void setup() throws Exception {
   ((ch.qos.logback.classic.Logger)org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.WARN);
   YamlPropertiesFactoryBean yaml=new YamlPropertiesFactoryBean();yaml.setResources(new ClassPathResource("application-dev.yml"));Properties p=yaml.getObject();
@@ -84,7 +85,8 @@ class SeckillStockIntegrationTest {
   });
   ReflectionTestUtils.setField(target,"accountClient",account);
   ReflectionTestUtils.setField(target,"orderMapper",sql.getMapper(OrderMapper.class));ReflectionTestUtils.setField(target,"orderDetailMapper",sql.getMapper(OrderDetailMapper.class));
-  ReflectionTestUtils.setField(target,"jobs",jobs);ReflectionTestUtils.setField(target,"cache",cache);service=proxy(target);
+  publisher=mock(OrderMessagePublisher.class);
+  ReflectionTestUtils.setField(target,"jobs",jobs);ReflectionTestUtils.setField(target,"cache",cache);ReflectionTestUtils.setField(target,"orderMessagePublisher",publisher);service=proxy(target);
   SeckillReservationService reservations=new SeckillReservationService();
   ReflectionTestUtils.setField(reservations,"mapper",sql.getMapper(SeckillReservationMapper.class));ReflectionTestUtils.setField(reservations,"activities",sql.getMapper(SeckillActivityMapper.class));ReflectionTestUtils.setField(reservations,"guards",sql.getMapper(SeckillOrderGuardMapper.class));
   OrderLifecycleService life=new OrderLifecycleService(sql.getMapper(OrderMapper.class),sql.getMapper(OrderDetailMapper.class),mock(TradeInventoryService.class),sql.getMapper(UserCouponMapper.class),reservations,jobs,mock(BusinessEventOutbox.class),jdbc);
@@ -96,7 +98,7 @@ class SeckillStockIntegrationTest {
   if(schema!=null&&schema.matches("sky_seckill_it_[a-f0-9]{32}"))try(Connection c=DriverManager.getConnection(base+"?useSSL=false&allowPublicKeyRetrieval=true",user,password);Statement s=c.createStatement()){s.execute("drop database "+schema);}
  }
  @BeforeEach void resetData(){
-  reset(jobs,cache);
+  reset(jobs,cache,publisher);
   for(String t:Arrays.asList("order_reliability_job","order_payment_receipt","order_detail","orders","seckill_reservation","seckill_order_guard","seckill_activity","setmeal","address_book"))jdbc.update("delete from "+t);
   Set<String> keys=redis.keys(prefix+"*");if(keys!=null&&!keys.isEmpty())redis.delete(keys);
   jdbc.update("insert into setmeal(id,category_id,name,price,status,stock) values(48,1,'test',20,1,100)");
@@ -113,7 +115,7 @@ class SeckillStockIntegrationTest {
  @Test void hundredBuyersNeverExceedTwentyAndCacheLossCannotRefill()throws Exception{
   java.util.concurrent.atomic.AtomicInteger success=new java.util.concurrent.atomic.AtomicInteger();
   parallel(100,i->{try{buy(i+1,"request_user_"+String.format("%08d",i));success.incrementAndGet();}catch(com.sky.exception.OrderBusinessException e){assertTrue(e.getMessage().contains("库存不足"),e.getMessage());}});
-  assertEquals(20,success.get());assertEquals(0,n("select remaining_stock from seckill_activity where id=1"));assertEquals(20,n("select count(*) from orders"));assertEquals(20,n("select count(*) from order_reliability_job"));
+  assertEquals(20,success.get());assertEquals(0,n("select remaining_stock from seckill_activity where id=1"));assertEquals(20,n("select count(*) from orders"));assertEquals(0,n("select count(*) from order_reliability_job"));
   redis.delete(cache.keys(1L));assertThrows(com.sky.exception.OrderBusinessException.class,()->buy(120,"request_after_cache_loss"));
   assertEquals("0",redis.opsForValue().get(cache.keys(1L).get(1)));
  }
@@ -129,9 +131,9 @@ class SeckillStockIntegrationTest {
   lifecycle.cancel(first.getId(),"duplicate","USER");assertEquals(19,n("select remaining_stock from seckill_activity where id=1"));assertEquals(1,n("select count(*) from seckill_order_guard"));
  }
  @Test void failedDatabaseCommitAndRedisFailureDoNotConsumeDatabaseStock(){
-  doThrow(new IllegalStateException("injected outbox failure")).when(jobs).scheduleTimeout(any());
+  doThrow(new IllegalStateException("injected outbox failure")).when(publisher).timeoutAfterCommit(any());
   assertThrows(IllegalStateException.class,()->buy(1,"rollback_request_0001"));assertEquals(20,n("select remaining_stock from seckill_activity where id=1"));assertEquals(0,n("select count(*) from orders"));
-  reset(jobs);buy(1,"rollback_request_0001");assertEquals(19,n("select remaining_stock from seckill_activity where id=1"));
+  reset(publisher);buy(1,"rollback_request_0001");assertEquals(19,n("select remaining_stock from seckill_activity where id=1"));
   doThrow(new org.springframework.data.redis.RedisConnectionFailureException("injected unavailable")).when(cache).rebuild(any());
   assertThrows(com.sky.exception.OrderBusinessException.class,()->buy(2,"unavailable_request_1"));assertEquals(19,n("select remaining_stock from seckill_activity where id=1"));
  }

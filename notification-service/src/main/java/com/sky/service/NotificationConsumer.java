@@ -26,14 +26,21 @@ public class NotificationConsumer {
 
     @RabbitListener(queues = NotificationConfiguration.QUEUE)
     public void consume(String body) {
+        String dedupeKey=null;
+        boolean claimed=false;
         try {
             String normalized=normalize(body);
             BusinessEvent event=JSON.parseObject(normalized,BusinessEvent.class);
-            Boolean first=redis.opsForValue().setIfAbsent("notification:event:"+event.getEventId(),"1", Duration.ofDays(7));
+            if(event==null || event.getEventId()==null || event.getEventId().isBlank()) throw new IllegalArgumentException("event id missing");
+            dedupeKey="notification:event:"+event.getEventId();
+            Boolean first=redis.opsForValue().setIfAbsent(dedupeKey,"1", Duration.ofDays(7));
             if(!Boolean.TRUE.equals(first)) return;
+            claimed=true;
             JSONObject payload=JSON.parseObject(event.getPayload());
             redis.convertAndSend(CHANNEL,payload.toJSONString());
         } catch (RuntimeException failure) {
+            // Do not turn a transient publish failure into a permanent duplicate marker.
+            if(claimed && dedupeKey!=null) redis.delete(dedupeKey);
             redis.opsForHash().put("notification:failures", Integer.toHexString(body.hashCode()), body);
             throw failure;
         }

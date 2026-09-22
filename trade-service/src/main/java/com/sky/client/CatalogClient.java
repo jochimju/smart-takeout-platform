@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(name = "catalog-service", configuration = AccountFeignConfiguration.class)
+@FeignClient(name = "catalog-service", configuration = AccountFeignConfiguration.class,
+        fallbackFactory = CatalogClientFallbackFactory.class)
 public interface CatalogClient {
     @PostMapping("/internal/catalog/quotes")
     List<ProductQuote> quotes(@RequestBody ProductQuoteRequest request);

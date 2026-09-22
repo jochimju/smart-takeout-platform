@@ -29,6 +29,7 @@ spring:
     virtual-host: ${SKY_RABBIT_VHOST:/}
     listener:
       simple:
+        observation-enabled: true
         retry:
           enabled: true
           max-attempts: 3
@@ -37,7 +38,29 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  tracing:
+    sampling:
+      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 sky:
+  jwt:
+    # Must match the user JWT key used by account/catalog/trade services.
+    user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
+    user-token-name: authentication
   internal:
     token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}
+  websocket:
+    allow-query-token: ${SKY_GATEWAY_ALLOW_WEBSOCKET_QUERY_TOKEN:false}

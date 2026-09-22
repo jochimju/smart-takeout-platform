@@ -12,6 +12,7 @@ import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.OrderSubmitRequestMapper;
 import com.sky.mapper.ShoppingCartMapper;
+import com.sky.service.mq.OrderMessagePublisher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -82,10 +83,9 @@ class OrderSubmissionSecurityTest {
     }
 
     @Test
-    void closedShopStopsOrderBeforeAnyCartMutation() {
+    void closedShopIsRejectedByTheAsyncOrderConsumerBeforeAnyCartMutation() {
         BaseContext.setCurrentId(11L);
         OrderMapper orders = mock(OrderMapper.class);
-        OrderSubmitRequestMapper requests = mock(OrderSubmitRequestMapper.class);
         AccountClient addresses = mock(AccountClient.class);
         RedisTemplate redis = mock(RedisTemplate.class);
         ValueOperations values = mock(ValueOperations.class);
@@ -94,15 +94,30 @@ class OrderSubmissionSecurityTest {
         when(addresses.address(11L, 1L)).thenReturn(new AccountAddressView());
         OrderServiceImpl service = new OrderServiceImpl();
         ReflectionTestUtils.setField(service, "orderMapper", orders);
-        ReflectionTestUtils.setField(service, "orderSubmitRequestMapper", requests);
         ReflectionTestUtils.setField(service, "accountClient", addresses);
         ReflectionTestUtils.setField(service, "redisTemplate", redis);
-        OrdersSubmitDTO dto = new OrdersSubmitDTO();
-        dto.setRequestId("normal_order_request_002");
-        dto.setAddressBookId(1L);
+        assertThrows(OrderBusinessException.class, () -> service.createOrderFromMessage(
+                OrderSubmitMessageDTO.builder().userId(11L).addressBookId(1L).orderNumber("x").build()));
+        verify(orders, never()).insert(any(Orders.class));
+    }
 
-        assertThrows(OrderBusinessException.class, () -> service.submitOrder(dto));
-        verify(requests, never()).claim(anyLong(), anyString(), anyString());
+    @Test
+    void normalOrderIsAcceptedThenPublishedWithoutSynchronouslyCreatingAnOrder() {
+        BaseContext.setCurrentId(11L);
+        OrderMapper orders = mock(OrderMapper.class);
+        OrderSubmitRequestMapper requests = mock(OrderSubmitRequestMapper.class);
+        OrderMessagePublisher publisher = mock(OrderMessagePublisher.class);
+        when(requests.claim(eq(11L), eq("normal_order_request_003"), anyString())).thenReturn(1);
+        OrderServiceImpl service = new OrderServiceImpl();
+        ReflectionTestUtils.setField(service, "orderMapper", orders);
+        ReflectionTestUtils.setField(service, "orderSubmitRequestMapper", requests);
+        ReflectionTestUtils.setField(service, "orderMessagePublisher", publisher);
+        OrdersSubmitDTO dto = new OrdersSubmitDTO();
+        dto.setRequestId("normal_order_request_003");
+
+        assertEquals(null, service.submitOrder(dto).getId());
+        verify(publisher).submitAfterCommit(any(OrderSubmitMessageDTO.class));
+        verify(orders, never()).insert(any(Orders.class));
     }
 
     @Test

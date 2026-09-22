@@ -13,6 +13,9 @@ public interface OrderService {
      */
     OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO);
 
+    /** Returns null while an asynchronously accepted order is still pending. */
+    OrderSubmitVO findSubmitResult(String requestId);
+
     OrderCheckoutVO checkout();
 
     void createOrderFromMessage(OrderSubmitMessageDTO orderSubmitMessageDTO);

@@ -6,7 +6,7 @@
 
 - **Core dining workflow** — user login, shopping cart, address book, menu and set-meal browsing, order creation, payment callbacks, order lifecycle management, and merchant-side operations.
 - **Redis for menu reads** — shared cache-aside for dish and set-meal categories, startup warm-up, short-lived empty results, jittered expiration, renewable Redis mutexes with ownership-checked Lua publication/unlock, and per-instance cache statistics. See [cache implementation and validation](docs/menu-cache.md).
-- **High-concurrency flash sales** — a Lua script atomically validates stock and one-user-one-order constraints; RabbitMQ then processes accepted orders asynchronously.
+- **High-concurrency flash sales** — a Lua script atomically validates stock and one-user-one-order constraints; database conditional updates and unique guards provide the durable stock boundary.
 - **Reliable order processing** — delayed queues cancel unpaid orders after the timeout window; dead-letter handling and retry records improve recoverability.
 - **Marketing and observability** — coupon claiming/usage, Flyway database migrations, WebSocket order notifications, and administrative reporting.
 
@@ -90,7 +90,8 @@ Start MySQL, Redis, RabbitMQ, and Nacos first. The gateway serves the existing p
 | Scenario | Implementation |
 | --- | --- |
 | Menu reads | Cache-aside with expiration, warm-up, and mutex protection for cache rebuilds |
-| Flash-sale set meals | Redis + Lua atomically checks inventory and duplicate orders, then publishes a message for asynchronous persistence |
+| Flash-sale set meals | Redis + Lua atomically checks inventory and duplicate orders; database conditional updates and unique guards persist the order without overselling |
+| Normal order submission | The API accepts an idempotent command and publishes it to RabbitMQ after commit; the consumer performs pricing, inventory deduction and order persistence |
 | Unpaid orders | RabbitMQ TTL and dead-letter queues trigger timeout cancellation and rollback processing |
 | Coupon claims | Database conditional updates prevent issuing more coupons than available stock |
 | Order notifications | Trade Outbox publishes RabbitMQ events; Redis Pub/Sub fans them out to WebSocket sessions on notification instances |

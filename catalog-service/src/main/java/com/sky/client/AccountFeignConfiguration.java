@@ -18,6 +18,6 @@ public class AccountFeignConfiguration {
 
     @Bean
     Retryer accountQueryRetryer() {
-        return new Retryer.Default(100, 1_000, 2);
+        return Retryer.NEVER_RETRY;
     }
 }

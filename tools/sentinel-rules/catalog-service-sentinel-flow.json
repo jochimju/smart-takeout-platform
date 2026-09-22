@@ -1,0 +1,16 @@
+[
+  {
+    "resource": "GET:http://trade-service/internal/trade/orders/count",
+    "grade": 1,
+    "count": 20,
+    "strategy": 0,
+    "controlBehavior": 0
+  },
+  {
+    "resource": "GET:http://account-service/internal/account/permissions/check",
+    "grade": 1,
+    "count": 80,
+    "strategy": 0,
+    "controlBehavior": 0
+  }
+]

@@ -7,6 +7,7 @@ import com.sky.exception.OrderBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class TradeInventoryService {
     private final JdbcTemplate jdbc;
     private final CatalogQuoteService catalog;
 
+    @Transactional(rollbackFor = Exception.class)
     public void deduct(List<ShoppingCart> items) {
         java.util.Map<String,ProductQuote> quotes = catalog.quotes(items);
         for (ShoppingCart item : items) {
@@ -31,6 +33,7 @@ public class TradeInventoryService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void rollback(List<OrderDetail> lines) {
         for (OrderDetail line : lines) {
             String type = line.getDishId() != null ? ProductQuote.DISH : ProductQuote.SETMEAL;

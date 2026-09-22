@@ -18,6 +18,8 @@ public class AccountFeignConfiguration {
 
     @Bean
     Retryer accountQueryRetryer() {
-        return new Retryer.Default(100, 1_000, 2);
+        // A retry multiplies load during a downstream incident. Sentinel decides
+        // whether to reject/fallback; callers can retry only after the response.
+        return Retryer.NEVER_RETRY;
     }
 }

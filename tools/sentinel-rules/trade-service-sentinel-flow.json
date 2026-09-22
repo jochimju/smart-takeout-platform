@@ -1,0 +1,23 @@
+[
+  {
+    "resource": "GET:http://account-service/internal/account/permissions/check",
+    "grade": 1,
+    "count": 80,
+    "strategy": 0,
+    "controlBehavior": 0
+  },
+  {
+    "resource": "GET:http://account-service/internal/account/users/count",
+    "grade": 1,
+    "count": 20,
+    "strategy": 0,
+    "controlBehavior": 0
+  },
+  {
+    "resource": "GET:http://catalog-service/internal/catalog/overview",
+    "grade": 1,
+    "count": 30,
+    "strategy": 0,
+    "controlBehavior": 0
+  }
+]

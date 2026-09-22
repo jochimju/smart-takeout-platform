@@ -9,10 +9,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@ServerEndpoint("/ws/{sid}")
+@ServerEndpoint(value = "/ws/{sid}", configurator = WebSocketAuthConfigurator.class)
 public class WebSocketServer {
     private static final Map<String, Session> SESSIONS=new ConcurrentHashMap<>();
-    @OnOpen public void open(Session session,@PathParam("sid") String sid){ SESSIONS.put(sid,session); }
+    @OnOpen public void open(Session session,@PathParam("sid") String sid){
+        if (Boolean.TRUE.equals(session.getUserProperties().get(WebSocketAuthConfigurator.AUTH_REJECTED))) {
+            try { session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "unauthorized")); }
+            catch (Exception ignored) { }
+            return;
+        }
+        SESSIONS.put(sid,session);
+    }
     @OnClose public void close(@PathParam("sid") String sid){ SESSIONS.remove(sid); }
     @OnError public void error(Session session,Throwable error){ if(session!=null) SESSIONS.values().remove(session); }
     @OnMessage public void message(String ignored) { }
