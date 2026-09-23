@@ -73,7 +73,9 @@ public class OrderLifecycleService {
         }
         coupons.rollbackByOrderId(order.getId());
         if (order.getUserRedPacketId() != null) {
-            jdbc.update("update user_red_packet set status=case when expire_time>now() then 0 else 3 end, food_order_id=null, used_time=null where food_order_id=? and status=1",
+            // 订单取消（含已支付后退款）都必须退回红包：status=1 是待支付时的预占，
+            // status=2 是支付成功后核销的。只退 status=1 会把已支付订单的红包永久吃掉。
+            jdbc.update("update user_red_packet set status=case when expire_time>now() then 0 else 3 end, food_order_id=null, used_time=null where food_order_id=? and status in (1,2)",
                     order.getId());
         }
         if(Orders.PAID.equals(order.getPayStatus())) {

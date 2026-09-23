@@ -115,4 +115,10 @@ public class Orders implements Serializable {
 
     //椁愬叿鏁伴噺鐘舵€? 1鎸夐閲忔彁渚? 0閫夋嫨鍏蜂綋鏁伴噺
     private Integer tablewareStatus;
+
+    //所属餐厅（食堂）id
+    private Long canteenId;
+
+    //下单时的餐厅名称快照
+    private String canteenName;
 }

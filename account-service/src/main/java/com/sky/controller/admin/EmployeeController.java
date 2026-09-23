@@ -4,6 +4,7 @@ import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.EmployeePasswordDTO;
 import com.sky.entity.Employee;
 import com.sky.utils.properties.JwtProperties;
 import com.sky.result.PageResult;
@@ -137,6 +138,18 @@ public class EmployeeController {
     public Result update(@RequestBody EmployeeDTO employeeDTO){ //闂傚倸鍊搁悧蹇涘磻閻愮儤鍋傞柨娑樺鐎氭岸鏌曡箛濠傚⒉闁诡垱鐟ラ湁闁挎繂妫涢悳鑽ょ磼鏉堛劎绀€esult闂佽绻愮换鎰亹婢跺瞼绠斿鑸靛姈閸嬨劑鏌曟繛鍨姎妞ゎ偓绲剧换娑欏緞鐎ｎ兘妲堥梺璇查叄閺€杈╃矉?
         log.info("update employee: {}", employeeDTO);
         employeeService.update(employeeDTO);
+        return Result.success();
+    }
+
+    /**
+     * 修改当前登录员工密码
+     * @param employeePasswordDTO
+     * @return
+     */
+    @PutMapping("/editPassword")
+    @ApiOperation("edit password")
+    public Result editPassword(@RequestBody EmployeePasswordDTO employeePasswordDTO){
+        employeeService.editPassword(employeePasswordDTO);
         return Result.success();
     }
 }

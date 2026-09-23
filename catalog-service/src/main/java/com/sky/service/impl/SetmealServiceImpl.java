@@ -39,6 +39,10 @@ public class SetmealServiceImpl implements SetmealService {
     public void saveWithDish(SetmealDTO dto) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(dto, setmeal);
+        //库存兜底：setmeal.stock 是非空列，前端未传时默认 0，避免插入 NULL 报错
+        if (setmeal.getStock() == null) {
+            setmeal.setStock(0);
+        }
         setmealMapper.insert(setmeal);
         saveRelations(setmeal.getId(), dto.getSetmealDishes());
         menuCache.invalidateAll();

@@ -20,6 +20,9 @@ public interface OrderService {
 
     void createOrderFromMessage(OrderSubmitMessageDTO orderSubmitMessageDTO);
 
+    /** Releases an idempotency binding only when its command failed before an order was created. */
+    void releaseFailedSubmission(String orderNumber);
+
     void cancelTimeoutOrder(String orderNumber);
 
     /**
@@ -58,6 +61,9 @@ public interface OrderService {
      */
     OrderVO details(Long id);
 
+    /** Administrative order lookup; unlike {@link #details(Long)}, it is not restricted to the current customer. */
+    OrderVO adminDetails(Long id);
+
     /**
      * 用户取消订单
      * @param id
@@ -72,7 +78,7 @@ public interface OrderService {
      *
      * @param id
      */
-    void repetition(Long id);
+    java.util.Map<String, Object> repetition(Long id);
 
     /**
      * 条件搜索订单

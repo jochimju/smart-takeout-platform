@@ -43,4 +43,10 @@ public interface MqFailMessageMapper extends BaseMapper<MqFailMessage> {
     @Update("update mq_fail_message set status = 2, lease_until = null, fail_reason = #{failReason}, " +
             "update_time = #{updateTime} where id = #{id} and status = 3")
     int markDead(@Param("id") Long id, @Param("failReason") String failReason, @Param("updateTime") LocalDateTime updateTime);
+
+    /** Records a command rejected by its consumer after the broker confirmed publication. */
+    @Update("update mq_fail_message set status = 2, lease_until = null, fail_reason = #{failReason}, " +
+            "update_time = #{updateTime} where id = #{id} and status = 1")
+    int markConsumerFailure(@Param("id") Long id, @Param("failReason") String failReason,
+                            @Param("updateTime") LocalDateTime updateTime);
 }

@@ -10,4 +10,7 @@ public class ShoppingCartDTO implements Serializable {
     private Long setmealId;
     private String dishFlavor;
 
+    //所属餐厅（食堂）id
+    private Long canteenId;
+
 }

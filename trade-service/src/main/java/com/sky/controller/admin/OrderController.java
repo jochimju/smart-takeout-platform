@@ -61,7 +61,7 @@ public class OrderController {
     @GetMapping("/details/{id}")
     @ApiOperation("order details")
     public Result<OrderVO> details(@PathVariable("id") Long id) {
-        OrderVO orderVO = orderService.details(id);
+        OrderVO orderVO = orderService.adminDetails(id);
         return Result.success(orderVO);
     }
 

@@ -30,6 +30,12 @@ public class SetmealDTO implements Serializable {
     //图片
     private String image;
 
+    //可售库存
+    private Integer stock;
+
+    //所属餐厅（食堂）id
+    private Long canteenId;
+
     //套餐菜品关系
     private List<SetmealDish> setmealDishes = new ArrayList<>();
 

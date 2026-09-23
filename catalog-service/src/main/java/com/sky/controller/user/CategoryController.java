@@ -20,14 +20,15 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 查询分类
+     * 查询分类，支持按餐厅过滤
      * @param type
+     * @param canteenId
      * @return
      */
     @GetMapping("/list")
     @ApiOperation("查询分类")
-    public Result<List<Category>> list(Integer type) {
-        List<Category> list = categoryService.list(type);
+    public Result<List<Category>> list(Integer type, Long canteenId) {
+        List<Category> list = categoryService.list(type, canteenId);
         return Result.success(list);
     }
 }

@@ -45,9 +45,14 @@ public class GatewayAuthenticationFilter implements GlobalFilter, Ordered {
         if (path.startsWith("/admin/")) {
             principal = authenticate(exchange, jwt.getAdminTokenName(), jwt.getAdminSecretKey(), JwtClaimsConstant.EMP_ID,
                     "ADMIN", false);
-        } else if (path.startsWith("/user/") || path.startsWith("/ws/")) {
+        } else if (path.startsWith("/ws/")) {
+            // The management UI consumes order alerts through this browser WebSocket.
+            // Browsers cannot attach the normal token header to a WebSocket handshake.
+            principal = authenticate(exchange, jwt.getAdminTokenName(), jwt.getAdminSecretKey(), JwtClaimsConstant.EMP_ID,
+                    "ADMIN", true);
+        } else if (path.startsWith("/user/")) {
             principal = authenticate(exchange, jwt.getUserTokenName(), jwt.getUserSecretKey(), JwtClaimsConstant.USER_ID,
-                    "USER", path.startsWith("/ws/"));
+                    "USER", false);
         } else {
             return reject(exchange, HttpStatus.UNAUTHORIZED, "authentication is required");
         }

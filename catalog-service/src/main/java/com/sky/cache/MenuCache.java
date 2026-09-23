@@ -5,7 +5,9 @@ import com.sky.exception.BaseException;
 import com.sky.result.Result;
 import com.sky.utils.RedisCacheLock;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.stereotype.Component;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,7 +31,9 @@ public class MenuCache {
     }
     /** O(1) logical invalidation: old, versioned entries expire naturally. */
     public void invalidateDishes() {
-        redis.opsForValue().increment(DISH_CACHE_VERSION_KEY);
+        cacheVersion(); // Migrate legacy Java-serialized values before Redis INCR.
+        redis.execute((RedisCallback<Long>) connection ->
+                connection.stringCommands().incr(DISH_CACHE_VERSION_KEY.getBytes(StandardCharsets.UTF_8)));
     }
     public void invalidateAll() {
         invalidateDishes();
@@ -85,12 +89,28 @@ public class MenuCache {
         }
     }
     private String dishKey(Long categoryId) {
-        Object version = redis.opsForValue().get(DISH_CACHE_VERSION_KEY);
-        if (version == null) {
-            redis.opsForValue().setIfAbsent(DISH_CACHE_VERSION_KEY, "1");
-            version = "1";
+        return "dish:v" + cacheVersion() + ":" + categoryId;
+    }
+    /**
+     * Cache payloads use Java serialization, but this counter must be a Redis-native integer for INCR.
+     * A non-numeric legacy value is safe to reset because it only versions disposable cache entries.
+     */
+    private long cacheVersion() {
+        byte[] key = DISH_CACHE_VERSION_KEY.getBytes(StandardCharsets.UTF_8);
+        byte[] value = (byte[]) redis.execute((RedisCallback<byte[]>) connection -> connection.stringCommands().get(key));
+        if (value == null) {
+            redis.execute((RedisCallback<Boolean>) connection -> connection.stringCommands().setNX(key, "1".getBytes(StandardCharsets.UTF_8)));
+            value = (byte[]) redis.execute((RedisCallback<byte[]>) connection -> connection.stringCommands().get(key));
         }
-        return "dish:v" + version + ":" + categoryId;
+        try {
+            return Long.parseLong(new String(value, StandardCharsets.UTF_8));
+        } catch (NumberFormatException ex) {
+            redis.execute((RedisCallback<Void>) connection -> {
+                connection.stringCommands().set(key, "1".getBytes(StandardCharsets.UTF_8));
+                return null;
+            });
+            return 1L;
+        }
     }
     @SuppressWarnings("unchecked")
     private <T> List<T> read(String kind, String key) {

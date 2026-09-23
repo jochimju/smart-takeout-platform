@@ -9,9 +9,11 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.EmployeePasswordDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
+import com.sky.exception.PasswordEditFailedException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
@@ -147,6 +149,33 @@ public class EmployeeServiceImpl implements EmployeeService {
         long total = page.getTotal();
         List<Employee> records = page.getResult();
         return new PageResult(total, records);
+    }
+
+    /**
+     * 修改当前登录员工密码：先校验原密码，再更新。
+     * 密码存储方式与登录校验保持一致（当前库中为明文）。
+     */
+    @Override
+    public void editPassword(EmployeePasswordDTO employeePasswordDTO) {
+        if (employeePasswordDTO == null
+                || employeePasswordDTO.getOldPassword() == null || employeePasswordDTO.getOldPassword().isBlank()
+                || employeePasswordDTO.getNewPassword() == null || employeePasswordDTO.getNewPassword().isBlank()) {
+            throw new PasswordEditFailedException(MessageConstant.PASSWORD_EDIT_FAILED);
+        }
+        Employee employee = employeeMapper.getById(BaseContext.getCurrentId());
+        if (employee == null) {
+            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+        }
+        if (!employeePasswordDTO.getOldPassword().equals(employee.getPassword())) {
+            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+        }
+        Employee update = Employee.builder()
+                .id(employee.getId())
+                .password(employeePasswordDTO.getNewPassword())
+                .updateTime(LocalDateTime.now())
+                .updateUser(employee.getId())
+                .build();
+        employeeMapper.update(update);
     }
 
 }

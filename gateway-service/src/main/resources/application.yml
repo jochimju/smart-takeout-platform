@@ -96,6 +96,7 @@ management:
       percentiles-histogram:
         spring.cloud.gateway.requests: true
   tracing:
+    enabled: ${MANAGEMENT_TRACING_ENABLED:false}
     sampling:
       probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
   otlp:
@@ -110,6 +111,6 @@ sky:
     user-token-name: authentication
   gateway:
     auth:
-      # Keep false in production. When true, only WebSocket handshakes may use
-      # ?authentication=... as a compatibility fallback for browser clients.
-      allow-websocket-query-token: ${SKY_GATEWAY_ALLOW_WEBSOCKET_QUERY_TOKEN:false}
+      # Browsers cannot add the admin token as an arbitrary WebSocket header.
+      # This fallback is restricted to /ws/** and is re-validated by notification-service.
+      allow-websocket-query-token: ${SKY_GATEWAY_ALLOW_WEBSOCKET_QUERY_TOKEN:true}

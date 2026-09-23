@@ -21,6 +21,9 @@
             <if test="stock != null">
                 stock = #{stock},
             </if>
+            <if test="canteenId != null">
+                canteen_id = #{canteenId},
+            </if>
             <if test="description != null">
                 description = #{description},
             </if>
@@ -39,9 +42,9 @@
 
     <insert id="insert" parameterType="Setmeal" useGeneratedKeys="true" keyProperty="id">
         insert into setmeal
-        (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user, stock)
+        (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user, stock, canteen_id)
         values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime},
-                #{createUser}, #{updateUser}, #{stock})
+                #{createUser}, #{updateUser}, #{stock}, #{canteenId})
     </insert>
 
     <insert id="insertBatch" parameterType="list">

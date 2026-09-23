@@ -47,4 +47,7 @@ public class ShoppingCart implements Serializable {
     private String image;
 
     private LocalDateTime createTime;
+
+    //所属餐厅（食堂）id
+    private Long canteenId;
 }

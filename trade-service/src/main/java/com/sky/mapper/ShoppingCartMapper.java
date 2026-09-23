@@ -30,8 +30,8 @@ public interface ShoppingCartMapper {
      *
      * @param shoppingCart
      */
-    @Insert("insert into shopping_cart (name, user_id, dish_id, setmeal_id, dish_flavor, number, amount, image, create_time) " +
-            " values (#{name},#{userId},#{dishId},#{setmealId},#{dishFlavor},#{number},#{amount},#{image},#{createTime})")
+    @Insert("insert into shopping_cart (name, user_id, dish_id, setmeal_id, dish_flavor, number, amount, image, create_time, canteen_id) " +
+            " values (#{name},#{userId},#{dishId},#{setmealId},#{dishFlavor},#{number},#{amount},#{image},#{createTime},#{canteenId})")
     void insert(ShoppingCart shoppingCart);
 
     /**

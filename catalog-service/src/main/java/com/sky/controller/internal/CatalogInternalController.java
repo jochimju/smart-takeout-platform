@@ -37,13 +37,13 @@ public class CatalogInternalController {
             Dish d = dishMapper.getById(id);
             if (d != null) result.add(ProductQuote.builder().productId(id).productType(ProductQuote.DISH)
                     .name(d.getName()).image(d.getImage()).price(d.getPrice()).status(d.getStatus())
-                    .stock(d.getStock()).version(version(d.getUpdateTime())).build());
+                    .stock(d.getStock()).version(version(d.getUpdateTime())).canteenId(d.getCanteenId()).build());
         });
         if (request.getSetmealIds() != null) request.getSetmealIds().stream().distinct().forEach(id -> {
             Setmeal s = setmealMapper.getById(id);
             if (s != null) result.add(ProductQuote.builder().productId(id).productType(ProductQuote.SETMEAL)
                     .name(s.getName()).image(s.getImage()).price(s.getPrice()).status(s.getStatus())
-                    .stock(s.getStock()).version(version(s.getUpdateTime())).build());
+                    .stock(s.getStock()).version(version(s.getUpdateTime())).canteenId(s.getCanteenId()).build());
         });
         return result;
     }

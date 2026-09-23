@@ -37,6 +37,12 @@ public class SetmealVO implements Serializable {
     //图片
     private String image;
 
+    //可售库存
+    private Integer stock;
+
+    //所属餐厅（食堂）id
+    private Long canteenId;
+
     //更新时间
     private LocalDateTime updateTime;
 

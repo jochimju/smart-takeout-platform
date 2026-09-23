@@ -11,6 +11,7 @@ import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import com.sky.entity.SeckillActivity;
 import com.sky.entity.Setmeal;
+import com.sky.entity.ShoppingCart;
 import com.sky.entity.UserRedPacket;
 import com.sky.exception.OrderBusinessException;
 import com.sky.client.AccountClient;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 import java.util.List;
 
@@ -127,18 +129,63 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     @Override
-    public List<SeckillActivityVO> listAvailableActivities() {
+    public List<SeckillActivityVO> listAvailableActivities(Long canteenId) {
         List<SeckillActivityVO> activities = seckillActivityMapper.listAvailable();
         for (SeckillActivityVO activity : activities) {
             activity.setBeginTimestamp(toMillis(activity.getBeginTime()));
             activity.setEndTimestamp(toMillis(activity.getEndTime()));
         }
-        return activities;
+        Map<Long, Long> setmealCanteens = fillSetmealInfo(activities);
+        if (canteenId == null) {
+            return activities;
+        }
+        // 只保留当前餐厅的套餐活动，避免 A 餐厅的菜单里出现 B 餐厅的秒杀。
+        return activities.stream()
+                .filter(activity -> canteenId.equals(setmealCanteens.get(activity.getSetmealId())))
+                .toList();
     }
 
     @Override
     public List<SeckillActivityVO> listActivities() {
-        return seckillActivityMapper.list();
+        List<SeckillActivityVO> activities = seckillActivityMapper.list();
+        fillSetmealInfo(activities);
+        return activities;
+    }
+
+    /**
+     * 套餐资料归商品服务所有，这里批量补齐秒杀列表需要的名称、图片和原价。
+     * 同时返回「套餐 id -> 所属餐厅 id」映射，供按餐厅过滤。
+     * 商品服务不可用时只降级为缺少套餐资料，不能让整个活动列表查询失败。
+     */
+    private Map<Long, Long> fillSetmealInfo(List<SeckillActivityVO> activities) {
+        Map<Long, Long> setmealCanteens = new java.util.HashMap<>();
+        if (activities == null || activities.isEmpty()) {
+            return setmealCanteens;
+        }
+        try {
+            List<ShoppingCart> refs = activities.stream()
+                    .map(SeckillActivityVO::getSetmealId)
+                    .filter(java.util.Objects::nonNull)
+                    .distinct()
+                    .map(id -> ShoppingCart.builder().setmealId(id).build())
+                    .toList();
+            if (refs.isEmpty()) {
+                return setmealCanteens;
+            }
+            Map<String, ProductQuote> quotes = catalogQuoteService.quotes(refs);
+            for (SeckillActivityVO activity : activities) {
+                ProductQuote quote = quotes.get(ProductQuote.SETMEAL + ':' + activity.getSetmealId());
+                if (quote != null) {
+                    activity.setSetmealName(quote.getName());
+                    activity.setImage(quote.getImage());
+                    activity.setOriginalPrice(quote.getPrice());
+                    setmealCanteens.put(activity.getSetmealId(), quote.getCanteenId());
+                }
+            }
+        } catch (RuntimeException ex) {
+            log.warn("秒杀活动套餐资料查询失败，降级为不展示套餐名称与原价", ex);
+        }
+        return setmealCanteens;
     }
 
     @Override

@@ -34,15 +34,21 @@ public interface SeckillActivityMapper {
             "stock_version=stock_version+1 where id=#{id} and remaining_stock+#{delta}>=0 and stock+#{delta}>=0")
     int adjust(@Param("id") Long id, @Param("delta") int delta);
 
-    @Select("select a.id, a.setmeal_id setmealId, s.name setmealName, s.image, s.price originalPrice, " +
-            "a.seckill_price seckillPrice, a.stock, a.remaining_stock remainingStock, s.monthly_sales monthlySales, a.purchase_limit purchaseLimit, a.begin_time beginTime, a.end_time endTime, a.status " +
-            "from seckill_activity a join setmeal s on s.id=a.setmeal_id order by a.begin_time desc")
+    /**
+     * 秒杀活动只保存套餐 id，套餐资料归商品服务所有。
+     * 不能 JOIN 交易库里的旧 setmeal 表：新建套餐只写商品库，关联不上会导致整条活动从列表消失。
+     * 名称、图片和原价由 SeckillServiceImpl 通过商品服务报价补齐。
+     */
+    @Select("select a.id, a.setmeal_id setmealId, a.seckill_price seckillPrice, a.stock, " +
+            "a.remaining_stock remainingStock, a.purchase_limit purchaseLimit, " +
+            "a.begin_time beginTime, a.end_time endTime, a.status " +
+            "from seckill_activity a order by a.begin_time desc")
     List<SeckillActivityVO> list();
 
-    @Select("select a.id, a.setmeal_id setmealId, s.name setmealName, s.image, s.price originalPrice, " +
-            "a.seckill_price seckillPrice, a.remaining_stock stock, a.remaining_stock remainingStock, s.monthly_sales monthlySales, a.purchase_limit purchaseLimit, a.begin_time beginTime, a.end_time endTime, a.status " +
-            "from seckill_activity a join setmeal s on s.id=a.setmeal_id " +
-            "where a.status=1 and a.end_time >= now() order by a.begin_time asc")
+    @Select("select a.id, a.setmeal_id setmealId, a.seckill_price seckillPrice, a.remaining_stock stock, " +
+            "a.remaining_stock remainingStock, a.purchase_limit purchaseLimit, " +
+            "a.begin_time beginTime, a.end_time endTime, a.status " +
+            "from seckill_activity a where a.status=1 and a.end_time >= now() order by a.begin_time asc")
     List<SeckillActivityVO> listAvailable();
 
     @Insert("insert into seckill_activity (setmeal_id, stock, remaining_stock, stock_version, purchase_limit, seckill_price, begin_time, end_time, status, create_time, update_time) " +

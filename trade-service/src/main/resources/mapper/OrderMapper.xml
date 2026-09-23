@@ -7,10 +7,11 @@
         (number, status, user_id, address_book_id, order_time, expire_time, checkout_time, pay_method, pay_status, amount,
          coupon_id, discount_amount, user_red_packet_id, remark,
          phone, address, consignee, estimated_delivery_time, delivery_status, pack_amount, tableware_number,
-         tableware_status)
+         tableware_status, canteen_id, canteen_name)
         values (#{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{expireTime}, #{checkoutTime}, #{payMethod},
                 #{payStatus}, #{amount}, #{couponId}, #{discountAmount}, #{userRedPacketId}, #{remark}, #{phone}, #{address}, #{consignee},
-                #{estimatedDeliveryTime}, #{deliveryStatus}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
+                #{estimatedDeliveryTime}, #{deliveryStatus}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus},
+                #{canteenId}, #{canteenName})
     </insert>
 
     <update id="update" parameterType="com.sky.entity.Orders">

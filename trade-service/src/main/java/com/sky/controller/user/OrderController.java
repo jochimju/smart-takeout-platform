@@ -146,9 +146,8 @@ public class OrderController {
      */
     @PostMapping("/repetition/{id}")
     @ApiOperation("reorder")
-    public Result repetition(@PathVariable Long id) {
-        orderService.repetition(id);
-        return Result.success();
+    public Result<java.util.Map<String, Object>> repetition(@PathVariable Long id) {
+        return Result.success(orderService.repetition(id));
     }
     /**
      * 闁活潿鍔嶉崺娑㈠磼椤掆偓瀹?

@@ -49,4 +49,7 @@ public class Dish implements Serializable {
 
     private Long updateUser;
 
+    //所属餐厅（食堂）id
+    private Long canteenId;
+
 }

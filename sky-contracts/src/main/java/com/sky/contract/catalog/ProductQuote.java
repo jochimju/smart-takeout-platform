@@ -22,4 +22,6 @@ public class ProductQuote {
     private Integer status;
     private Integer stock;
     private Long version;
+    /** 商品所属餐厅，交易侧据此按餐厅过滤秒杀等活动。 */
+    private Long canteenId;
 }

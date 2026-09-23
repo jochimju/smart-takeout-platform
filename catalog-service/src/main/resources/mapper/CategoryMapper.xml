@@ -31,6 +31,9 @@
             <if test="status != null">
                 status = #{status},
             </if>
+            <if test="canteenId != null">
+                canteen_id = #{canteenId},
+            </if>
             <if test="updateTime != null">
                 update_time = #{updateTime},
             </if>
@@ -46,6 +49,9 @@
         where status = 1
         <if test="type != null">
             and type = #{type}
+        </if>
+        <if test="canteenId != null">
+            and canteen_id = #{canteenId}
         </if>
         order by sort asc,create_time desc
     </select>

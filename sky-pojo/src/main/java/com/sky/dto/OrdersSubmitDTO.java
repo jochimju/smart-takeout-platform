@@ -37,6 +37,10 @@ public class OrdersSubmitDTO implements Serializable {
 
     private Long couponId;
 
+    /** 下单时用户所在的餐厅，用于订单归属和"再来一单"定位原餐厅。 */
+    private Long canteenId;
+    private String canteenName;
+
     /** A concrete red-packet asset, not the legacy coupon template id. */
     private Long userRedPacketId;
 

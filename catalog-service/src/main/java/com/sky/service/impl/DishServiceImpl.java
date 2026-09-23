@@ -67,6 +67,11 @@ public class DishServiceImpl implements DishService {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
 
+        //库存兜底：dish.stock 是非空列，前端未传时默认 0，避免插入 NULL 报错
+        if (dish.getStock() == null) {
+            dish.setStock(0);
+        }
+
         //向菜品表插入1条数据  （每次只能添加一个菜品）
         dishMapper.insert(dish);//后绪步骤实现
 

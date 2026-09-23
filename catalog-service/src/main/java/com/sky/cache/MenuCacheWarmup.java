@@ -33,7 +33,7 @@ public class MenuCacheWarmup {
         int completed = 0;
         int failed = 0;
         try {
-            List<Category> active = categories.list(null); // SQL 仅返回启用分类。
+            List<Category> active = categories.list(null, null); // SQL 仅返回启用分类。
             for (Category category : active) {
                 try {
                     if (Integer.valueOf(1).equals(category.getType())) {

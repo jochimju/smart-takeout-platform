@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
@@ -122,6 +123,8 @@ public class OrderServiceImpl implements OrderService {
                 .couponId(ordersSubmitDTO.getCouponId())
                 .userRedPacketId(ordersSubmitDTO.getUserRedPacketId())
                 .useRedPacket(ordersSubmitDTO.getUseRedPacket())
+                .canteenId(ordersSubmitDTO.getCanteenId())
+                .canteenName(ordersSubmitDTO.getCanteenName())
                 .build();
 
         // The request is accepted quickly; cart validation, pricing, stock
@@ -215,6 +218,19 @@ public class OrderServiceImpl implements OrderService {
         // Publish only after the order transaction commits.  The delay queue's
         // 15-minute TTL dead-letters it to the cancellation consumer.
         orderMessagePublisher.timeoutAfterCommit(order.getNumber());
+    }
+
+    /**
+     * Runs in its own transaction because the consumer transaction that called
+     * it has just rolled back. Do not remove a binding when an order actually
+     * exists: a duplicate delivery is still a successful submission.
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void releaseFailedSubmission(String orderNumber) {
+        if (orderNumber != null && orderMapper.getByNumber(orderNumber) == null) {
+            orderSubmitRequestMapper.releaseByOrderNumber(orderNumber);
+        }
     }
 
     @Transactional
@@ -342,6 +358,18 @@ public class OrderServiceImpl implements OrderService {
         return orderVO;
     }
 
+    @Override
+    public OrderVO adminDetails(Long id) {
+        Orders orders = orderMapper.getById(id);
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders, orderVO);
+        orderVO.setOrderDetailList(orderDetailMapper.getByOrderId(orders.getId()));
+        return orderVO;
+    }
+
     /**
      * 闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹存瑥鐏╅柣顓燁殜閺屸€愁吋閸愩劌顬嬮柛鐔告倐閺岋綁鎮╅柆宥嗩€栭梺鎼炲妿閹虫捇鎮?
      *
@@ -373,10 +401,10 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param id
      */
-    public void repetition(Long id) {
+    public Map<String, Object> repetition(Long id) {
         // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛仴濞存粌缍婇弻鐔煎箚瑜嶉弳杈ㄣ亜閵堝懏鍤囬柡宀嬬秮閿濈偤顢楅埀顒佷繆娴犲鐓曢柍鍝勫€块幖鈺?
         Long userId = BaseContext.getCurrentId();
-        requireOwnedOrder(id);
+        Orders order = requireOwnedOrder(id);
 
         // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕霉閿濆洤鍔嬪┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒佸垔閺€鍕⒒娴ｅ憡鎯堥悶姘煎亰瀹曟洟骞橀鍛櫔濠德板€曠€氥劍绂嶈ぐ鎺撶厵闁诡垎鍐╂瘣濡炪們鍊曢幊姗€骞冪憴鍕闂傚牊绋撴禒濂告倵鐟欏嫭绀堥柛鐘虫崌楠炲繘鎮╃紒妯绘珕闂佽姤锚椤︻垱绔?
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
@@ -395,6 +423,12 @@ public class OrderServiceImpl implements OrderService {
 
         // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸繄鐛ュ┑顔姐仜閸嬫捇鏌熼銊ユ搐閻撴盯鏌涢弴銊ュ闁烩晛鍟撮弻锝嗘償閿濆棙姣勫銈冨灩閿曨亪骞愰崨鏉戠妞ゆ牗姘ㄩ濂告偡濠婂懎顣奸悽顖涘笒閳诲秹濡堕崱娆戭啎闂佹寧绻傞悧婊堝吹濞嗗繆鏀芥い鏃€鍎虫禒杈┾偓瑙勬礃瀹€鎼佸箖瑜斿畷濂告偄閸撴彃鏅欓梻鍌欒兌椤㈠﹪顢氶弽顓炵獥闁哄稁鍋夋慨?
         shoppingCartMapper.insertBatch(shoppingCartList);
+
+        // 返回订单快照中的餐厅，供小程序"再来一单"定位原餐厅。
+        Map<String, Object> canteen = new HashMap<>();
+        canteen.put("id", order.getCanteenId());
+        canteen.put("name", order.getCanteenName());
+        return canteen;
     }
 
     /**

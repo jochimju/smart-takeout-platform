@@ -40,4 +40,7 @@ public class Category implements Serializable {
 
     //修改人
     private Long updateUser;
+
+    //所属餐厅（食堂）id
+    private Long canteenId;
 }

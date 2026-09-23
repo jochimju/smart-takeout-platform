@@ -50,6 +50,7 @@ management:
       percentiles-histogram:
         http.server.requests: true
   tracing:
+    enabled: ${MANAGEMENT_TRACING_ENABLED:false}
     sampling:
       probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
   otlp:
@@ -57,10 +58,11 @@ management:
       endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 sky:
   jwt:
-    # Must match the user JWT key used by account/catalog/trade services.
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:itcast}
+    admin-token-name: token
     user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
     user-token-name: authentication
   internal:
     token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}
   websocket:
-    allow-query-token: ${SKY_GATEWAY_ALLOW_WEBSOCKET_QUERY_TOKEN:false}
+    allow-query-token: ${SKY_GATEWAY_ALLOW_WEBSOCKET_QUERY_TOKEN:true}

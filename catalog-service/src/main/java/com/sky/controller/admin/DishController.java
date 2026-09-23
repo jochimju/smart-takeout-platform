@@ -89,7 +89,7 @@ public class DishController {
         List<DishVO> list = (name == null && canteenId == null)
                 ? dishService.listWithFlavorCache(categoryId)
                 : dishService.listWithFlavor(Dish.builder()
-                    .categoryId(categoryId).name(name).status(StatusConstant.ENABLE).build());
+                    .categoryId(categoryId).name(name).canteenId(canteenId).status(StatusConstant.ENABLE).build());
         return Result.success(list);
     }
 

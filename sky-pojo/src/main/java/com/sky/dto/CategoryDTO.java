@@ -19,4 +19,7 @@ public class CategoryDTO implements Serializable {
     //排序
     private Integer sort;
 
+    //所属餐厅（食堂）id
+    private Long canteenId;
+
 }

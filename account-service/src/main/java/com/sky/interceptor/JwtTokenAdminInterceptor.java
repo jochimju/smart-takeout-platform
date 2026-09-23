@@ -46,7 +46,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 
         //2銆佹牎楠屼护鐗?
         try {
-            log.info("jwt鏍￠獙:{}", token);
+            log.debug("validating administrator JWT");
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
             log.info("current employee id: {}", empId);

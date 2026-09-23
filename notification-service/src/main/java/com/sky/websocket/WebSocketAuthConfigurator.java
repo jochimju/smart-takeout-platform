@@ -11,7 +11,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-/** Re-validates user JWTs for direct notification-service WebSocket access. */
+/** Re-validates administrator JWTs for order-alert WebSocket access. */
 public class WebSocketAuthConfigurator extends ServerEndpointConfig.Configurator {
     static final String AUTHENTICATED_USER_ID = "authenticatedUserId";
     static final String AUTH_REJECTED = "authRejected";
@@ -21,14 +21,14 @@ public class WebSocketAuthConfigurator extends ServerEndpointConfig.Configurator
                                 jakarta.websocket.HandshakeResponse response) {
         try {
             JwtProperties jwt = SpringContext.get().getBean(JwtProperties.class);
-            String token = first(request.getHeaders().get(jwt.getUserTokenName()));
+            String token = first(request.getHeaders().get(jwt.getAdminTokenName()));
             if ((token == null || token.isBlank()) && allowQueryToken()) {
-                token = queryValue(request.getQueryString(), jwt.getUserTokenName());
+                token = queryValue(request.getQueryString(), jwt.getAdminTokenName());
             }
-            Claims claims = JwtUtil.parseJWT(jwt.getUserSecretKey(), token);
-            Object userId = claims.get(JwtClaimsConstant.USER_ID);
-            if (userId == null) throw new IllegalArgumentException("user claim missing");
-            config.getUserProperties().put(AUTHENTICATED_USER_ID, String.valueOf(userId));
+            Claims claims = JwtUtil.parseJWT(jwt.getAdminSecretKey(), token);
+            Object employeeId = claims.get(JwtClaimsConstant.EMP_ID);
+            if (employeeId == null) throw new IllegalArgumentException("employee claim missing");
+            config.getUserProperties().put(AUTHENTICATED_USER_ID, String.valueOf(employeeId));
         } catch (RuntimeException ex) {
             config.getUserProperties().put(AUTH_REJECTED, Boolean.TRUE);
         }
