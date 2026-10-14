@@ -12,6 +12,8 @@ class SeckillReleaseTest {
   SeckillActivityMapper activities=mock(SeckillActivityMapper.class);
   SeckillOrderGuardMapper guards=mock(SeckillOrderGuardMapper.class);
   ReflectionTestUtils.setField(service,"mapper",mapper); ReflectionTestUtils.setField(service,"activities",activities); ReflectionTestUtils.setField(service,"guards",guards);
+  ReflectionTestUtils.setField(service,"asyncStore",mock(SeckillAsyncStore.class));
+  ReflectionTestUtils.setField(service,"inventoryReturn",mock(SeckillInventoryReturn.class));
   SeckillReservation r=new SeckillReservation();r.setActivityId(1L);
   when(mapper.get("SK-test")).thenReturn(r);when(mapper.lock("SK-test")).thenReturn(r);
   when(activities.lock(1L)).thenReturn(new SeckillActivity());when(mapper.releaseOnce("SK-test")).thenReturn(1,0);when(activities.restore(1L)).thenReturn(1);

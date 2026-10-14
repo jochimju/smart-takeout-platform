@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-14",
+  "merchant_live_verified": false,
+  "final_payment_acceptance": {
+    "database_scenarios": 13,
+    "passed": 40,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 4,
+    "tests": 44,
+    "log": ".runtime/payment-final-acceptance.log"
+  },
+  "frontend": {
+    "tests": 27,
+    "log": ".runtime/payment-frontend-regression.log",
+    "passed": 27
+  },
+  "broader_regression": {
+    "passed": 186,
+    "note": "Completed before the final migration rename and additional expired-budget atomicity scenario; affected payment/order suites were rerun afterward.",
+    "tests": 190,
+    "errors": 0,
+    "explicit_excluded_test": "SeckillMysqlIntegrationTest#batchPersistsOneOutboxPerRequestEvenWithConcurrentRepeatedHandoffs",
+    "log": ".runtime/payment-regression-known-exclusion.log",
+    "failures": 0,
+    "skipped": 4
+  },
+  "unexcluded_regression": {
+    "reproductions": 2,
+    "log": ".runtime/payment-full-regression-with-seckill-failure.log",
+    "failure": "Concurrent seckill batch handoff: DuplicateKeyException",
+    "successful": false
+  },
+  "new_migrations": [
+    "trade:V2026101502__payment_recovery.sql",
+    "account:V2026101501__payment_operations_permissions.sql"
+  ],
+  "live_acceptance_remaining": [
+    "merchant credentials and real cash transactions",
+    "public HTTPS callback and gateway routing",
+    "real certificate refresh and channel bills",
+    "deployment alert integration"
+  ]
+}

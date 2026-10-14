@@ -1,0 +1,10 @@
+ALTER TABLE shopping_cart ADD COLUMN row_version BIGINT NOT NULL DEFAULT 0;
+ALTER TABLE order_submit_request
+ ADD COLUMN request_hash VARCHAR(64) NULL,
+ ADD COLUMN command_body MEDIUMTEXT NULL,
+ ADD COLUMN state VARCHAR(16) NOT NULL DEFAULT 'ACCEPTED',
+ ADD COLUMN last_error VARCHAR(500) NULL,
+ ADD COLUMN attempts INT NOT NULL DEFAULT 0,
+ ADD COLUMN deadline_at DATETIME(3) NULL,
+ ADD COLUMN next_at DATETIME(3) NULL,
+ ADD INDEX idx_normal_request_ready(state,next_at);

@@ -12,11 +12,16 @@
 
 | 数据 | Key | 载荷 |
 | --- | --- | --- |
-| 菜品 | dish_<categoryId> | List<DishVO> |
-| 套餐 | userSetmealCache::<categoryId> | Result<List<Setmeal>> |
+| 菜品 | dish:v<version>:<categoryId> | List<DishVO> |
+| 套餐 | setmeal:v<version>:<categoryId> | Result<List<Setmeal>> |
+| 菜品版本 | dish:cache:version | Redis 原生整数 |
+| 套餐版本 | setmeal:cache:version | Redis 原生整数 |
 | 锁 | lock:cache: + 缓存 Key | UUID |
 
 套餐控制器移除 @Cacheable，改用统一互斥查询；管理端 @CacheEvict 和停售监听器保持兼容。键采用字符串序列化，值采用项目既有 JDK 序列化，Lua TTL 单独编码为十进制字节。构造器明确选择 redisTemplate，避免误注入 StringRedisTemplate。
+
+2026-10-14：套餐新增、修改、删除和起停售均在业务事务内写入持久化失效任务；菜品写操作由 BEFORE_COMMIT 监听器在同一事务内保存任务，停售联动套餐时保存两类任务。提交成功后尝试提升版本，失败由定时任务重试；回滚既不保留任务，也不提升版本。旧查询回填旧版本，后续查询读取新版本；旧数据自然过期。Controller 的直接 Redis 失效与 @CacheEvict 已移除。
+新代码不会读取旧的 `userSetmealCache::<categoryId>` 键。部署时应统一更新所有 catalog-service 实例，避免旧实例继续修改数据库却不提升套餐版本。
 
 ## 配置
 
@@ -69,8 +74,8 @@ mvn -pl sky-server -am test -Dtest=DishCacheMutexTest,DishStatusCacheTest -Dsure
 ## 边界
 
 - 进程长暂停或 Redis 故障仍可能导致失锁后重复查询；锁归属检查阻止旧请求回填，不承诺所有故障下绝无重复 SQL。
-- Cache Aside 删除与并发读取仍有竞态，没有数据库版本 fencing，不承诺强一致性。
-- 删除失败尚无可靠重试队列。清理沿用项目现有方式，规模扩大后需评估 SCAN 或版本化失效。
+- 菜品、套餐版本键隔离正常失效路径的旧回填；已经开始的查询仍可能返回旧快照，不承诺强一致性。
+- 提交后提升版本失败或进程退出由数据库任务表补偿，使用带 Token 的租约接管、无次数上限重试和最多 300 秒退避。恢复时间取决于 Redis/数据库恢复、任务积压与退避时间，不承诺强一致性。
 - 新 TTL 在重建后生效，旧缓存可能沿用旧 TTL；部署时可在维护窗口通过现有管理操作失效相关缓存。
 
 ## 项目描述

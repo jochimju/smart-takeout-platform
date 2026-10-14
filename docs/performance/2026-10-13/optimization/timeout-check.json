@@ -1,0 +1,19 @@
+{
+  "futureTimeoutSentEarly": false,
+  "dueUnpaidCancelled": true,
+  "paidOrderPreserved": true,
+  "earlyMessagePreservedPendingOrder": true,
+  "mysqlStockReturnedExactlyOnce": true,
+  "beforeStock": 57999,
+  "afterStock": 58000,
+  "timeoutOutboxStatuses": {
+    "SK1791861125010fe27efcd": 1,
+    "SK179186112506138814cdc": 1,
+    "SK179186112480018fe0887": 1
+  },
+  "orderStatuses": {
+    "SK179186112480018fe0887": 1,
+    "SK1791861125010fe27efcd": 6,
+    "SK179186112506138814cdc": 2
+  }
+}

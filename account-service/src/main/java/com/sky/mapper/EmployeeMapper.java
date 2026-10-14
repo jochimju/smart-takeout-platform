@@ -11,6 +11,11 @@ import java.awt.*;
 
 @Mapper
 public interface EmployeeMapper {
+    @Select("select id, password from employee") java.util.List<Employee> credentials();
+    @org.apache.ibatis.annotations.Update("update employee set password = #{next}, auth_version = auth_version + 1, update_time = CURRENT_TIMESTAMP where id = #{id} and password = #{old}")
+    int changePassword(@org.apache.ibatis.annotations.Param("id") Long id,
+                       @org.apache.ibatis.annotations.Param("old") String old,
+                       @org.apache.ibatis.annotations.Param("next") String next);
 
     /**
      * 根据用户名查询员工

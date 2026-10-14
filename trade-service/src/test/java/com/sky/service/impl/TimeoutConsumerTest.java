@@ -14,7 +14,7 @@ class TimeoutConsumerTest {
     final OrderService orders=mock(OrderService.class);
     final TimeoutFailureService failures=mock(TimeoutFailureService.class);
     final Channel channel=mock(Channel.class);
-    final OrderMessageListener listener=new OrderMessageListener(orders,failures);
+    final OrderMessageListener listener=new OrderMessageListener(orders,failures,mock(com.sky.mapper.MqFailMessageMapper.class));
     Message message() { MessageProperties p=new MessageProperties(); p.setDeliveryTag(3); return new Message(new byte[0],p); }
 
     @Test void acknowledgesOnlyAfterBusinessReturns() throws Exception {

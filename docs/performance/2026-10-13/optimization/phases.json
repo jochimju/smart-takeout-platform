@@ -1,0 +1,1244 @@
+[
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "accept_insert",
+    "count": 2000,
+    "total_seconds": 1.3508859,
+    "avg_ms": 0.67544295
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "body",
+    "count": 2000,
+    "total_seconds": 3.0463642,
+    "avg_ms": 1.5231821
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "command_outbox",
+    "count": 2000,
+    "total_seconds": 1.6609328,
+    "avg_ms": 0.8304664
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "commit_window",
+    "count": 2000,
+    "total_seconds": 18.2748065,
+    "avg_ms": 9.13740325
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "jdbc_auto_commit_false",
+    "count": 2000,
+    "total_seconds": 0.4184126,
+    "avg_ms": 0.2092063
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "jdbc_auto_commit_true",
+    "count": 2000,
+    "total_seconds": 0.4636778,
+    "avg_ms": 0.2318389
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "jdbc_commit",
+    "count": 2000,
+    "total_seconds": 18.2102505,
+    "avg_ms": 9.10512525
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "total",
+    "count": 2000,
+    "total_seconds": 22.4672285,
+    "avg_ms": 11.23361425
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "transaction_cleanup",
+    "count": 2000,
+    "total_seconds": 0.5105236,
+    "avg_ms": 0.2552618
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "bridge",
+    "outcome": "bridged",
+    "phase": "transaction_setup",
+    "count": 2000,
+    "total_seconds": 0.5649629,
+    "avg_ms": 0.28248145
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "activity_lock",
+    "count": 2000,
+    "total_seconds": 13.6476697,
+    "avg_ms": 6.82383485
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "address",
+    "count": 2000,
+    "total_seconds": 7.7695939,
+    "avg_ms": 3.88479695
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "body",
+    "count": 2000,
+    "total_seconds": 49.4858004,
+    "avg_ms": 24.7429002
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "commit_window",
+    "count": 2000,
+    "total_seconds": 18.2115654,
+    "avg_ms": 9.105782700000002
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "details",
+    "count": 2000,
+    "total_seconds": 1.4990114,
+    "avg_ms": 0.7495057
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "guard_insert",
+    "count": 2000,
+    "total_seconds": 1.2171318,
+    "avg_ms": 0.6085659
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_auto_commit_false",
+    "count": 2000,
+    "total_seconds": 0.409657,
+    "avg_ms": 0.2048285
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_auto_commit_true",
+    "count": 2000,
+    "total_seconds": 17.557981,
+    "avg_ms": 8.778990500000003
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_commit",
+    "count": 2000,
+    "total_seconds": 18.1463194,
+    "avg_ms": 9.0731597
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "order_insert",
+    "count": 2000,
+    "total_seconds": 1.7998929,
+    "avg_ms": 0.89994645
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "quote",
+    "count": 2000,
+    "total_seconds": 15.0857196,
+    "avg_ms": 7.5428598
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "request_lock",
+    "count": 2000,
+    "total_seconds": 0.9651301,
+    "avg_ms": 0.48256505
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "reservation",
+    "count": 2000,
+    "total_seconds": 2.1664526,
+    "avg_ms": 1.0832263
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "snapshot",
+    "count": 2000,
+    "total_seconds": 0.8513696,
+    "avg_ms": 0.4256848
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "stock_update",
+    "count": 2000,
+    "total_seconds": 1.1903371,
+    "avg_ms": 0.59516855
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "success_state",
+    "count": 2000,
+    "total_seconds": 1.7151733,
+    "avg_ms": 0.85758665
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "timeout_confirm_wait",
+    "count": 2000,
+    "total_seconds": 17.7655124,
+    "avg_ms": 8.8827562
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "timeout_mark_published",
+    "count": 2000,
+    "total_seconds": 1.5164472,
+    "avg_ms": 0.7582236
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "timeout_outbox",
+    "count": 2000,
+    "total_seconds": 1.3466283,
+    "avg_ms": 0.67331415
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "timeout_publish",
+    "count": 2000,
+    "total_seconds": 20.0648374,
+    "avg_ms": 10.0324187
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "timeout_send",
+    "count": 2000,
+    "total_seconds": 0.76116,
+    "avg_ms": 0.38058
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "total",
+    "count": 2000,
+    "total_seconds": 106.0038092,
+    "avg_ms": 53.0019046
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "transaction_cleanup",
+    "count": 2000,
+    "total_seconds": 17.5990156,
+    "avg_ms": 8.7995078
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "transaction_setup",
+    "count": 2000,
+    "total_seconds": 0.5383035,
+    "avg_ms": 0.26915175
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "body",
+    "count": 12,
+    "total_seconds": 0.0042502,
+    "avg_ms": 0.35418333333333335
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "commit_window",
+    "count": 12,
+    "total_seconds": 0.0022333,
+    "avg_ms": 0.18610833333333335
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_auto_commit_false",
+    "count": 12,
+    "total_seconds": 0.0018782,
+    "avg_ms": 0.15651666666666667
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_auto_commit_true",
+    "count": 12,
+    "total_seconds": 0.0016161,
+    "avg_ms": 0.13467500000000002
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_commit",
+    "count": 12,
+    "total_seconds": 0.0019972,
+    "avg_ms": 0.16643333333333335
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "snapshot",
+    "count": 12,
+    "total_seconds": 0.0041462,
+    "avg_ms": 0.3455166666666667
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "total",
+    "count": 12,
+    "total_seconds": 0.010819,
+    "avg_ms": 0.9015833333333334
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "transaction_cleanup",
+    "count": 12,
+    "total_seconds": 0.0017179,
+    "avg_ms": 0.14315833333333333
+  },
+  {
+    "experiment": "baseline100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "transaction_setup",
+    "count": 12,
+    "total_seconds": 0.0022566,
+    "avg_ms": 0.18805000000000002
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "accept_insert",
+    "count": 103,
+    "total_seconds": 0.4604529,
+    "avg_ms": 4.470416504854369
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "activity_lock",
+    "count": 103,
+    "total_seconds": 3.5107811,
+    "avg_ms": 34.085253398058256
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "body",
+    "count": 103,
+    "total_seconds": 5.033164,
+    "avg_ms": 48.86566990291262
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "command_outbox",
+    "count": 103,
+    "total_seconds": 0.8440395,
+    "avg_ms": 8.194558252427186
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "commit_window",
+    "count": 103,
+    "total_seconds": 1.1772522,
+    "avg_ms": 11.42963300970874
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "jdbc_auto_commit_false",
+    "count": 103,
+    "total_seconds": 0.0927867,
+    "avg_ms": 0.9008417475728155
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "jdbc_auto_commit_true",
+    "count": 103,
+    "total_seconds": 0.0297433,
+    "avg_ms": 0.2887699029126214
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "jdbc_commit",
+    "count": 103,
+    "total_seconds": 1.171196,
+    "avg_ms": 11.37083495145631
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "total",
+    "count": 103,
+    "total_seconds": 6.3744725,
+    "avg_ms": 61.88808252427185
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "transaction_cleanup",
+    "count": 103,
+    "total_seconds": 0.033895,
+    "avg_ms": 0.32907766990291265
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "transaction_setup",
+    "count": 103,
+    "total_seconds": 0.1106025,
+    "avg_ms": 1.0738106796116504
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "activity_lock",
+    "count": 2001,
+    "total_seconds": 36.4060721,
+    "avg_ms": 18.193939080459774
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "address",
+    "count": 2001,
+    "total_seconds": 5.6949497,
+    "avg_ms": 2.8460518240879558
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "body",
+    "count": 2001,
+    "total_seconds": 82.1823528,
+    "avg_ms": 41.07064107946027
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "commit_window",
+    "count": 2001,
+    "total_seconds": 15.7182557,
+    "avg_ms": 7.855200249875062
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "details",
+    "count": 2001,
+    "total_seconds": 1.4437101,
+    "avg_ms": 0.7214943028485757
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "guard_insert",
+    "count": 2001,
+    "total_seconds": 1.3245559,
+    "avg_ms": 0.6619469765117442
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_auto_commit_false",
+    "count": 2001,
+    "total_seconds": 0.4681637,
+    "avg_ms": 0.2339648675662169
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_auto_commit_true",
+    "count": 2001,
+    "total_seconds": 0.558689,
+    "avg_ms": 0.27920489755122435
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_commit",
+    "count": 2001,
+    "total_seconds": 15.6395192,
+    "avg_ms": 7.815851674162919
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "order_insert",
+    "count": 2001,
+    "total_seconds": 2.1181501,
+    "avg_ms": 1.0585457771114442
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "quote",
+    "count": 2001,
+    "total_seconds": 25.7933439,
+    "avg_ms": 12.890226836581709
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "request_lock",
+    "count": 2001,
+    "total_seconds": 0.9732163,
+    "avg_ms": 0.4863649675162419
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "reservation",
+    "count": 2001,
+    "total_seconds": 2.4820647,
+    "avg_ms": 1.240412143928036
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "snapshot",
+    "count": 2001,
+    "total_seconds": 0.8049463,
+    "avg_ms": 0.4022720139930035
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "stock_update",
+    "count": 2001,
+    "total_seconds": 1.3016187,
+    "avg_ms": 0.650484107946027
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "success_state",
+    "count": 2001,
+    "total_seconds": 2.0807834,
+    "avg_ms": 1.0398717641179411
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "timeout_outbox",
+    "count": 2001,
+    "total_seconds": 1.4821201,
+    "avg_ms": 0.7406897051474263
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "total",
+    "count": 2001,
+    "total_seconds": 99.2284401,
+    "avg_ms": 49.589425337331335
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "transaction_cleanup",
+    "count": 2001,
+    "total_seconds": 0.6151145,
+    "avg_ms": 0.30740354822588706
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "transaction_setup",
+    "count": 2001,
+    "total_seconds": 0.6280461,
+    "avg_ms": 0.31386611694152927
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "body",
+    "count": 33,
+    "total_seconds": 0.0094066,
+    "avg_ms": 0.28504848484848483
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "commit_window",
+    "count": 33,
+    "total_seconds": 0.004951,
+    "avg_ms": 0.150030303030303
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_auto_commit_false",
+    "count": 33,
+    "total_seconds": 0.0054156,
+    "avg_ms": 0.1641090909090909
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_auto_commit_true",
+    "count": 33,
+    "total_seconds": 0.0045936,
+    "avg_ms": 0.1392
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_commit",
+    "count": 33,
+    "total_seconds": 0.0046891,
+    "avg_ms": 0.14209393939393938
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "snapshot",
+    "count": 33,
+    "total_seconds": 0.0093004,
+    "avg_ms": 0.28183030303030304
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "total",
+    "count": 33,
+    "total_seconds": 0.0262423,
+    "avg_ms": 0.7952212121212121
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "transaction_cleanup",
+    "count": 33,
+    "total_seconds": 0.00496,
+    "avg_ms": 0.1503030303030303
+  },
+  {
+    "experiment": "optimized100",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "transaction_setup",
+    "count": 33,
+    "total_seconds": 0.0065618,
+    "avg_ms": 0.19884242424242424
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "accept_insert",
+    "count": 243,
+    "total_seconds": 3.4606462000000002,
+    "avg_ms": 14.241342386831276
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "activity_lock",
+    "count": 243,
+    "total_seconds": 11.175209500000001,
+    "avg_ms": 45.98851646090535
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "body",
+    "count": 243,
+    "total_seconds": 19.1129831,
+    "avg_ms": 78.65425144032922
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "command_outbox",
+    "count": 243,
+    "total_seconds": 2.915399,
+    "avg_ms": 11.997526748971193
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "commit_window",
+    "count": 243,
+    "total_seconds": 3.2553253,
+    "avg_ms": 13.396400411522634
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "jdbc_auto_commit_false",
+    "count": 243,
+    "total_seconds": 0.06637879999999999,
+    "avg_ms": 0.2731637860082304
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "jdbc_auto_commit_true",
+    "count": 243,
+    "total_seconds": 0.0540317,
+    "avg_ms": 0.22235267489711935
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "jdbc_commit",
+    "count": 243,
+    "total_seconds": 3.2485768999999998,
+    "avg_ms": 13.368629218106994
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "total",
+    "count": 243,
+    "total_seconds": 22.5144101,
+    "avg_ms": 92.65189341563786
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "transaction_cleanup",
+    "count": 243,
+    "total_seconds": 0.0585896,
+    "avg_ms": 0.24110946502057612
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "bridge_batch",
+    "outcome": "bridged",
+    "phase": "transaction_setup",
+    "count": 243,
+    "total_seconds": 0.07915499999999999,
+    "avg_ms": 0.32574074074074066
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "activity_lock",
+    "count": 6132,
+    "total_seconds": 217.8010896,
+    "avg_ms": 35.518768688845405
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "address",
+    "count": 6132,
+    "total_seconds": 8.839655100000002,
+    "avg_ms": 1.4415614970645796
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "body",
+    "count": 6132,
+    "total_seconds": 306.93095900000003,
+    "avg_ms": 50.053972439660804
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "commit_window",
+    "count": 6132,
+    "total_seconds": 70.590075,
+    "avg_ms": 11.511753913894324
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "details",
+    "count": 6132,
+    "total_seconds": 3.0244104000000003,
+    "avg_ms": 0.4932176125244619
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "guard_insert",
+    "count": 6132,
+    "total_seconds": 3.7243769999999996,
+    "avg_ms": 0.6073674168297455
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_auto_commit_false",
+    "count": 6132,
+    "total_seconds": 0.9419461999999998,
+    "avg_ms": 0.15361157860404434
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_auto_commit_true",
+    "count": 6132,
+    "total_seconds": 1.2499171,
+    "avg_ms": 0.20383514350945856
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "jdbc_commit",
+    "count": 6132,
+    "total_seconds": 70.4792456,
+    "avg_ms": 11.493679973907371
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "order_insert",
+    "count": 6132,
+    "total_seconds": 4.273933700000001,
+    "avg_ms": 0.6969885355512069
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "quote",
+    "count": 6132,
+    "total_seconds": 48.163443400000006,
+    "avg_ms": 7.854442824527072
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "request_lock",
+    "count": 6132,
+    "total_seconds": 2.2289135,
+    "avg_ms": 0.3634888290932812
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "reservation",
+    "count": 6132,
+    "total_seconds": 5.3412790999999995,
+    "avg_ms": 0.8710500815394651
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "snapshot",
+    "count": 6132,
+    "total_seconds": 1.6696128999999997,
+    "avg_ms": 0.2722786855838225
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "stock_update",
+    "count": 6132,
+    "total_seconds": 3.1925812000000002,
+    "avg_ms": 0.520642726679713
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "success_state",
+    "count": 6132,
+    "total_seconds": 5.0968392,
+    "avg_ms": 0.8311870841487279
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "timeout_outbox",
+    "count": 6132,
+    "total_seconds": 3.2762922,
+    "avg_ms": 0.5342942270058708
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "total",
+    "count": 6132,
+    "total_seconds": 380.1167993,
+    "avg_ms": 61.989040981735165
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "transaction_cleanup",
+    "count": 6132,
+    "total_seconds": 1.3267836,
+    "avg_ms": 0.21637045009784736
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "created",
+    "phase": "transaction_setup",
+    "count": 6132,
+    "total_seconds": 1.1432487,
+    "avg_ms": 0.18643977495107633
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "activity_lock",
+    "count": 10407,
+    "total_seconds": 113.1858273,
+    "avg_ms": 10.875932285961373
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "address",
+    "count": 10407,
+    "total_seconds": 14.5707663,
+    "avg_ms": 1.4000928509656962
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "body",
+    "count": 10407,
+    "total_seconds": 242.7675479,
+    "avg_ms": 23.32733236283271
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "jdbc_auto_commit_false",
+    "count": 10407,
+    "total_seconds": 1.7397184,
+    "avg_ms": 0.16716809839531085
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "jdbc_auto_commit_true",
+    "count": 10407,
+    "total_seconds": 1.7014909,
+    "avg_ms": 0.16349484962044777
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "quote",
+    "count": 10407,
+    "total_seconds": 108.0079621,
+    "avg_ms": 10.378395512635727
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "request_lock",
+    "count": 10407,
+    "total_seconds": 3.3764904,
+    "avg_ms": 0.3244441625828769
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "snapshot",
+    "count": 10407,
+    "total_seconds": 3.0619567,
+    "avg_ms": 0.2942208801768041
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "total",
+    "count": 10407,
+    "total_seconds": 248.6615829,
+    "avg_ms": 23.893685298356875
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "transaction_cleanup",
+    "count": 10407,
+    "total_seconds": 1.8144962,
+    "avg_ms": 0.17435343518785434
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "error",
+    "phase": "transaction_setup",
+    "count": 10407,
+    "total_seconds": 2.0068906,
+    "avg_ms": 0.19284045354088597
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "activity_lock",
+    "count": 55,
+    "total_seconds": 0.8595432,
+    "avg_ms": 15.628058181818181
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "address",
+    "count": 55,
+    "total_seconds": 0.0742281,
+    "avg_ms": 1.3496018181818183
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "body",
+    "count": 2520,
+    "total_seconds": 2.2622915999999997,
+    "avg_ms": 0.8977347619047618
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "commit_window",
+    "count": 2520,
+    "total_seconds": 0.36780460000000004,
+    "avg_ms": 0.14595420634920636
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_auto_commit_false",
+    "count": 2520,
+    "total_seconds": 0.3791849,
+    "avg_ms": 0.1504701984126984
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_auto_commit_true",
+    "count": 2520,
+    "total_seconds": 0.3476885,
+    "avg_ms": 0.137971626984127
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "jdbc_commit",
+    "count": 2520,
+    "total_seconds": 0.3593012,
+    "avg_ms": 0.14257984126984127
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "quote",
+    "count": 55,
+    "total_seconds": 0.622127,
+    "avg_ms": 11.311399999999999
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "request_lock",
+    "count": 55,
+    "total_seconds": 0.0174371,
+    "avg_ms": 0.31703818181818183
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "snapshot",
+    "count": 2520,
+    "total_seconds": 0.6800694,
+    "avg_ms": 0.26986880952380954
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "total",
+    "count": 2520,
+    "total_seconds": 3.4293664,
+    "avg_ms": 1.3608596825396826
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "transaction_cleanup",
+    "count": 2520,
+    "total_seconds": 0.3589243,
+    "avg_ms": 0.14243027777777775
+  },
+  {
+    "experiment": "optimized800",
+    "operation": "consume",
+    "outcome": "skipped",
+    "phase": "transaction_setup",
+    "count": 2520,
+    "total_seconds": 0.4265615,
+    "avg_ms": 0.1692704365079365
+  }
+]

@@ -86,6 +86,7 @@ public class DishServiceImpl implements DishService {
             //向口味表插入n条数据
             dishFlavorMapper.insertBatch(flavors);//后绪步骤实现
         }
+        eventPublisher.publishEvent(new DishStatusChangedEvent(false));
     }
 
     /**
@@ -129,6 +130,7 @@ public class DishServiceImpl implements DishService {
             //删除菜品关联的口味数据
             dishFlavorMapper.deleteByDishId(id);//后绪步骤实现
         }
+        eventPublisher.publishEvent(new DishStatusChangedEvent(false));
     }
 
     /**
@@ -177,6 +179,7 @@ public class DishServiceImpl implements DishService {
             //向口味表插入n条数据
             dishFlavorMapper.insertBatch(flavors);
         }
+        eventPublisher.publishEvent(new DishStatusChangedEvent(false));
     }
 
     /**

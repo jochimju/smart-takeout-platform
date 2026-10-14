@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         map.put("js_code",code);
         map.put("grant_type","authorization_code");
         String json = HttpClientUtil.doGet(WX_LOGIN, map);
-        log.info("微信登录接口返回：{}", json);
+        log.debug("微信登录接口响应已收到");
 
         JSONObject jsonObject = JSON.parseObject(json);
         //微信返回errcode说明请求失败，直接抛出可读原因，避免只看到笼统的“登录失败”

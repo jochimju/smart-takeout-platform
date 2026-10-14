@@ -7,6 +7,7 @@ import lombok.Data;
 public class SeckillReservation {
     private String orderNumber;
     private Long activityId;
+    private Integer bucketId;
     private Long setmealId;
     private Long userId;
     private Integer releaseStatus;

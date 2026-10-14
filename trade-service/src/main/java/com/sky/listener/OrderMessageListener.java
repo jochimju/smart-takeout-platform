@@ -26,14 +26,24 @@ public class OrderMessageListener {
     private final OrderService orderService;
     private final com.sky.service.impl.TimeoutFailureService timeoutFailures;
     private final MqFailMessageMapper failures;
+    @org.springframework.beans.factory.annotation.Autowired private com.sky.service.impl.NormalOrderRecovery normalRecovery;
 
+    /** 建单事务由 Service 代理执行；方法正常返回后才 ACK，避免订单未提交就丢掉消息。 */
     @RabbitListener(queues = MqConstant.ORDER_SUBMIT_QUEUE)
     public void handleOrderSubmit(OrderSubmitMessageDTO messageDTO, Channel channel, Message message) throws IOException {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         try {
-            orderService.createOrderFromMessage(messageDTO);
-            channel.basicAck(deliveryTag, false);
+            if(messageDTO.getCartSnapshot()!=null) {
+                var prepared=orderService.prepareNormalOrder(messageDTO);
+                if(prepared!=null)orderService.createPreparedNormalOrder(prepared);
+            } else orderService.createOrderFromMessage(messageDTO);
         } catch (Exception failure) {
+            if(failure instanceof com.sky.service.impl.NormalOrderRecovery.MissingAcceptance){channel.basicNack(deliveryTag,false,false);return;}
+            if(messageDTO.getCartSnapshot()!=null) {
+                try {normalRecovery.failed(messageDTO.getOrderNumber(),failure,com.sky.service.impl.OrderFailurePolicy.permanent(failure));}
+                catch(Exception unavailable){channel.basicNack(deliveryTag,false,true);return;}
+                channel.basicAck(deliveryTag,false);return;
+            }
             log.error("Failed to process order submission message for order {}", messageDTO.getOrderNumber(), failure);
             persistSubmissionFailure(message, messageDTO.getOrderNumber(), failure);
             try {
@@ -43,10 +53,15 @@ public class OrderMessageListener {
             } catch (Exception releaseFailure) {
                 log.error("Could not release failed submission {}", messageDTO.getOrderNumber(), releaseFailure);
             }
+            // 不重新入原队列：业务拒绝进入失败死信路径，避免库存不足等错误无限循环。
             channel.basicNack(deliveryTag, false, false);
+            return;
         }
+        // A failed ACK is redelivery, never a failed business transaction.
+        channel.basicAck(deliveryTag,false);
     }
 
+    /** 接收延迟消息过期后的关闭命令；必须重新检查订单状态和实际截止时间。 */
     @RabbitListener(queues = MqConstant.ORDER_DEAD_QUEUE)
     public void handleTimeoutOrder(String orderNumber, Channel channel, Message message) throws IOException {
         long tag=message.getMessageProperties().getDeliveryTag();
@@ -55,6 +70,7 @@ public class OrderMessageListener {
         } catch(Exception failure) {
             log.error("Timeout cancellation failed for {}",orderNumber,failure);
             try {
+                // 先保存恢复依据，再 ACK；保存也失败则重新入队保留 Broker 副本。
                 timeoutFailures.record(orderNumber,failure);
             } catch(Exception persistenceFailure) {
                 // Database unavailable: keep the broker copy as well as the original outbox event.
@@ -75,6 +91,7 @@ public class OrderMessageListener {
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
             log.error("Failed to process " + actionName + " message for order " + orderNumber, e);
+            // 不重新入原队列：业务拒绝进入失败死信路径，避免库存不足等错误无限循环。
             channel.basicNack(deliveryTag, false, false);
         }
     }

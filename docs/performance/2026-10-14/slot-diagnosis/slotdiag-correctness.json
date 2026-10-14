@@ -1,0 +1,28 @@
+[
+  {
+    "activityId": 2,
+    "orders": 32769,
+    "states": {
+      "SUCCEEDED": 32769
+    },
+    "mysqlRemaining": 27231,
+    "redisRemaining": 27231,
+    "outstanding": 0,
+    "unbridged": 0,
+    "duplicateUsers": 0,
+    "bucketConservationPassed": true
+  },
+  {
+    "activityId": 3,
+    "orders": 27597,
+    "states": {
+      "SUCCEEDED": 27597
+    },
+    "mysqlRemaining": 32403,
+    "redisRemaining": 32403,
+    "outstanding": 0,
+    "unbridged": 0,
+    "duplicateUsers": 0,
+    "bucketConservationPassed": true
+  }
+]

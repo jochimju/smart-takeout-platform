@@ -1,0 +1,58 @@
+{
+  "single_ab": {
+    "seconds": 54.003657817840576,
+    "startWall": 1791874717.7641673,
+    "endWall": 1791874771.7678251,
+    "rates": {
+      "accepted": 86.1793476230514,
+      "bridged": 86.14231309463581,
+      "publishedRows": 85.90158865993455,
+      "succeeded": 86.08676130201245
+    },
+    "maxOutstanding": 500,
+    "maxLockWaiters": 6,
+    "observerMedianMs": 15.99999999962165
+  },
+  "batch_ab": {
+    "seconds": 54.0330171585083,
+    "startWall": 1791874988.6683207,
+    "endWall": 1791875042.7013378,
+    "rates": {
+      "accepted": 141.54308610167456,
+      "bridged": 141.98725896601036,
+      "publishedRows": 141.98725896601036,
+      "succeeded": 141.54308610167456
+    },
+    "maxOutstanding": 500,
+    "maxLockWaiters": 6,
+    "observerMedianMs": 15.99999999962165
+  },
+  "batch4_ab": {
+    "seconds": 54.01198625564575,
+    "startWall": 1791875378.7828677,
+    "endWall": 1791875432.794854,
+    "rates": {
+      "accepted": 124.89820255952642,
+      "bridged": 125.23146192004694,
+      "publishedRows": 125.78689418758115,
+      "succeeded": 125.08334664870449
+    },
+    "maxOutstanding": 500,
+    "maxLockWaiters": 6,
+    "observerMedianMs": 14.999999999417923
+  },
+  "batch_gate_ab": {
+    "seconds": 54.005868911743164,
+    "startWall": 1791876649.358604,
+    "endWall": 1791876703.3644729,
+    "rates": {
+      "accepted": 163.9821778346451,
+      "bridged": 164.35250795622292,
+      "publishedRows": 164.0377273528818,
+      "succeeded": 164.13030988327623
+    },
+    "maxOutstanding": 500,
+    "maxLockWaiters": 1,
+    "observerMedianMs": 15.499999999519787
+  }
+}

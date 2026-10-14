@@ -36,6 +36,10 @@ public interface AddressBookMapper {
     @Select("select * from address_book where id = #{id} and user_id = #{userId}")
     AddressBook getByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 
+    @Select({"<script>select * from address_book where id in",
+            "<foreach collection='ids' item='id' open='(' separator=',' close=')'>#{id}</foreach></script>"})
+    List<AddressBook> getByIds(@Param("ids") List<Long> ids);
+
     /**
      * 根据id修改
      * @param addressBook

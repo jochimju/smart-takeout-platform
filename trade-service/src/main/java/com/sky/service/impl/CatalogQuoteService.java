@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class CatalogQuoteService {
     private final CatalogClient catalogClient;
 
+    /** 按菜品/套餐 ID 批量请求 catalog-service；返回值以商品类型和 ID 组成键。 */
     public Map<String, ProductQuote> quotes(List<ShoppingCart> items) {
         List<Long> dishes = items.stream().map(ShoppingCart::getDishId).filter(java.util.Objects::nonNull).distinct().toList();
         List<Long> setmeals = items.stream().map(ShoppingCart::getSetmealId).filter(java.util.Objects::nonNull).distinct().toList();
@@ -26,15 +27,19 @@ public class CatalogQuoteService {
             return (quotes == null ? Collections.<ProductQuote>emptyList() : quotes).stream()
                     .collect(Collectors.toMap(q -> key(q.getProductType(), q.getProductId()), q -> q));
         } catch (RuntimeException ex) {
-            throw new OrderBusinessException("商品服务暂时不可用，请稍后重试");
+            throw new com.sky.exception.RemoteServiceUnavailableException("商品服务暂时不可用，请稍后重试");
         }
     }
 
     public ProductQuote quoteDish(Long id) { return require(ProductQuote.DISH, id, quotes(List.of(ShoppingCart.builder().dishId(id).build()))); }
     public ProductQuote quoteSetmeal(Long id) { return require(ProductQuote.SETMEAL, id, quotes(List.of(ShoppingCart.builder().setmealId(id).build()))); }
 
+    /** 用服务端商品报价刷新内存中的购物车对象；不在这里更新购物车表。 */
     public void refresh(List<ShoppingCart> items) {
         Map<String, ProductQuote> result = quotes(items);
+        refresh(items,result);
+    }
+    public void refresh(List<ShoppingCart> items,Map<String,ProductQuote> result) {
         for (ShoppingCart item : items) {
             String type = item.getDishId() != null ? ProductQuote.DISH : ProductQuote.SETMEAL;
             Long id = item.getDishId() != null ? item.getDishId() : item.getSetmealId();

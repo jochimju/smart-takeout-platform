@@ -11,8 +11,11 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderReliabilityController {
     private final OrderReliabilityStore store;
+    private final com.sky.service.impl.TradeRuntimeOperations operations;
     @GetMapping("/failures")
     public Result<List<Map<String,Object>>> failures() { return Result.success(store.failures()); }
     @PostMapping("/replay")
-    public Result<Integer> replay(@RequestParam String id) { return Result.success(store.replay(id)); }
+    public Result<Integer> replay(@RequestParam String id,@RequestParam(defaultValue="legacy recovery endpoint") String reason) {
+        operations.replay("JOB",id,com.sky.context.BaseContext.getCurrentId(),reason);return Result.success(1);
+    }
 }

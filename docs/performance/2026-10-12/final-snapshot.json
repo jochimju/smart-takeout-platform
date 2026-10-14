@@ -1,0 +1,138 @@
+{
+  "observedAt": 1791820269.385934,
+  "async": {
+    "activities": [
+      {
+        "activityId": 1,
+        "stock": 60000,
+        "remaining": 59978,
+        "effectiveGuards": 22,
+        "duplicates": 0,
+        "redisStock": 59978,
+        "redisPending": 0
+      },
+      {
+        "activityId": 2,
+        "stock": 60000,
+        "remaining": 59878,
+        "effectiveGuards": 122,
+        "duplicates": 0,
+        "redisStock": 59878,
+        "redisPending": 0
+      },
+      {
+        "activityId": 3,
+        "stock": 60000,
+        "remaining": 59641,
+        "effectiveGuards": 359,
+        "duplicates": 0,
+        "redisStock": 59641,
+        "redisPending": 0
+      },
+      {
+        "activityId": 4,
+        "stock": 60000,
+        "remaining": 53417,
+        "effectiveGuards": 6583,
+        "duplicates": 0,
+        "redisStock": 53417,
+        "redisPending": 0
+      },
+      {
+        "activityId": 5,
+        "stock": 60000,
+        "remaining": 59799,
+        "effectiveGuards": 201,
+        "duplicates": 0,
+        "redisStock": 59799,
+        "redisPending": 0
+      },
+      {
+        "activityId": 6,
+        "stock": 60000,
+        "remaining": 59799,
+        "effectiveGuards": 201,
+        "duplicates": 0,
+        "redisStock": 59799,
+        "redisPending": 0
+      },
+      {
+        "activityId": 7,
+        "stock": 60000,
+        "remaining": 59799,
+        "effectiveGuards": 201,
+        "duplicates": 0,
+        "redisStock": 59799,
+        "redisPending": 0
+      },
+      {
+        "activityId": 8,
+        "stock": 60000,
+        "remaining": 53999,
+        "effectiveGuards": 6001,
+        "duplicates": 0,
+        "redisStock": 53999,
+        "redisPending": 0
+      }
+    ],
+    "states": {
+      "FAILED": 7214,
+      "SUCCEEDED": 14244
+    },
+    "pendingCacheEvents": 0,
+    "failedWithEffectiveOrder": 0
+  },
+  "sync": {
+    "activities": [
+      {
+        "activityId": 1,
+        "stock": 60000,
+        "remaining": 59999,
+        "effectiveGuards": 1,
+        "duplicates": 0
+      },
+      {
+        "activityId": 2,
+        "stock": 60000,
+        "remaining": 59799,
+        "effectiveGuards": 201,
+        "duplicates": 0
+      },
+      {
+        "activityId": 3,
+        "stock": 60000,
+        "remaining": 59641,
+        "effectiveGuards": 359,
+        "duplicates": 0
+      },
+      {
+        "activityId": 4,
+        "stock": 60000,
+        "remaining": 59800,
+        "effectiveGuards": 200,
+        "duplicates": 0
+      },
+      {
+        "activityId": 5,
+        "stock": 60000,
+        "remaining": 59800,
+        "effectiveGuards": 200,
+        "duplicates": 0
+      },
+      {
+        "activityId": 6,
+        "stock": 60000,
+        "remaining": 59799,
+        "effectiveGuards": 201,
+        "duplicates": 0
+      },
+      {
+        "activityId": 7,
+        "stock": 60000,
+        "remaining": 58200,
+        "effectiveGuards": 1800,
+        "duplicates": 0
+      }
+    ]
+  }
+}

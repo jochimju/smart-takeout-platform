@@ -1,0 +1,9 @@
+{
+  "settledMessages": 47676.0,
+  "settlementTransactions": 296.0,
+  "averageSettlementBatch": 161.06756756756758,
+  "averageSettlementMs": 149.91205743243242,
+  "configuredFlushDelayMs": 50,
+  "estimatedSettlementMessagesPerSecond": 805.6921110023903,
+  "note": "Single scheduled settlement worker; rough budget from observed means, not an independently measured maximum. Each seckill order emits creation and timeout messages."
+}

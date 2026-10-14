@@ -1,0 +1,8 @@
+{
+  "stock": 60000,
+  "mysqlRemaining": 53999,
+  "redisRemaining": 53999,
+  "effectiveGuards": 6001,
+  "duplicates": 0,
+  "pendingCacheEvents": 0
+}

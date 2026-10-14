@@ -1,0 +1,10 @@
+{
+  "activityId": 3,
+  "created": 3,
+  "newOrderAndOutboxDeadlineExactlyEqual": true,
+  "earlyMessageCreatedDurableRecovery": true,
+  "earlyOrderEventuallyCancelled": true,
+  "paidOrderPreserved": true,
+  "stockAfterTwoCancellations": 99,
+  "oldFixtureEventsReplayedAfterPrecisionFix": 1390
+}

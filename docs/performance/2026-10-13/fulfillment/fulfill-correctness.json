@@ -1,0 +1,78 @@
+{
+  "database": "sky_perf_fulfill_batch_gate_ab_20261013",
+  "tradeStoppedForConsistentSnapshot": true,
+  "pendingAcceptance": 0,
+  "cacheEvents": 0,
+  "unsentCreationMessages": 0,
+  "dueTimeoutMessages": 0,
+  "queues": {
+    "sky.seckill.order.v2.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.order.dead.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.order.submit.v2.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    }
+  },
+  "activities": [
+    {
+      "id": 1,
+      "mysqlStock": 60000,
+      "redisStock": 60000,
+      "activeGuards": 0,
+      "redisUsers": 0,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {
+        "SUCCEEDED": 2001
+      },
+      "orderStates": {
+        "6": 2001
+      }
+    },
+    {
+      "id": 2,
+      "mysqlStock": 49861,
+      "redisStock": 49861,
+      "activeGuards": 10139,
+      "redisUsers": 10139,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {
+        "SUCCEEDED": 10139
+      },
+      "orderStates": {
+        "1": 10139
+      }
+    },
+    {
+      "id": 3,
+      "mysqlStock": 35,
+      "redisStock": 35,
+      "activeGuards": 15,
+      "redisUsers": 15,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {
+        "FAILED": 1,
+        "SUCCEEDED": 15
+      },
+      "orderStates": {
+        "1": 15
+      }
+    }
+  ],
+  "duplicateActiveGuards": 0,
+  "duplicateOrderNumbers": 0,
+  "futureTimeoutEventsRetained": 10154,
+  "formalRunConfirmedRows": 10139,
+  "formalRunConfirmedUniqueOrders": 10139
+}

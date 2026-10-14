@@ -1,0 +1,3211 @@
+{
+  "label": "arch_1ab4a7579d404a58",
+  "activity": 4,
+  "rate": 800,
+  "seconds": 60,
+  "k6Exit": 0,
+  "started": 1791961001.518736,
+  "ended": 1791961062.7992475,
+  "samples": [
+    {
+      "time": 1791961001.5686722,
+      "states": {},
+      "cpuPercent": 41.9,
+      "availableMemoryBytes": 4875489280,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          174
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          422
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          424
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          422
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          422
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          423
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          422
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          421
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          423
+        ],
+        [
+          "seckill.timeout",
+          1,
+          3407
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961002.5897791,
+      "states": {
+        "ACCEPTED": 208,
+        "SUCCEEDED": 64
+      },
+      "cpuPercent": 68.0,
+      "availableMemoryBytes": 4407894016
+    },
+    {
+      "time": 1791961003.602009,
+      "states": {
+        "ACCEPTED": 396,
+        "SUCCEEDED": 411
+      },
+      "cpuPercent": 93.0,
+      "availableMemoryBytes": 4237672448
+    },
+    {
+      "time": 1791961004.6187465,
+      "states": {
+        "ACCEPTED": 66,
+        "SUCCEEDED": 822
+      },
+      "cpuPercent": 94.7,
+      "availableMemoryBytes": 4138450944
+    },
+    {
+      "time": 1791961005.6464617,
+      "states": {
+        "ACCEPTED": 254,
+        "SUCCEEDED": 1205
+      },
+      "cpuPercent": 94.8,
+      "availableMemoryBytes": 4084985856
+    },
+    {
+      "time": 1791961006.6723585,
+      "states": {
+        "ACCEPTED": 362,
+        "SUCCEEDED": 1428
+      },
+      "cpuPercent": 94.8,
+      "availableMemoryBytes": 4130377728,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          1
+        ],
+        [
+          "order.submit",
+          1,
+          196
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          25
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          602
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          19
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          25
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          607
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          17
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          604
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          24
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          603
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          22
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          23
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          600
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          23
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          23
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          600
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          21
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          23
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          579
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          38
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          23
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          598
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          22
+        ],
+        [
+          "seckill.timeout",
+          0,
+          370
+        ],
+        [
+          "seckill.timeout",
+          1,
+          4440
+        ],
+        [
+          "seckill.timeout",
+          3,
+          47
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961007.9435298,
+      "states": {
+        "ACCEPTED": 284,
+        "SUCCEEDED": 2113
+      },
+      "cpuPercent": 93.3,
+      "availableMemoryBytes": 4065382400
+    },
+    {
+      "time": 1791961008.964135,
+      "states": {
+        "ACCEPTED": 187,
+        "SUCCEEDED": 2734
+      },
+      "cpuPercent": 87.3,
+      "availableMemoryBytes": 4064399360
+    },
+    {
+      "time": 1791961009.992932,
+      "states": {
+        "ACCEPTED": 206,
+        "SUCCEEDED": 3245
+      },
+      "cpuPercent": 82.0,
+      "availableMemoryBytes": 4166135808
+    },
+    {
+      "time": 1791961011.0163677,
+      "states": {
+        "ACCEPTED": 187,
+        "SUCCEEDED": 3945
+      },
+      "cpuPercent": 82.3,
+      "availableMemoryBytes": 4141735936
+    },
+    {
+      "time": 1791961012.050894,
+      "states": {
+        "ACCEPTED": 386,
+        "SUCCEEDED": 4353
+      },
+      "cpuPercent": 85.2,
+      "availableMemoryBytes": 4213624832,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          223
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          14
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          952
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          14
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          956
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          48
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          959
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          955
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          51
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          952
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          51
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          945
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          52
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          14
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          944
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          942
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          54
+        ],
+        [
+          "seckill.timeout",
+          0,
+          1229
+        ],
+        [
+          "seckill.timeout",
+          1,
+          6428
+        ],
+        [
+          "seckill.timeout",
+          3,
+          200
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961013.3755221,
+      "states": {
+        "ACCEPTED": 208,
+        "SUCCEEDED": 5233
+      },
+      "cpuPercent": 89.3,
+      "availableMemoryBytes": 4163002368
+    },
+    {
+      "time": 1791961014.406279,
+      "states": {
+        "ACCEPTED": 181,
+        "SUCCEEDED": 5959
+      },
+      "cpuPercent": 86.3,
+      "availableMemoryBytes": 4155256832
+    },
+    {
+      "time": 1791961015.4402356,
+      "states": {
+        "ACCEPTED": 359,
+        "SUCCEEDED": 6402
+      },
+      "cpuPercent": 84.1,
+      "availableMemoryBytes": 4129525760
+    },
+    {
+      "time": 1791961016.468971,
+      "states": {
+        "ACCEPTED": 349,
+        "SUCCEEDED": 7025
+      },
+      "cpuPercent": 83.4,
+      "availableMemoryBytes": 4140740608
+    },
+    {
+      "time": 1791961017.4976401,
+      "states": {
+        "ACCEPTED": 265,
+        "SUCCEEDED": 7536
+      },
+      "cpuPercent": 83.1,
+      "availableMemoryBytes": 4153671680,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          249
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          1337
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          42
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          1335
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          49
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          18
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          1338
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          47
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          18
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          1337
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          46
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          18
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          1334
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          47
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          18
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          1324
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          18
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          1324
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          18
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          1328
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          46
+        ],
+        [
+          "seckill.timeout",
+          0,
+          2043
+        ],
+        [
+          "seckill.timeout",
+          1,
+          8628
+        ],
+        [
+          "seckill.timeout",
+          3,
+          347
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961018.7072885,
+      "states": {
+        "ACCEPTED": 315,
+        "SUCCEEDED": 7851
+      },
+      "cpuPercent": 69.9,
+      "availableMemoryBytes": 4234403840
+    },
+    {
+      "time": 1791961019.743423,
+      "states": {
+        "ACCEPTED": 265,
+        "SUCCEEDED": 8509
+      },
+      "cpuPercent": 84.3,
+      "availableMemoryBytes": 4206993408
+    },
+    {
+      "time": 1791961020.7858708,
+      "states": {
+        "ACCEPTED": 321,
+        "SUCCEEDED": 9046
+      },
+      "cpuPercent": 84.8,
+      "availableMemoryBytes": 4201385984
+    },
+    {
+      "time": 1791961021.9488287,
+      "states": {
+        "ACCEPTED": 371,
+        "SUCCEEDED": 9129
+      },
+      "cpuPercent": 63.8,
+      "availableMemoryBytes": 4192690176
+    },
+    {
+      "time": 1791961023.1415615,
+      "states": {
+        "ACCEPTED": 309,
+        "SUCCEEDED": 9960
+      },
+      "cpuPercent": 88.4,
+      "availableMemoryBytes": 4183666688,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          1
+        ],
+        [
+          "order.submit",
+          1,
+          279
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          1663
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          40
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          1656
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          55
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          1671
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          44
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          1672
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          40
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          1667
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          43
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          1660
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          40
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          1659
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          39
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          1657
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          42
+        ],
+        [
+          "seckill.timeout",
+          0,
+          2791
+        ],
+        [
+          "seckill.timeout",
+          1,
+          10580
+        ],
+        [
+          "seckill.timeout",
+          3,
+          325
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961024.3490636,
+      "states": {
+        "ACCEPTED": 256,
+        "SUCCEEDED": 10565
+      },
+      "cpuPercent": 72.8,
+      "availableMemoryBytes": 4306186240
+    },
+    {
+      "time": 1791961025.389921,
+      "states": {
+        "ACCEPTED": 215,
+        "SUCCEEDED": 10993
+      },
+      "cpuPercent": 71.0,
+      "availableMemoryBytes": 4302700544
+    },
+    {
+      "time": 1791961026.5166032,
+      "states": {
+        "ACCEPTED": 215,
+        "SUCCEEDED": 11544
+      },
+      "cpuPercent": 82.7,
+      "availableMemoryBytes": 4282474496
+    },
+    {
+      "time": 1791961027.5704672,
+      "states": {
+        "ACCEPTED": 240,
+        "SUCCEEDED": 11812
+      },
+      "cpuPercent": 52.7,
+      "availableMemoryBytes": 4288892928
+    },
+    {
+      "time": 1791961028.7053802,
+      "states": {
+        "ACCEPTED": 280,
+        "SUCCEEDED": 12557
+      },
+      "cpuPercent": 80.9,
+      "availableMemoryBytes": 4265811968,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          1
+        ],
+        [
+          "order.submit",
+          1,
+          307
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          27
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          1945
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          66
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          1963
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          63
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          22
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          1960
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          66
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          27
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          1957
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          61
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          26
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          1954
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          67
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          1948
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          63
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          25
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          1946
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          64
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          25
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          1943
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          66
+        ],
+        [
+          "seckill.timeout",
+          0,
+          3658
+        ],
+        [
+          "seckill.timeout",
+          1,
+          12269
+        ],
+        [
+          "seckill.timeout",
+          3,
+          284
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961029.855163,
+      "states": {
+        "ACCEPTED": 270,
+        "SUCCEEDED": 13353
+      },
+      "cpuPercent": 78.8,
+      "availableMemoryBytes": 4200378368
+    },
+    {
+      "time": 1791961030.892246,
+      "states": {
+        "ACCEPTED": 363,
+        "SUCCEEDED": 13586
+      },
+      "cpuPercent": 65.3,
+      "availableMemoryBytes": 4229124096
+    },
+    {
+      "time": 1791961031.9363945,
+      "states": {
+        "ACCEPTED": 78,
+        "SUCCEEDED": 14015
+      },
+      "cpuPercent": 66.3,
+      "availableMemoryBytes": 4218728448
+    },
+    {
+      "time": 1791961032.9716203,
+      "states": {
+        "ACCEPTED": 276,
+        "SUCCEEDED": 14512
+      },
+      "cpuPercent": 78.5,
+      "availableMemoryBytes": 4218699776
+    },
+    {
+      "time": 1791961034.0270207,
+      "states": {
+        "ACCEPTED": 245,
+        "SUCCEEDED": 14788
+      },
+      "cpuPercent": 53.9,
+      "availableMemoryBytes": 4218269696,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          333
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          2267
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          18
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          2280
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          17
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          2278
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          17
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          2274
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          17
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          14
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          2274
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          17
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          2263
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          18
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          2267
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          18
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          2265
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          17
+        ],
+        [
+          "seckill.timeout",
+          0,
+          4044
+        ],
+        [
+          "seckill.timeout",
+          1,
+          14244
+        ],
+        [
+          "seckill.timeout",
+          3,
+          66
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961035.1509173,
+      "states": {
+        "ACCEPTED": 459,
+        "SUCCEEDED": 14855
+      },
+      "cpuPercent": 58.4,
+      "availableMemoryBytes": 4202287104
+    },
+    {
+      "time": 1791961036.207017,
+      "states": {
+        "ACCEPTED": 287,
+        "SUCCEEDED": 15668
+      },
+      "cpuPercent": 85.0,
+      "availableMemoryBytes": 4201721856
+    },
+    {
+      "time": 1791961037.3668194,
+      "states": {
+        "ACCEPTED": 296,
+        "SUCCEEDED": 16303
+      },
+      "cpuPercent": 82.7,
+      "availableMemoryBytes": 4173787136
+    },
+    {
+      "time": 1791961038.5209267,
+      "states": {
+        "ACCEPTED": 157,
+        "SUCCEEDED": 17136
+      },
+      "cpuPercent": 81.4,
+      "availableMemoryBytes": 4115914752
+    },
+    {
+      "time": 1791961039.6319761,
+      "states": {
+        "ACCEPTED": 258,
+        "SUCCEEDED": 17853
+      },
+      "cpuPercent": 85.0,
+      "availableMemoryBytes": 4109352960,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          361
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          32
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          2649
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          14
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          2664
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          13
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          2665
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          12
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          2656
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          16
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          2657
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          16
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          2641
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          18
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          2647
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          17
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          2643
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          17
+        ],
+        [
+          "seckill.timeout",
+          0,
+          5611
+        ],
+        [
+          "seckill.timeout",
+          1,
+          15786
+        ],
+        [
+          "seckill.timeout",
+          3,
+          124
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961040.7600138,
+      "states": {
+        "ACCEPTED": 330,
+        "SUCCEEDED": 18304
+      },
+      "cpuPercent": 75.5,
+      "availableMemoryBytes": 4115841024
+    },
+    {
+      "time": 1791961041.9737165,
+      "states": {
+        "ACCEPTED": 245,
+        "SUCCEEDED": 18699
+      },
+      "cpuPercent": 61.7,
+      "availableMemoryBytes": 4094894080
+    },
+    {
+      "time": 1791961043.0600238,
+      "states": {
+        "ACCEPTED": 500,
+        "SUCCEEDED": 19211
+      },
+      "cpuPercent": 63.0,
+      "availableMemoryBytes": 4107165696
+    },
+    {
+      "time": 1791961044.2948923,
+      "states": {
+        "ACCEPTED": 247,
+        "SUCCEEDED": 19752
+      },
+      "cpuPercent": 80.5,
+      "availableMemoryBytes": 4068417536
+    },
+    {
+      "time": 1791961045.5079257,
+      "states": {
+        "ACCEPTED": 381,
+        "SUCCEEDED": 20428
+      },
+      "cpuPercent": 81.0,
+      "availableMemoryBytes": 4116877312,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          390
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          2988
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          29
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          3003
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          28
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          3007
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          25
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          3000
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          28
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          3003
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          26
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          2990
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          26
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          2996
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          28
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          2993
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          25
+        ],
+        [
+          "seckill.timeout",
+          0,
+          6856
+        ],
+        [
+          "seckill.timeout",
+          1,
+          17301
+        ],
+        [
+          "seckill.timeout",
+          3,
+          108
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961047.0426214,
+      "states": {
+        "ACCEPTED": 295,
+        "SUCCEEDED": 21481
+      },
+      "cpuPercent": 83.0,
+      "availableMemoryBytes": 4108529664
+    },
+    {
+      "time": 1791961048.0943298,
+      "states": {
+        "ACCEPTED": 262,
+        "SUCCEEDED": 21637
+      },
+      "cpuPercent": 47.3,
+      "availableMemoryBytes": 4126609408
+    },
+    {
+      "time": 1791961049.3202653,
+      "states": {
+        "ACCEPTED": 207,
+        "SUCCEEDED": 22334
+      },
+      "cpuPercent": 81.3,
+      "availableMemoryBytes": 4104847360
+    },
+    {
+      "time": 1791961050.5205185,
+      "states": {
+        "ACCEPTED": 270,
+        "SUCCEEDED": 23189
+      },
+      "cpuPercent": 84.4,
+      "availableMemoryBytes": 4079820800
+    },
+    {
+      "time": 1791961051.663947,
+      "states": {
+        "ACCEPTED": 311,
+        "SUCCEEDED": 23998
+      },
+      "cpuPercent": 79.3,
+      "availableMemoryBytes": 4092473344,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          421
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          3407
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          34
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          3424
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          32
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          3421
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          37
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          3419
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          34
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          3427
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          29
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          3409
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          32
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          3416
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          34
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          3410
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          30
+        ],
+        [
+          "seckill.timeout",
+          0,
+          8361
+        ],
+        [
+          "seckill.timeout",
+          1,
+          19209
+        ],
+        [
+          "seckill.timeout",
+          3,
+          200
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961053.058943,
+      "states": {
+        "ACCEPTED": 159,
+        "SUCCEEDED": 24274
+      },
+      "cpuPercent": 55.3,
+      "availableMemoryBytes": 4091461632
+    },
+    {
+      "time": 1791961054.2027178,
+      "states": {
+        "ACCEPTED": 449,
+        "SUCCEEDED": 24452
+      },
+      "cpuPercent": 52.5,
+      "availableMemoryBytes": 4080050176
+    },
+    {
+      "time": 1791961055.4925385,
+      "states": {
+        "ACCEPTED": 249,
+        "SUCCEEDED": 25134
+      },
+      "cpuPercent": 80.4,
+      "availableMemoryBytes": 4082126848
+    },
+    {
+      "time": 1791961056.557275,
+      "states": {
+        "ACCEPTED": 192,
+        "SUCCEEDED": 25747
+      },
+      "cpuPercent": 71.4,
+      "availableMemoryBytes": 4071006208
+    },
+    {
+      "time": 1791961058.1039467,
+      "states": {
+        "ACCEPTED": 300,
+        "SUCCEEDED": 26107
+      },
+      "cpuPercent": 74.2,
+      "availableMemoryBytes": 4017160192,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          453
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          10
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          3692
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          10
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          3709
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          45
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          3710
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          44
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          3711
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          40
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          3714
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          41
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          10
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          3700
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          41
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          10
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          3708
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          41
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          10
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          3696
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          44
+        ],
+        [
+          "seckill.timeout",
+          0,
+          9628
+        ],
+        [
+          "seckill.timeout",
+          1,
+          20609
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961059.6139274,
+      "states": {
+        "ACCEPTED": 298,
+        "SUCCEEDED": 27151
+      },
+      "cpuPercent": 79.1,
+      "availableMemoryBytes": 4055355392
+    },
+    {
+      "time": 1791961060.9520206,
+      "states": {
+        "ACCEPTED": 258,
+        "SUCCEEDED": 27683
+      },
+      "cpuPercent": 77.3,
+      "availableMemoryBytes": 4068720640
+    },
+    {
+      "time": 1791961062.6787753,
+      "states": {
+        "ACCEPTED": 152,
+        "SUCCEEDED": 27893
+      },
+      "cpuPercent": 67.9,
+      "availableMemoryBytes": 4094865408
+    }
+  ],
+  "actualCommittedTps": 482.37555179719135,
+  "states": {
+    "SUCCEEDED": 28334
+  },
+  "guards": 28334,
+  "duplicates": 0,
+  "remaining": 51666,
+  "redisStock": 51666,
+  "outstanding": 0,
+  "normalSucceeded": 301,
+  "normalFailed": 0,
+  "normalStates": {
+    "SUCCEEDED": 301
+  },
+  "jarSha256": {
+    "account": "a6a42a707f51e6e056bb697635b14506c77c82008e782f30832d0f9e7352d99e",
+    "catalog": "31d8b950730171bf40a4b469b69d57fb771b4022f284edf300f9230072529799",
+    "trade": "4ea83461e3873d5c9f53ff295be91462d9d074d170275ad4aea081d8ddfcde5a"
+  },
+  "testedSettings": {
+    "sky.seckill.fulfill-batch-size": 16,
+    "sky.seckill.profile-enabled": true,
+    "sky.seckill.publisher-workers": 2
+  },
+  "raw": {
+    "root_group": {
+      "groups": [],
+      "checks": [],
+      "name": "",
+      "path": "",
+      "id": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "options": {
+      "summaryTrendStats": [
+        "avg",
+        "med",
+        "p(95)",
+        "p(99)",
+        "max"
+      ],
+      "summaryTimeUnit": "",
+      "noColor": true
+    },
+    "state": {
+      "isStdOutTTY": false,
+      "isStdErrTTY": false,
+      "testRunDurationMs": 60146.2447
+    },
+    "metrics": {
+      "http_req_blocked": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 0.05226248731910311,
+          "med": 0,
+          "p(95)": 0,
+          "p(99)": 1.5068,
+          "max": 20.1014
+        }
+      },
+      "iterations": {
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 48301,
+          "rate": 803.05928060709
+        }
+      },
+      "accepted": {
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 28334,
+          "rate": 471.0851050024076
+        }
+      },
+      "start_epoch_ms": {
+        "type": "gauge",
+        "contains": "default",
+        "values": {
+          "min": 1791961002076,
+          "max": 1791961002077,
+          "value": 1791961002077
+        }
+      },
+      "http_req_receiving": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 0.18558900643879075,
+          "med": 0,
+          "p(95)": 0.7957,
+          "p(99)": 1.1034,
+          "max": 28.8774
+        }
+      },
+      "accepted_ms": {
+        "values": {
+          "max": 103.2191,
+          "avg": 4.039096269499526,
+          "med": 3.52965,
+          "p(95)": 6.432874999999994,
+          "p(99)": 13.534295999999863
+        },
+        "type": "trend",
+        "contains": "time"
+      },
+      "http_req_failed": {
+        "type": "rate",
+        "contains": "default",
+        "values": {
+          "rate": 0,
+          "passes": 0,
+          "fails": 48301
+        }
+      },
+      "dropped_iterations": {
+        "thresholds": {
+          "count==0": {
+            "ok": true
+          }
+        },
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 0,
+          "rate": 0
+        }
+      },
+      "http_req_duration{expected_response:true}": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 4.558874002608627,
+          "med": 3.2546,
+          "p(95)": 6.4649,
+          "p(99)": 19.015,
+          "max": 1119.844
+        }
+      },
+      "http_req_sending": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "med": 0,
+          "p(95)": 0,
+          "p(99)": 0.5227,
+          "max": 27.1718,
+          "avg": 0.014062750253617936
+        }
+      },
+      "data_sent": {
+        "type": "counter",
+        "contains": "data",
+        "values": {
+          "count": 24855239,
+          "rate": 413246.73093015235
+        }
+      },
+      "vus": {
+        "type": "gauge",
+        "contains": "default",
+        "values": {
+          "value": 5,
+          "min": 2,
+          "max": 8
+        }
+      },
+      "vus_max": {
+        "values": {
+          "value": 1620,
+          "min": 1620,
+          "max": 1620
+        },
+        "type": "gauge",
+        "contains": "default"
+      },
+      "normal_accepted": {
+        "contains": "default",
+        "values": {
+          "count": 301,
+          "rate": 5.004468716232254
+        },
+        "type": "counter"
+      },
+      "http_reqs": {
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 48301,
+          "rate": 803.05928060709
+        }
+      },
+      "http_req_connecting": {
+        "contains": "time",
+        "values": {
+          "avg": 0.04508697335458895,
+          "med": 0,
+          "p(95)": 0,
+          "p(99)": 1.1732,
+          "max": 20.1014
+        },
+        "type": "trend"
+      },
+      "rejected": {
+        "values": {
+          "count": 19666,
+          "rate": 326.9697068884502
+        },
+        "type": "counter",
+        "contains": "default"
+      },
+      "http_req_tls_handshaking": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "p(95)": 0,
+          "p(99)": 0,
+          "max": 0,
+          "avg": 0,
+          "med": 0
+        }
+      },
+      "data_received": {
+        "type": "counter",
+        "contains": "data",
+        "values": {
+          "count": 26786804,
+          "rate": 445361.2047370266
+        }
+      },
+      "iteration_duration": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 4.751173348377856,
+          "med": 3.4254,
+          "p(95)": 7.2474,
+          "p(99)": 20.5192,
+          "max": 1119.844
+        }
+      },
+      "http_req_waiting": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 4.3592222459161984,
+          "med": 3.1089,
+          "p(95)": 6.1079,
+          "p(99)": 18.5513,
+          "max": 1119.3373
+        }
+      },
+      "normal_accepted_ms": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 137.67892225913616,
+          "med": 40.4575,
+          "p(95)": 745.8074,
+          "p(99)": 966.3876,
+          "max": 1119.844
+        }
+      },
+      "http_req_duration": {
+        "values": {
+          "p(95)": 6.4649,
+          "p(99)": 19.015,
+          "max": 1119.844,
+          "avg": 4.558874002608627,
+          "med": 3.2546
+        },
+        "type": "trend",
+        "contains": "time"
+      }
+    }
+  },
+  "client": {
+    "host": "local-development-machine",
+    "independentVerified": false,
+    "mode": "same-machine"
+  },
+  "server": {
+    "host": "local-development-machine",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "logicalCpus": 20,
+    "memoryBytes": 34071240704
+  },
+  "stageTimings": [
+    {
+      "application": "trade-service",
+      "operation": "publish_timeout",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 132.0,
+      "averageMs": 382.00723560606065
+    },
+    {
+      "application": "trade-service",
+      "operation": "confirm_queue",
+      "outcome": "done",
+      "phase": "wait",
+      "calls": 47676.0,
+      "averageMs": 337.8607325237017
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "total",
+      "calls": 109.0,
+      "averageMs": 261.45570091743116
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "jdbc_sql",
+      "calls": 109.0,
+      "averageMs": 229.35675504587155
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_timeout",
+      "outcome": "done",
+      "phase": "convert_send",
+      "calls": 109.0,
+      "averageMs": 199.90599174311927
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_timeout",
+      "outcome": "done",
+      "phase": "send_loop",
+      "calls": 115.0,
+      "averageMs": 190.5535252173913
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_create",
+      "outcome": "done",
+      "phase": "convert_send",
+      "calls": 215.0,
+      "averageMs": 177.1486893023256
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "jdbc_update",
+      "calls": 109.0,
+      "averageMs": 167.0279211009174
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 296.0,
+      "averageMs": 149.91205743243242
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "total",
+      "calls": 215.0,
+      "averageMs": 144.17063953488372
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "total",
+      "calls": 236.0,
+      "averageMs": 139.8658677966102
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_create",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 560.0,
+      "averageMs": 126.33281874999999
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_flush",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 373.0,
+      "averageMs": 119.11818445040214
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "jdbc_sql",
+      "calls": 296.0,
+      "averageMs": 116.59495202702702
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "jdbc_update",
+      "calls": 296.0,
+      "averageMs": 116.59495202702702
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "jdbc_sql",
+      "calls": 215.0,
+      "averageMs": 116.39305720930233
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_cycle",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 293.0,
+      "averageMs": 116.08824163822526
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "jdbc_update",
+      "calls": 215.0,
+      "averageMs": 110.34365441860464
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "body",
+      "calls": 236.0,
+      "averageMs": 105.25915
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_sql",
+      "calls": 236.0,
+      "averageMs": 99.87043347457626
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_insert",
+      "calls": 236.0,
+      "averageMs": 95.32490550847457
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "total",
+      "calls": 2925.0,
+      "averageMs": 88.48602314529914
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_create",
+      "outcome": "done",
+      "phase": "send_loop",
+      "calls": 506.0,
+      "averageMs": 75.78577035573122
+    },
+    {
+      "application": "trade-service",
+      "operation": "cache_sync",
+      "outcome": "done",
+      "phase": "jdbc_delete",
+      "calls": 310.0,
+      "averageMs": 74.85214580645162
+    },
+    {
+      "application": "trade-service",
+      "operation": "cache_sync",
+      "outcome": "done",
+      "phase": "jdbc_sql",
+      "calls": 310.0,
+      "averageMs": 74.85214580645162
+    },
+    {
+      "application": "trade-service",
+      "operation": "cache_sync",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 363.0,
+      "averageMs": 73.78495179063361
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "jdbc_select",
+      "calls": 109.0,
+      "averageMs": 62.328833944954134
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "body",
+      "calls": 2925.0,
+      "averageMs": 51.3667651965812
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "command_outbox",
+      "calls": 236.0,
+      "averageMs": 50.96698220338983
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_sql",
+      "calls": 2925.0,
+      "averageMs": 48.44195066666666
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "commit_window",
+      "calls": 2925.0,
+      "averageMs": 36.595493777777776
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_commit",
+      "calls": 2925.0,
+      "averageMs": 36.57824041025641
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "commit_window",
+      "calls": 236.0,
+      "averageMs": 34.08738220338983
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_commit",
+      "calls": 236.0,
+      "averageMs": 34.069586440677966
+    },
+    {
+      "application": "trade-service",
+      "operation": "broker_confirm",
+      "outcome": "done",
+      "phase": "send_to_callback",
+      "calls": 47851.0,
+      "averageMs": 32.60850762575495
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "commit_window",
+      "calls": 296.0,
+      "averageMs": 31.92452027027026
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "jdbc_commit",
+      "calls": 296.0,
+      "averageMs": 31.918932094594595
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "commit_window",
+      "calls": 109.0,
+      "averageMs": 30.296506422018354
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "jdbc_commit",
+      "calls": 109.0,
+      "averageMs": 30.29137798165137
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "commit_window",
+      "calls": 215.0,
+      "averageMs": 26.18385209302326
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "jdbc_commit",
+      "calls": 215.0,
+      "averageMs": 26.178444651162792
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_update",
+      "calls": 2925.0,
+      "averageMs": 25.117408376068372
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "accept_insert",
+      "calls": 236.0,
+      "averageMs": 23.33916398305085
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "stock_update",
+      "calls": 2925.0,
+      "averageMs": 21.863966905982906
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_insert",
+      "calls": 2925.0,
+      "averageMs": 21.65422871794872
+    },
+    {
+      "application": "trade-service",
+      "operation": "cache_sync",
+      "outcome": "done",
+      "phase": "redis_pipeline",
+      "calls": 310.0,
+      "averageMs": 9.354890322580644
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "timeout_outbox",
+      "calls": 2925.0,
+      "averageMs": 8.181609025641023
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "success_state",
+      "calls": 2925.0,
+      "averageMs": 6.105033128205128
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "jdbc_select",
+      "calls": 215.0,
+      "averageMs": 6.049402790697675
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "order_insert",
+      "calls": 2925.0,
+      "averageMs": 5.743110529914531
+    },
+    {
+      "application": "trade-service",
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 2925.0,
+      "averageMs": 5.555249982905983
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "total",
+      "calls": 291.0,
+      "averageMs": 4.75971030927835
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_select",
+      "calls": 236.0,
+      "averageMs": 4.5455279661016945
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "jdbc_select",
+      "calls": 291.0,
+      "averageMs": 3.493122336769759
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "jdbc_sql",
+      "calls": 291.0,
+      "averageMs": 3.493122336769759
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "reservation",
+      "calls": 2925.0,
+      "averageMs": 2.9146592136752134
+    },
+    {
+      "application": "trade-service",
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "quote",
+      "calls": 2925.0,
+      "averageMs": 2.6459032820512816
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "details",
+      "calls": 2925.0,
+      "averageMs": 2.3496670427350432
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "guard_insert",
+      "calls": 2925.0,
+      "averageMs": 2.105923658119658
+    },
+    {
+      "application": "trade-service",
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "address",
+      "calls": 2925.0,
+      "averageMs": 1.8668670769230762
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_select",
+      "calls": 2925.0,
+      "averageMs": 1.6703135726495726
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_cycle",
+      "outcome": "done",
+      "phase": "pending_scan",
+      "calls": 293.0,
+      "averageMs": 1.4311365187713305
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "activity_lock",
+      "calls": 2925.0,
+      "averageMs": 1.3587241367521368
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "total",
+      "calls": 6.0,
+      "averageMs": 1.1673666666667248
+    },
+    {
+      "application": "trade-service",
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "snapshot",
+      "calls": 2925.0,
+      "averageMs": 0.9772662564102564
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_create",
+      "outcome": "done",
+      "phase": "payload_decode",
+      "calls": 215.0,
+      "averageMs": 0.9467339534883721
+    },
+    {
+      "application": "trade-service",
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "jdbc_select",
+      "calls": 2925.0,
+      "averageMs": 0.8343464615384616
+    },
+    {
+      "application": "trade-service",
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "jdbc_sql",
+      "calls": 2925.0,
+      "averageMs": 0.8343464615384616
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "request_lock",
+      "calls": 2925.0,
+      "averageMs": 0.6809856410256411
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_timeout",
+      "outcome": "done",
+      "phase": "payload_decode",
+      "calls": 109.0,
+      "averageMs": 0.6115467889908256
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_cycle",
+      "outcome": "done",
+      "phase": "jdbc_select",
+      "calls": 293.0,
+      "averageMs": 0.5793136518771332
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_cycle",
+      "outcome": "done",
+      "phase": "jdbc_sql",
+      "calls": 293.0,
+      "averageMs": 0.5793136518771332
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_cycle",
+      "outcome": "done",
+      "phase": "request_validation",
+      "calls": 293.0,
+      "averageMs": 0.5682945392491467
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "activity_metadata",
+      "calls": 236.0,
+      "averageMs": 0.5025233050847457
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "transaction_setup",
+      "calls": 296.0,
+      "averageMs": 0.45334290540540545
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "commit_window",
+      "calls": 291.0,
+      "averageMs": 0.4411810996563573
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "jdbc_commit",
+      "calls": 291.0,
+      "averageMs": 0.43779312714776636
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "transaction_setup",
+      "calls": 291.0,
+      "averageMs": 0.43716666666666715
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "transaction_setup",
+      "calls": 215.0,
+      "averageMs": 0.423646511627907
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "transaction_cleanup",
+      "calls": 296.0,
+      "averageMs": 0.4144351351351352
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "transaction_cleanup",
+      "calls": 109.0,
+      "averageMs": 0.40070733944954123
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "transaction_cleanup",
+      "calls": 215.0,
+      "averageMs": 0.38975906976744196
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "transaction_setup",
+      "calls": 109.0,
+      "averageMs": 0.3743082568807339
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "jdbc_select",
+      "calls": 6.0,
+      "averageMs": 0.34881666666665884
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "jdbc_sql",
+      "calls": 6.0,
+      "averageMs": 0.34881666666665884
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "transaction_cleanup",
+      "calls": 291.0,
+      "averageMs": 0.3058144329896906
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "transaction_setup",
+      "calls": 6.0,
+      "averageMs": 0.30120000000000147
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "transaction_cleanup",
+      "calls": 6.0,
+      "averageMs": 0.2906999999999956
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "transaction_setup",
+      "calls": 2925.0,
+      "averageMs": 0.2644735384615384
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "transaction_setup",
+      "calls": 236.0,
+      "averageMs": 0.2620915254237288
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "transaction_cleanup",
+      "calls": 236.0,
+      "averageMs": 0.23002033898305083
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "transaction_cleanup",
+      "calls": 2925.0,
+      "averageMs": 0.22780731623931624
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_auto_commit_false",
+      "calls": 2925.0,
+      "averageMs": 0.22770659829059828
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_auto_commit_false",
+      "calls": 236.0,
+      "averageMs": 0.22746949152542373
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "jdbc_auto_commit_true",
+      "calls": 296.0,
+      "averageMs": 0.22107162162162164
+    },
+    {
+      "application": "trade-service",
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_auto_commit_true",
+      "calls": 236.0,
+      "averageMs": 0.2197559322033898
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_auto_commit_true",
+      "calls": 2925.0,
+      "averageMs": 0.21823699145299147
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "jdbc_auto_commit_true",
+      "calls": 215.0,
+      "averageMs": 0.21098232558139535
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "jdbc_auto_commit_true",
+      "calls": 109.0,
+      "averageMs": 0.2056807339449542
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_complete",
+      "outcome": "done",
+      "phase": "jdbc_auto_commit_false",
+      "calls": 296.0,
+      "averageMs": 0.18425000000000002
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "claimed",
+      "phase": "jdbc_auto_commit_false",
+      "calls": 215.0,
+      "averageMs": 0.1744888372093024
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "commit_window",
+      "calls": 6.0,
+      "averageMs": 0.1631166666666665
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "jdbc_auto_commit_true",
+      "calls": 291.0,
+      "averageMs": 0.16235120274914114
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "claimed",
+      "phase": "jdbc_auto_commit_false",
+      "calls": 109.0,
+      "averageMs": 0.16185688073394494
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_create",
+      "outcome": "empty",
+      "phase": "jdbc_auto_commit_false",
+      "calls": 291.0,
+      "averageMs": 0.16146494845360876
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "jdbc_commit",
+      "calls": 6.0,
+      "averageMs": 0.1609833333333366
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "jdbc_auto_commit_true",
+      "calls": 6.0,
+      "averageMs": 0.1457333333333329
+    },
+    {
+      "application": "trade-service",
+      "operation": "claim_timeout",
+      "outcome": "empty",
+      "phase": "jdbc_auto_commit_false",
+      "calls": 6.0,
+      "averageMs": 0.13190000000000887
+    },
+    {
+      "application": "trade-service",
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "writer_gate_wait",
+      "calls": 2925.0,
+      "averageMs": 0.0012723418803418805
+    },
+    {
+      "application": "trade-service",
+      "operation": "publish_flush",
+      "outcome": "done",
+      "phase": "monitor_wait",
+      "calls": 373.0,
+      "averageMs": 0.0009230563002680963
+    },
+    {
+      "application": "trade-service",
+      "operation": "broker_confirm",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 47847.0,
+      "averageMs": 0.0007734800509958826
+    },
+    {
+      "application": "trade-service",
+      "operation": "confirm_queue",
+      "outcome": "done",
+      "phase": "total",
+      "calls": 47676.0,
+      "averageMs": 0.00016767556003020388
+    }
+  ],
+  "workload": {
+    "NORMAL_RATE": "5",
+    "NORMAL_ONLY": "0",
+    "NORMAL_MODE": "async"
+  },
+  "loadScriptSha256": "ae4be0f39dd187f00d730ddcdfb72701f5df4cb7127e4e856694d2bf5d55613f",
+  "acceptanceVerdict": {
+    "validLoad": true,
+    "actual800TpsPassed": false,
+    "independentClient": false,
+    "droppedIterations": 0,
+    "unknownRequests": 0,
+    "seckillAcceptance": {
+      "max": 103.2191,
+      "avg": 4.039096269499526,
+      "med": 3.52965,
+      "p(95)": 6.432874999999994,
+      "p(99)": 13.534295999999863
+    },
+    "normalAcceptance": {
+      "avg": 137.67892225913616,
+      "med": 40.4575,
+      "p(95)": 745.8074,
+      "p(99)": 966.3876,
+      "max": 1119.844
+    },
+    "rejectionCount": 19666,
+    "normalRejected": 0
+  },
+  "creationWait": {
+    "normal": {
+      "commitsObserved": 301.0,
+      "averageMs": 371.6146179401993,
+      "rollingP95Ms": 1205.8624,
+      "p95Scope": "Meter rolling window; mean and count use run counter deltas"
+    },
+    "seckill": {
+      "commitsObserved": 28334.0,
+      "averageMs": 893.6599491776666,
+      "rollingP95Ms": 1870.659584,
+      "p95Scope": "Meter rolling window; mean and count use run counter deltas"
+    }
+  }
+}

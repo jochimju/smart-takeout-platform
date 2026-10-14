@@ -1,0 +1,15 @@
+{
+  "requests": 200,
+  "seed": 20261014,
+  "hotSelectionFraction": 0.8,
+  "categories": 29,
+  "menuTypes": [
+    "dish",
+    "setmeal"
+  ],
+  "baselineSelects": 501,
+  "cachedSelects": 54,
+  "selectReduction": 0.8922155688622755,
+  "platformWideClaim": false,
+  "note": "Controlled menu mixture; hot categories prewarmed, remaining categories cold initially. Does not measure all database traffic."
+}

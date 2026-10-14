@@ -22,6 +22,9 @@ import java.util.List;
 @RequestMapping("/admin/seckill/activity")
 @Api(tags = "秒杀活动运维接口")
 public class SeckillActivityController {
+    @Autowired private com.sky.service.impl.SeckillInventoryReturn inventoryReturn;
+    @PostMapping("/{activityId}/inventory-return")
+    public Result<Integer> returnInventory(@PathVariable Long activityId) {return Result.success(inventoryReturn.closeout(activityId));}
     @PutMapping("/{activityId}/stock")
     @ApiOperation("调整总库存，保留已经占用的数量")
     public Result adjustStock(@PathVariable Long activityId, @RequestBody StockAdjustment request) {

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 
 /**
- * 閹躲儴銆?
+ * 报表
  */
 @RestController
 @RequestMapping("/admin/report")
@@ -29,7 +29,7 @@ public class ReportController {
     private ReportService reportService;
 
     /**
-     * 閽€銉ょ瑹妫版繃鏆熼幑顔剧埠鐠?
+     * 营业额数据统计
      *
      * @param begin
      * @param end
@@ -46,7 +46,7 @@ public class ReportController {
     }
 
     /**
-     * 閻劍鍩涢弫鐗堝祦缂佺喕顓?
+     * 用户数据统计
      * @param begin
      * @param end
      * @return
@@ -61,7 +61,7 @@ public class ReportController {
     }
 
     /**
-     * 鐠併垹宕熼弫鐗堝祦缂佺喕顓?
+     * 订单数据统计
      * @param begin
      * @param end
      * @return
@@ -78,7 +78,7 @@ public class ReportController {
     }
 
     /**
-     * 闁库偓闁插繑甯撻崥宥囩埠鐠?
+     * 销量排名统计
      * @param begin
      * @param end
      * @return

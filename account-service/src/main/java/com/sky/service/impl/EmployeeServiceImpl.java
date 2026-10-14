@@ -31,6 +31,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Autowired private com.sky.account.EmployeePasswords passwords;
+    @org.springframework.beans.factory.annotation.Value("${sky.employee.initial-password:}") private String initialPassword;
 
     /**
      * 员工登录
@@ -53,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //密码比对
         // TODO 后期需要进行md5加密，然后再进行比对
-        if (!password.equals(employee.getPassword())) {
+        if (!passwords.matches(password, employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
@@ -61,6 +63,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee.getStatus() == StatusConstant.DISABLE) {
             //账号被锁定
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
+        }
+
+        if (!passwords.current(employee.getPassword())) {
+            String upgraded = passwords.encode(password);
+            if (employeeMapper.changePassword(employee.getId(), employee.getPassword(), upgraded) != 1) {
+                throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+            }
+            employee.setPassword(upgraded);
+            employee.setAuthVersion(employee.getAuthVersion() + 1);
         }
 
         //3、返回实体对象
@@ -128,11 +139,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         employee.setStatus(StatusConstant.ENABLE);
-        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        if (initialPassword == null || initialPassword.isBlank()) {
+            throw new PasswordEditFailedException("请配置员工初始化密码后再创建账号");
+        }
+        employee.setPassword(passwords.encode(initialPassword));
         employee.setCreateTime(LocalDateTime.now());
         employee.setUpdateTime(LocalDateTime.now());
-        employee.setCreateUser(10L);
-        employee.setUpdateUser(10L);
+        employee.setCreateUser(BaseContext.getCurrentId());
+        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
     }
@@ -166,16 +180,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee == null) {
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
-        if (!employeePasswordDTO.getOldPassword().equals(employee.getPassword())) {
+        if (!passwords.matches(employeePasswordDTO.getOldPassword(), employee.getPassword())) {
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
-        Employee update = Employee.builder()
-                .id(employee.getId())
-                .password(employeePasswordDTO.getNewPassword())
-                .updateTime(LocalDateTime.now())
-                .updateUser(employee.getId())
-                .build();
-        employeeMapper.update(update);
+        if (employeePasswordDTO.getNewPassword().length() < 8 || employeePasswordDTO.getNewPassword().length() > 128) {
+            throw new PasswordEditFailedException("新密码需要8至128个字符");
+        }
+        if (employeeMapper.changePassword(employee.getId(), employee.getPassword(), passwords.encode(employeePasswordDTO.getNewPassword())) != 1) {
+            throw new PasswordEditFailedException(MessageConstant.PASSWORD_EDIT_FAILED);
+        }
     }
 
 }

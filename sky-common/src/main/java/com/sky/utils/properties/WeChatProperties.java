@@ -19,5 +19,12 @@ public class WeChatProperties {
     private String weChatPayCertFilePath; //平台证书
     private String notifyUrl; //支付成功的回调地址
     private String refundNotifyUrl; //退款成功的回调地址
+    private String apiBaseUrl = "https://api.mch.weixin.qq.com";
+    private java.util.List<String> platformCertificatePaths = new java.util.ArrayList<>();
+    /** Public key id -> PEM path. Supports certificate/public-key overlap during rotation. */
+    private java.util.Map<String,String> publicKeyPaths = new java.util.HashMap<>();
+    private boolean autoUpdateCertificates;
+    private String publicKeyId;
+    private String publicKeyFilePath;
 
 }

@@ -1,0 +1,113 @@
+{
+  "database": "sky_perf_chain_20261013",
+  "tradeStoppedForConsistentSnapshot": true,
+  "pendingAcceptance": 0,
+  "cacheEvents": 0,
+  "unsentCreationMessages": 0,
+  "dueTimeoutMessages": 0,
+  "queues": {
+    "sky.seckill.order.v2.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.order.dead.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    }
+  },
+  "activities": [
+    {
+      "id": 1,
+      "mysqlStock": 60000,
+      "redisStock": 60000,
+      "activeGuards": 0,
+      "redisUsers": 0,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {
+        "SUCCEEDED": 1790
+      },
+      "orderStates": {
+        "6": 1790
+      }
+    },
+    {
+      "id": 2,
+      "mysqlStock": 54369,
+      "redisStock": 54369,
+      "activeGuards": 5631,
+      "redisUsers": 5631,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {
+        "SUCCEEDED": 5631
+      },
+      "orderStates": {
+        "1": 5631
+      }
+    },
+    {
+      "id": 3,
+      "mysqlStock": 10,
+      "redisStock": 10,
+      "activeGuards": 0,
+      "redisUsers": 0,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {},
+      "orderStates": {}
+    },
+    {
+      "id": 4,
+      "mysqlStock": 53839,
+      "redisStock": 53839,
+      "activeGuards": 6161,
+      "redisUsers": 6161,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {
+        "SUCCEEDED": 6161
+      },
+      "orderStates": {
+        "1": 6161
+      }
+    },
+    {
+      "id": 5,
+      "mysqlStock": 10,
+      "redisStock": 10,
+      "activeGuards": 0,
+      "redisUsers": 0,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {},
+      "orderStates": {}
+    },
+    {
+      "id": 6,
+      "mysqlStock": 7,
+      "redisStock": 7,
+      "activeGuards": 3,
+      "redisUsers": 3,
+      "outstanding": 0,
+      "outstandingCount": 0,
+      "unbridged": 0,
+      "requestStates": {
+        "SUCCEEDED": 3
+      },
+      "orderStates": {
+        "1": 3
+      }
+    }
+  ],
+  "duplicateActiveGuards": 0,
+  "duplicateOrderNumbers": 0,
+  "futureTimeoutEventsRetained": 11795,
+  "formalRunConfirmedRows": 6161,
+  "formalRunConfirmedUniqueOrders": 6161
+}

@@ -11,8 +11,13 @@ public class SeckillActivity {
     private Long id;
     private Long setmealId;
     private Integer stock;
+    private Integer bucketCount;
+    private Integer bucketRemainingStock;
+    public Integer getRemainingStock() { return bucketRemainingStock == null ? remainingStock : bucketRemainingStock; }
     private Integer remainingStock;
     private Long stockVersion;
+    private Integer asyncInitialized;
+    private Integer runtimeRetired;
     /** 单个用户在本活动中可购买的套餐份数，当前秒杀规则固定为 1。 */
     private Integer purchaseLimit;
     /** 秒杀成交价，原价取套餐当前 price。 */

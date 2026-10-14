@@ -1,0 +1,1 @@
+CREATE INDEX idx_allocation_return_state ON seckill_inventory_allocation(state,activity_id);

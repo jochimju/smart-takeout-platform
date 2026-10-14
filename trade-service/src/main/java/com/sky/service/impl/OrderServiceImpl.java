@@ -44,11 +44,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺?
+ * 订单
  */
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+    @Autowired(required=false) private com.sky.observability.OrderCreationMetrics creationMetrics;
     /** 配送费和打包费只能在服务端结算，不能信任小程序传入的金额。 */
     private static final BigDecimal DELIVERY_FEE = new BigDecimal("6.00");
     private static final BigDecimal PACK_FEE_PER_ITEM = new BigDecimal("1.00");
@@ -77,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderSubmitRequestMapper orderSubmitRequestMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired private com.sky.payment.PaymentRecoveryStore paymentRecovery;
     @Autowired
     private BusinessEventOutbox businessEventOutbox;
     @Autowired
@@ -87,30 +89,38 @@ public class OrderServiceImpl implements OrderService {
     private boolean mockPaymentEnabled;
 
     /**
-     * 闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹寸偟鎳呴柍缁樻閹鏁愭惔婵堢泿缂備讲鍋?
-     *
-     * @param ordersSubmitDTO
-     * @return
+     * 普通下单的受理入口：此处只绑定请求和订单号、持久化建单命令，不写 orders。
+     * HTTP 成功表示请求已受理；首次返回的 id、orderAmount 为空，前端需轮询 submit-result。
+     * 真正的建单入口是 MQ 消费者调用的 createOrderFromMessage。
      */
     @Transactional(rollbackFor = Exception.class)
     public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {
         Long userId = BaseContext.getCurrentId();
+        if(userId==null)throw new OrderBusinessException("用户未登录");
+        // requestId 标识同一次提交；同一用户重试时复用它，避免生成多个订单。
         validateRequestId(ordersSubmitDTO);
+        String requestHash=fingerprint(ordersSubmitDTO);
+        var accepted=orderSubmitRequestMapper.find(userId,ordersSubmitDTO.getRequestId());
+        if(accepted!=null && accepted.get("request_hash")!=null && !requestHash.equals(accepted.get("request_hash")))
+            throw new OrderBusinessException("请求编号已被其他参数使用");
+        //查询同一次请求是否已创建订单
         OrderSubmitVO previous = findSubmittedOrder(userId, ordersSubmitDTO.getRequestId());
         if (previous != null) {
             return previous;
         }
-
+        //生成订单号
         String orderNumber = generateOrderNumber();
-        if (orderSubmitRequestMapper.claim(userId, ordersSubmitDTO.getRequestId(), orderNumber) != 1) {
-            OrderSubmitVO submitted = findSubmittedOrder(userId, ordersSubmitDTO.getRequestId());
-            if (submitted != null) {
-                return submitted;
-            }
-            throw new OrderBusinessException("order is processing, please retry later");
-        }
+        ShoppingCart lookup=new ShoppingCart();lookup.setUserId(userId);
+        List<ShoppingCart> snapshot=shoppingCartMapper.list(lookup);
+        if(snapshot==null || snapshot.isEmpty()) throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
+        validateCartItems(snapshot);
+        // 固化首次受理的商品与数量；消费者继续以服务端报价及地址归属完成校验。
         OrderSubmitMessageDTO messageDTO = OrderSubmitMessageDTO.builder()
                 .userId(userId)
+                .acceptedAt(System.currentTimeMillis())
+                .cartSnapshot(snapshot)
+                .requestId(ordersSubmitDTO.getRequestId()).requestHash(requestHash)
+                .expectedAmount(ordersSubmitDTO.getAmount())
                 .addressBookId(ordersSubmitDTO.getAddressBookId())
                 .payMethod(ordersSubmitDTO.getPayMethod())
                 .remark(ordersSubmitDTO.getRemark())
@@ -127,8 +137,17 @@ public class OrderServiceImpl implements OrderService {
                 .canteenName(ordersSubmitDTO.getCanteenName())
                 .build();
 
+        if(orderSubmitRequestMapper.claimSnapshot(userId,ordersSubmitDTO.getRequestId(),orderNumber,requestHash,
+                com.alibaba.fastjson.JSON.toJSONString(messageDTO))!=1) {
+            var competing=orderSubmitRequestMapper.findCurrent(userId,ordersSubmitDTO.getRequestId());
+            if(competing==null || !requestHash.equals(competing.get("request_hash"))) throw new OrderBusinessException("请求编号参数冲突");
+            return OrderSubmitVO.builder().orderNumber((String)competing.get("order_number")).submitStatus((String)competing.get("state"))
+                    .failureMessage((String)competing.get("last_error")).build();
+        }
+
         // The request is accepted quickly; cart validation, pricing, stock
         // deduction and persistence execute in the idempotent MQ consumer.
+        // 待发消息与请求绑定一起提交，提交后才发 MQ；发送失败由持久化记录支持补发。
         orderMessagePublisher.submitAfterCommit(messageDTO);
 
         return OrderSubmitVO.builder()
@@ -136,9 +155,11 @@ public class OrderServiceImpl implements OrderService {
                 .orderAmount(null)
                 .orderTime(LocalDateTime.now())
                 .id(null)
+                .submitStatus("ACCEPTED")
                 .build();
     }
 
+    /** 前端轮询入口：查到真实 orders 才有 id 和最终金额；null 不区分处理中和失败。 */
     @Override
     public OrderSubmitVO findSubmitResult(String requestId) {
         if (BaseContext.getCurrentId() == null || requestId == null || !requestId.matches("[A-Za-z0-9_-]{16,64}")) {
@@ -147,31 +168,75 @@ public class OrderServiceImpl implements OrderService {
         return findSubmittedOrder(BaseContext.getCurrentId(), requestId);
     }
 
+    /**
+     * MQ 消费线程执行的建单事务。地址、商品信息通过 Feign 远程读取；
+     * 交易库存、订单、优惠、明细、购物车和待发超时消息在本地事务内写入。
+     * 远程读取不属于分布式事务；本地事务失败后，消费者负责记录失败并处理 ACK/NACK。
+     */
     @Transactional
     public void createOrderFromMessage(OrderSubmitMessageDTO messageDTO) {
+        createOrderBody(messageDTO,null);
+    }
+    @Override public com.sky.service.PreparedNormalOrder prepareNormalOrder(OrderSubmitMessageDTO received) {
+        var row=orderSubmitRequestMapper.get(received.getOrderNumber());
+        if(row==null)throw new NormalOrderRecovery.MissingAcceptance();
+        if(!"ACCEPTED".equals(row.get("state")))return null;
+        var command=com.alibaba.fastjson.JSON.parseObject((String)row.get("command_body"),OrderSubmitMessageDTO.class);
+        if(command==null || command.getCartSnapshot()==null)throw new OrderBusinessException("订单提交快照缺失");
+        var items=command.getCartSnapshot();validateCartItems(items);
+        var quotes=catalogQuoteService.quotes(items);catalogQuoteService.refresh(items,quotes);
+        var address=accountClient.address(command.getUserId(),command.getAddressBookId());
+        if(address==null || !command.getUserId().equals(address.getUserId()))throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+        return new com.sky.service.PreparedNormalOrder(command,address,items,quotes);
+    }
+    @Override @Transactional(rollbackFor=Exception.class)
+    public void createPreparedNormalOrder(com.sky.service.PreparedNormalOrder prepared) {createOrderBody(prepared.command(),prepared);}
+
+    private void createOrderBody(OrderSubmitMessageDTO messageDTO,com.sky.service.PreparedNormalOrder prepared) {
+        if(orderSubmitRequestMapper!=null) {
+            var acceptance=orderSubmitRequestMapper.lock(messageDTO.getOrderNumber());
+            if(acceptance==null) throw new NormalOrderRecovery.MissingAcceptance();
+            if(!"ACCEPTED".equals(acceptance.get("state")))return;
+            if(acceptance.get("command_body")!=null) {
+                if(((Number)acceptance.get("expired")).intValue()==1)throw new OrderBusinessException("建单等待超时");
+                messageDTO=com.alibaba.fastjson.JSON.parseObject((String)acceptance.get("command_body"),OrderSubmitMessageDTO.class);
+                if(prepared!=null && !java.util.Objects.equals(messageDTO.getRequestHash(),prepared.command().getRequestHash()))throw new OrderBusinessException("订单快照发生冲突");
+            }
+        }
+        // ① 先查这个订单号是否已经建过, 已完成订单的重复消息直接返回；这是重复投递的业务幂等检查。
         Orders exists = orderMapper.getByNumber(messageDTO.getOrderNumber());
         if (exists != null) {
             return;
         }
 
-        AccountAddressView addressBook = accountClient.address(messageDTO.getUserId(), messageDTO.getAddressBookId());
+        // ② 远程查询收货地址 地址归 account-service 管理，使用 userId + addressId 查询，避免使用他人地址。
+        AccountAddressView addressBook = prepared==null?accountClient.address(messageDTO.getUserId(), messageDTO.getAddressBookId()):prepared.address();
         if (addressBook == null) {
             throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
         }
 
+        // ③ 根据用户读取购物车 普通订单的商品来源是交易服务购物车，用户身份取自受理阶段保存的消息。
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUserId(messageDTO.getUserId());
-        List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
+        List<ShoppingCart> shoppingCartList = prepared!=null?prepared.items():messageDTO.getCartSnapshot()!=null ? messageDTO.getCartSnapshot() : shoppingCartMapper.list(shoppingCart);
         if (shoppingCartList == null || shoppingCartList.size() == 0) {
             throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
         }
+        //④ 检查营业状态和购物车结构
         ensureShopOpen();
         validateCartItems(shoppingCartList);
-        catalogQuoteService.refresh(shoppingCartList);
-        tradeInventoryService.deduct(shoppingCartList);
+        //⑤ 从商品服务刷新报价 以商品服务的现价与销售状态为准，覆盖购物车中的旧报价。
+        if(prepared==null)catalogQuoteService.refresh(shoppingCartList);
+        //⑥ 扣减交易库存 实际扣减的是本地 trade_inventory，不是远程修改 catalog-service 库存。
+        if(prepared==null)tradeInventoryService.deduct(shoppingCartList);
+        else tradeInventoryService.deductQuoted(shoppingCartList,prepared.quotes());
 
+        // ⑦ 在内存里组装订单对象  从此处组装待支付订单：尚未付款，但库存和优惠会在本事务中占用。
         Orders order = new Orders();
-        BeanUtils.copyProperties(messageDTO, order);
+        BeanUtils.copyProperties(messageDTO, order,"packAmount","tablewareNumber");
+            order.setTablewareNumber(messageDTO.getTablewareNumber()==null?0:messageDTO.getTablewareNumber());
+            order.setTablewareStatus(messageDTO.getTablewareStatus()==null?1:messageDTO.getTablewareStatus());
+            order.setDeliveryStatus(messageDTO.getDeliveryStatus()==null?1:messageDTO.getDeliveryStatus());
             order.setPhone(addressBook.getPhone());
             order.setAddress(addressBook.getDetail());
             order.setConsignee(addressBook.getConsignee());
@@ -180,6 +245,7 @@ public class OrderServiceImpl implements OrderService {
             order.setStatus(Orders.PENDING_PAYMENT);
             order.setPayStatus(Orders.UN_PAID);
             order.setOrderTime(LocalDateTime.now());
+            //⑧ 计算商品小计和优惠
             BigDecimal originAmount = calculateCartAmount(shoppingCartList);
             if (messageDTO.getCouponId() != null && messageDTO.getUserRedPacketId() != null) {
                 throw new OrderBusinessException("coupon and red packet cannot be used together");
@@ -188,23 +254,31 @@ public class OrderServiceImpl implements OrderService {
                     messageDTO.getUserRedPacketId(), messageDTO.getUseRedPacket());
             BigDecimal discountAmount = calculateDiscount(messageDTO.getUserId(), messageDTO.getCouponId(), originAmount)
                     .add(calculateRedPacketDiscount(messageDTO.getUserId(), userRedPacketId, originAmount));
+            //⑨ 计算最终金额，并设置截止时间
             int packAmount = calculatePackAmount(shoppingCartList);
             order.setCouponId(messageDTO.getCouponId());
             order.setUserRedPacketId(userRedPacketId);
             order.setDiscountAmount(discountAmount);
-            // amount 是实际支付金额：菜品金额 - 优惠 + 打包费 + 配送费。
+            //向订单表插入1条数据
             // 前端传入的 amount、packAmount 均不参与结算，避免被篡改。
             order.setPackAmount(packAmount);
             order.setAmount(originAmount.subtract(discountAmount)
                     .add(BigDecimal.valueOf(packAmount).multiply(PACK_FEE_PER_ITEM))
                     .add(DELIVERY_FEE));
+            if(messageDTO.getExpectedAmount()!=null && messageDTO.getExpectedAmount().compareTo(order.getAmount())!=0)
+                throw new OrderBusinessException("金额或优惠已变化，请重新结算");
 
-            order.setExpireTime(order.getOrderTime().plusMinutes(15));
+            // 支付期限从消费者实际建单时间开始；排队时间不计入这 15 分钟。
+            order.setExpireTime(order.getOrderTime().plusMinutes(15).withNano(0));
+            //⑩ 插入订单，拿到数据库主键 ID
             orderMapper.insert(order);
+            // ⑪ 真正占用优惠券或红包 优惠券建单即标记使用，红包建单先预占；取消时按订单关联释放。
             markCouponUsed(messageDTO.getUserId(), messageDTO.getCouponId(), order.getId());
             reserveRedPacket(messageDTO.getUserId(), userRedPacketId, order.getId());
 
+            // 订单明细保存本次交易的商品快照，后续退款/退库存不能依赖已清空的购物车。
             List<OrderDetail> orderDetailList = new ArrayList<>();
+            //⑫ 将购物车转换成订单明细
             for (ShoppingCart cart : shoppingCartList) {
                 OrderDetail orderDetail = new OrderDetail();
                 BeanUtils.copyProperties(cart, orderDetail);
@@ -214,10 +288,16 @@ public class OrderServiceImpl implements OrderService {
             }
 
             orderDetailMapper.insertBatch(orderDetailList);
-            shoppingCartMapper.deleteByUserId(messageDTO.getUserId());
+            //⑬ 清空购物车，并保存超时命令 成功建单后清购物车；若后续本地操作失败，此删除也随事务回滚。
+            if(messageDTO.getCartSnapshot()!=null) {
+                for(var item:messageDTO.getCartSnapshot())shoppingCartMapper.deleteSubmitted(item);
+                orderSubmitRequestMapper.succeeded(order.getNumber());
+            } else shoppingCartMapper.deleteByUserId(messageDTO.getUserId());
         // Publish only after the order transaction commits.  The delay queue's
         // 15-minute TTL dead-letters it to the cancellation consumer.
-        orderMessagePublisher.timeoutAfterCommit(order.getNumber());
+        // 新普通订单通过延迟队列触发关闭，此处没有创建 order_reliability_job 的 TIMEOUT 任务。
+        orderMessagePublisher.timeoutDeferred(order.getNumber(),order.getExpireTime());
+        if(creationMetrics!=null)creationMetrics.committed("normal",java.util.Collections.singletonList(messageDTO.getAcceptedAt()));
     }
 
     /**
@@ -233,7 +313,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    @Transactional
     public void cancelTimeoutOrder(String orderNumber) {
         lifecycle.timeout(orderNumber);
     }
@@ -262,7 +341,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ弮鍌氬付缂備讲鏅滈妵鍕冀閵娧勫櫘闁?
+     * 订单支付
      *
      * @param ordersPaymentDTO
      * @return
@@ -275,7 +354,8 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderBusinessException("order is not available for payment");
         if(mockPaymentEnabled) return OrderPaymentVO.builder().mockPayment(true).build();
         AccountUserView user=accountClient.user(userId);
-        JSONObject result=weChatPayUtil.pay(order.getNumber(),order.getAmount(),"Sky take-out order",user.getOpenid());
+        paymentRecovery.begin(order.getNumber(),order.getAmount(),OrderLifecycleService.deadline(order));
+        JSONObject result=weChatPayUtil.pay(order.getNumber(),order.getAmount(),"Sky take-out order",user.getOpenid(),OrderLifecycleService.deadline(order));
         if(result.getString("code")!=null) throw new OrderBusinessException("payment request failed: "+result.getString("code"));
         OrderPaymentVO vo=result.toJavaObject(OrderPaymentVO.class);
         vo.setPackageStr(result.getString("package"));
@@ -288,7 +368,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷娴囬妴鈧柛瀣尰閵囧嫰寮介妸褎鍣柣銏╁灡閻╊垶寮婚悢琛″亾濞戞顏呮叏閸パ€鏀芥い鏃傛櫕濞叉挳鏌℃担鍝バゅù鐙呯畵瀹曟鎮℃惔鈥茬礋闂傚倷娴囬妴鈧柛瀣尵閻ヮ亪顢橀悙鏉戭€涢梺鍛婅壘閸婂潡寮诲☉妯滄梹鎷呴崷顓фФ濠电姵顔栭崰妤呭箖閸岀偟宓侀柍?
+     * 支付成功，修改订单状态
      *
      * @param outTradeNo
      */
@@ -298,7 +378,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹寸偞鐨戦柛妤佺閵囧嫰寮介妸褏顓奸梺鍛婅壘閸婂潡寮诲☉妯滄梹鎷呴崷顓фК闂備焦鎮堕崝宀€鈧稈鏅犳俊鐢稿礋椤栨艾鐎銈嗗姂閸婃洖顕ｉ妸鈺傜厽?
+     * 用户端订单分页查询
      *
      * @param pageNum
      * @param pageSize
@@ -306,7 +386,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     public PageResult pageQuery4User(int pageNum, int pageSize, Integer status) {
-        // 闂備浇宕垫慨宕囩矆娴ｈ娅犲ù鐘差儐閸嬵亪鏌涢埄鍐槈缂佲偓閸℃稒鐓曢柍鈺佸暟閳笺倝鏌?
+        // 设置分页
         PageHelper.startPage(pageNum, pageSize);
 
         OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
@@ -314,17 +394,17 @@ public class OrderServiceImpl implements OrderService {
         ordersPageQueryDTO.setStatus(status);
         ordersPageQueryDTO.setUserDeleted(0);
 
-        // 闂傚倷绀侀幉锛勬暜閹烘嚦娑樷攽鐎ｎ€儱顭块懜闈涘缂佺嫏鍥ㄧ厓闁靛鍎辩痪褎銇勯幇顏嗙煓闁哄矉绱曟禒锔炬嫚閹绘帒袚婵?
+        // 分页条件查询
         Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
 
         List<OrderVO> list = new ArrayList();
 
-        // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛櫣缂佲偓閸曨倠鏃堟晜缁涘鍔岄梺鍛婅壘閸婂潡寮诲☉妯滄梹鎷呴崷顓фО婵犵鈧啿绾ч柛銊ユ贡濡叉劙骞掑Δ鈧獮銏°亜閹捐泛啸妞わ富鍠栬灃闁绘﹢娼ф禒鈺傜箾婢跺娲撮柟顖氬暙閳规垿宕奸悢閿嬫珴闂備礁鎲℃笟妤呭储閻撳寒鍤曢柣顔煎derVO闂備礁鎼ˇ顐﹀疾濠婂懐鐭欓柡宥庡幑閳ь兛绶氶獮瀣晝閳ь剚瀵奸悩纰樺亾楠炲灝鍔氶柟铏姉閳?
+        // 查询出订单明细，并封装入OrderVO进行响应
         if (page != null && page.getTotal() > 0) {
             for (Orders orders : page) {
-                Long orderId = orders.getId();// 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ幒鎾剁厵
+                Long orderId = orders.getId();// 订单id
 
-                // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡娑㈡煕閺囥劌浜濋柟鐧哥悼缁?
+                // 查询订单明细
                 List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
 
                 OrderVO orderVO = new OrderVO();
@@ -338,19 +418,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅崑锝夋煕閵壯冨幋婵＄虎鍣ｉ弻?
+     * 查询订单详情
      *
      * @param id
      * @return
      */
     public OrderVO details(Long id) {
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕鈽夐弮鍌涙殜闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
+        // 根据id查询订单
         Orders orders = requireOwnedOrder(id);
 
-        // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲閻庢碍宀搁弻鏇熷緞濡厧甯ラ梺鍛婅壘閸婂潡寮诲☉妯滄梹鎷呴崷顓фК婵＄偑鍊栧ú锕傚窗濡ゅ懎绠氶柡鍐ㄧ墕缁秹鏌涚仦鍓с€掗柡鍡欏█濮婃椽宕楅悡搴殝缂備緡鍠栭惌鍌炵嵁?婵犵數濞€濞佳囧磹瑜版帇鈧啯绻濋崶浣告喘閹晫绮欓崹顔兼尋闂佺澹堥幓顏嗗緤閸ф鍎?
+        // 查询该订单对应的菜品/套餐明细
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
 
-        // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸偅鏅┑顔筋焾妞村憡鍒婃總鍛婄厪闊洦娲栧瓭缂備讲鍋撻悗锝庡枟閻撴洘绻涢崱妤呯崪鐎规悶鍎甸弻娑樷枎韫囨挴鎸冮梺褰掝棑婵炩偓闁轰礁鍊块幐濠冨緞婵犲偆妫堥梻浣筋嚙缁绘劗鎹㈢€ｎ€㈠綊宕堕锕€顦扮换婵嬪炊瑜忛ˇ顐︽⒑鐠嬪骸瀚€濞撳垾rVO濠德板€楁慨鐑藉磻閻愬搫纾块柤娴嬫櫆瀹曟煡鏌熸潏鍓х暠闁?
+        // 将该订单及其详情封装到OrderVO并返回
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(orders, orderVO);
         orderVO.setOrderDetailList(orderDetailList);
@@ -371,11 +451,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹存瑥鐏╅柣顓燁殜閺屸€愁吋閸愩劌顬嬮柛鐔告倐閺岋綁鎮╅柆宥嗩€栭梺鎼炲妿閹虫捇鎮?
+     * 用户取消订单
      *
      * @param id
      */
-    @Transactional
+    /** 用户取消入口；所有资源释放交给生命周期服务，避免只改状态却漏退库存。 */
     public void userCancelById(Long id) throws Exception {
         lifecycle.cancel(id,"user cancel","USER");
     }
@@ -397,23 +477,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷绀侀幉锟犲礉閺囩姷鐭撻梻鍫熶緱閻掍粙鏌涢…鎴濅簽闁崇粯妫冮弻宥堫檨闁告挾鍠庨悾?
+     * 再来一单
      *
      * @param id
      */
     public Map<String, Object> repetition(Long id) {
-        // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛仴濞存粌缍婇弻鐔煎箚瑜嶉弳杈ㄣ亜閵堝懏鍤囬柡宀嬬秮閿濈偤顢楅埀顒佷繆娴犲鐓曢柍鍝勫€块幖鈺?
+        // 查询当前用户id
         Long userId = BaseContext.getCurrentId();
         Orders order = requireOwnedOrder(id);
 
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕霉閿濆洤鍔嬪┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒佸垔閺€鍕⒒娴ｅ憡鎯堥悶姘煎亰瀹曟洟骞橀鍛櫔濠德板€曠€氥劍绂嶈ぐ鎺撶厵闁诡垎鍐╂瘣濡炪們鍊曢幊姗€骞冪憴鍕闂傚牊绋撴禒濂告倵鐟欏嫭绀堥柛鐘虫崌楠炲繘鎮╃紒妯绘珕闂佽姤锚椤︻垱绔?
+        // 根据订单id查询当前订单详情
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
 
-        // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸偅鏅ｉ悷婊呭鐢帞娑甸埀顒勬⒑閸濆嫭绀屾俊鎻掓嚇瀹曞灚绻濋崶銊у幍濡炪倖鐗楃喊宥夊闯鐟欏嫨浜滈柡鍥ュ妼閺嬨倝鏌熼崨濠傛诞婵℃崘椴哥换娑㈠级閹寸儐妫﹀Δ鐘靛仦閸ㄥ潡鏁愰悙渚晣闁挎稑瀚峰Σ褰掓⒑閼姐倕校闁告棑绠撳畷銏ゆ倷椤掍焦鐝烽梺鍦焾鐎涒晜鎱ㄥ鍫熺叆闁哄洦顨呮禍鎯ь渻閵堝棙澶勯柛鐘冲哺楠?
+        // 将订单详情对象转换为购物车对象
         List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(x -> {
-            ShoppingCart shoppingCart = new ShoppingCart();
+            // 普通订单的商品来源是交易服务购物车，用户身份取自受理阶段保存的消息。
+        ShoppingCart shoppingCart = new ShoppingCart();
 
-            // 闂備浇顕х换鎰崲閹邦儵娑樜旈崘鈺傛濡炪倖鍔戦崐鏍ㄥ垔婵傚憡鐓忛煫鍥ㄦ礀瀛濈紓浣插亾閻庯綆鍠楅崑锝夋煕閵壯冨幋婵＄虎鍣ｉ弻娑欐償閿涘嫮顔掗梺鍝勮嫰閼活垶鎮惧┑瀣妞ゆ帊闄嶉埀顒€鍟村鍝勑ч崶褍顬堥柣搴㈠嚬閸ㄧ敻濡甸幇顒夊悑濠㈣泛锕ｇ槐鑸电箾鏉堝墽绉繛鎾虫贡閹广垽宕卞☉娆戝幍濡炪倖鎸嗛崘顏冩闂備線娼荤徊楣冨箖閸屾凹鍤曟い鎺戝缁狙勭箾閸℃瑥浜炬禍娑㈡⒒娴ｅ憡鍟為悽顖滃枎閳绘柨鈽夐姀鐘虫К閻庡厜鍋撻柍褜鍓熼獮蹇氥亹閹烘繃鏅ｉ梺缁樕戠粊鎾箰閸涘瓨鐓涘璺鸿嫰閸撳磭绱掗悩鍐茬伌妞ゃ垺宀搁、娆撴倷椤掆偓椤曪繝姊洪悙钘夊姤閻忓浚浜畷?
+            // 将原订单详情里面的菜品信息重新复制到购物车对象中
             BeanUtils.copyProperties(x, shoppingCart, "id");
             shoppingCart.setUserId(userId);
             shoppingCart.setCreateTime(LocalDateTime.now());
@@ -421,7 +502,7 @@ public class OrderServiceImpl implements OrderService {
             return shoppingCart;
         }).collect(Collectors.toList());
 
-        // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸繄鐛ュ┑顔姐仜閸嬫捇鏌熼銊ユ搐閻撴盯鏌涢弴銊ュ闁烩晛鍟撮弻锝嗘償閿濆棙姣勫銈冨灩閿曨亪骞愰崨鏉戠妞ゆ牗姘ㄩ濂告偡濠婂懎顣奸悽顖涘笒閳诲秹濡堕崱娆戭啎闂佹寧绻傞悧婊堝吹濞嗗繆鏀芥い鏃€鍎虫禒杈┾偓瑙勬礃瀹€鎼佸箖瑜斿畷濂告偄閸撴彃鏅欓梻鍌欒兌椤㈠﹪顢氶弽顓炵獥闁哄稁鍋夋慨?
+        // 将购物车对象批量添加到数据库
         shoppingCartMapper.insertBatch(shoppingCartList);
 
         // 返回订单快照中的餐厅，供小程序"再来一单"定位原餐厅。
@@ -432,7 +513,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂備浇宕垫慨鎶芥⒔瀹ュ鍨傞柣鐔稿閺嗭箓鏌ｉ弮鍌氬付缂佺姾顫夌换婵囩節閸屾稑娅ｉ梺?
+     * 订单搜索
      *
      * @param ordersPageQueryDTO
      * @return
@@ -442,25 +523,25 @@ public class OrderServiceImpl implements OrderService {
 
         Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
 
-        // 闂傚倸鍊风欢锟犲窗閹捐绀夌€光偓閸曨偄鐎柟鑹版彧缁茬偓鍒婃總鍛婄厪闊洦娲栧瓭缂備讲鍋撻悗锝庡枟閻撶喐淇婇姘变虎闁绘挻鍔欓弻宥堫檨闁稿繑绋撳▎銏ゅΧ閸ヮ煈娼熷┑鐘绘涧椤戝棝藟閸℃稒鐓冪憸婊堝礈濞戙垹绠熼柣妤€鐗忛悷褰掓煃瑜滈崜鐔荤熅闂佺鏈粙鎴犳閻愮儤鐓涚€广儱楠告晶鎵磼閻樺磭鍙€闁哄本鐩俊鐤槻濞寸姭鏅滈妵鍕箻瀹曞洨楔閻庤娲╃换婵嗩嚕閹绢喖鐏崇€规洖娲ㄥ瓭闂傚倷绀侀幉锛勬崲閳ь剚淇婇悙鏉戠瑲缂佸矁椴哥换婵嬪炊瑜忛悾鍐差渻閵堝棛澧﹂柛濠冾殘缁牊寰勯幇顓炩偓鍫曠叓閸ャ劍灏伴柟顖涙涧ders闂備礁鎼ˇ閬嶅磿閹版澘绀堟繛鍡樺灍閸嬫捇妫冨☉妯奸獓缂備礁顑呴ˇ鍗烆嚕瑜嶉埢鏃€绋婇埡顡竀O
+        // 部分订单状态，需要额外返回订单菜品信息，将Orders转化为OrderVO
         List<OrderVO> orderVOList = getOrderVOList(page);
 
         return new PageResult(page.getTotal(), orderVOList);
     }
 
     private List<OrderVO> getOrderVOList(Page<Orders> page) {
-        // 闂傚倸鍊搁崐绋棵洪悩璇茬；闁瑰墽绮崑锟犳煛閸ャ劎顣茬紒浣瑰缁辨帞绱掑Ο铏逛紝閻庤娲栭悥濂稿箖濞嗘劧绱ｆ繝闈涙閸婃洟姊绘担鍛婂暈妞ゃ劌妫楃叅婵犻潧顭堟禍鍦偓骞垮劚椤︻垱瀵奸悩瑁佸綊鏁愰崼鐔诲悅缂備浇顕уΛ婵嬪蓟閻旂⒈鏁囩憸宥夋倶閼碱剛纾奸弶鍫涘妿缁犵偤鏌熼搹顐ゆ创妞ゃ垺妫冨畷鐔碱敇閻斿摜妲ユ繝鐢靛仦閸ㄥ爼寮婚妸鈹库偓渚€寮叉穱顦媟VO闂傚倷绀侀幉锛勬崲閸屾粎鐭撻悗鍨摃婵娊鏌ょ喊鍗炲缁炬儳銈搁弻鐔煎箚瑜滈崵鐔访?
+        // 需要返回订单菜品信息，自定义OrderVO响应结果
         List<OrderVO> orderVOList = new ArrayList<>();
 
         List<Orders> ordersList = page.getResult();
         if (!CollectionUtils.isEmpty(ordersList)) {
             for (Orders orders : ordersList) {
-                // 闂備浇顕х换鎰崲閹邦儵娑樜旈崨顓犵厬闂佽法鍠撴慨瀵告喆閿曞倹鍊堕柣鎰仛濞呮洟鏌熼悾灞芥瀾缂佺粯鐩畷濂稿Ψ閿斾粙鏁俊鐐€ч梽鍕偂閳ュ磭鏆︽慨妯块哺瀹曞鏌涘┑鍡楊伀闁告ɑ澧簉derVO
+                // 将共同字段复制到OrderVO
                 OrderVO orderVO = new OrderVO();
                 BeanUtils.copyProperties(orders, orderVO);
                 String orderDishes = getOrderDishesStr(orders);
 
-                // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸偅鏅ｉ悷婊呭鐢帞娑甸埀顒勬⒑閸濆嫭绀岄柍褜鍓欑壕顓犵矓閹绢喗鈷戦柛娑橈功缁犳垶淇婇悙鏉戠瑲缂佸矁椴哥换婵嬪炊瑜忛悾鍐差渻閵堝棛澧慨妯稿妼閳绘捇鏌嗗鍡椾画婵炶揪绲介幉锟犲闯瑜版帗鐓曢柍杞扮贰閸炵derVO婵犵數鍋為崹鍫曞箹閳哄懎鐭楅煫鍥ㄦ礃椤洘绻濋棃娑卞剳鐎规挷绶氶弻銈夊箹娴ｈ閿┑鐐插悑閸ㄥ潡寮诲☉銏犵睄闁稿本顕撮姀銈嗙厱闁宠桨绶￠崬绔erVOList
+                // 将订单菜品信息封装到orderVO中，并添加到orderVOList
                 orderVO.setOrderDishes(orderDishes);
                 orderVOList.add(orderVO);
             }
@@ -469,22 +550,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕霉閿濆洤鍔嬪┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀顒佸垔閺€鍕⒒娴ｇ鎮戦柛搴㈠▕瀹曟煡鎳犻煬韫睏闂佹悶鍎洪崜姘跺吹閺囩喓绡€濠电姴鍊搁弳鐐烘煙椤栨艾鈧瓕褰侀梺鎼炲劵缁茶姤鏅堕幓鎹楀綊鎮℃惔銏犳闂侀€炲苯澧紒瀣浮閵嗗啴宕奸妷顔芥櫈婵炶揪绲藉﹢閬嶅煝?
+     * 根据订单id获取菜品信息字符串
      *
      * @param orders
      * @return
      */
     private String getOrderDishesStr(Orders orders) {
-        // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡鐘绘煙缁嬫寧鎹ｉ柣顓烇躬閺岀喐鎷呴崘鍙夊櫤閻庢碍宀搁弻銊╁籍閸ヮ煈妫勯梺鍛婃尰濠㈡褰侀梺鎼炲劵缁茶姤鏅堕幓鎹楀綊鎮℃惔銏犳畻闂佽桨绀佺粔鐟扮暦婵傚憡鏅查幖绮瑰墲閸婃洟姊绘担鍛婂暈妞ゃ劌妫楃叅闁硅揪闄勯崵鍫ユ煙鏉堥箖妾柛搴＄Ч閺屾盯寮撮妸銉︾亪缂傚倸绉撮幊姗€寮诲☉妯锋斀闁告侗鍨煎Σ顕€姊虹涵鍛吂闁告鍟块锝夘敃閿濆拋鍤ら梺鍝勵槹閸ㄥ爼顢旈敓鐘斥拺?
+        // 查询订单菜品详情信息（订单中的菜品和数量）
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
 
-        // 闂備浇顕х换鎰崲閹邦儵娑樷枎閹炬潙鍓ㄩ梺鏂ユ櫅閸熶即鍩㈤弮鍫熺厓鐟滄粓宕滈悢濂夊殨闁割偅娲橀鎰渻閵堝棙灏紓宥咃工閻ｇ兘鏁撻悩鎻掑祮闂佺偨鍎辩壕顓犵矓閹绢喗鈷戦柛娑橈功缁犳垶淇婇悙鏉戠瑲缂佸矁椴哥换婵嬪炊瑜忛悾鍐差渻閵堝棛澧紒瀣灴椤㈡梹绻濆顓犲幍闂佽鍘界敮鎺楀礉濞嗘挻鍋ｉ柟閭﹀枛閺嬫棃鏌嶈閸撴氨绮欓幒妞尖偓鍐醇閵夘喗鏅炴繛杈剧到濠€閬嶅煝閺冨牊鍋ｉ柛銉ユ搐閹虫劙藝閳哄懏鈷戦柛婵嗗鑲栭梺鍛婎焼閸涱噮娼熼梺璺ㄥ枔婵敻寮查浣瑰弿婵妫楁晶濠氭煕閻戝棗浜滈懣鎰版煕閵夛絽濡跨紒鐘靛仦缁绘盯骞栭鐐寸亶缂?3闂傚倷鐒︾€笛呯矙閹烘绀冮柤濮愬€栭～?
+        // 将每一条订单菜品信息拼接为字符串（格式：宫保鸡丁*3；）
         List<String> orderDishList = orderDetailList.stream().map(x -> {
             String orderDish = x.getName() + "*" + x.getNumber() + ";";
             return orderDish;
         }).collect(Collectors.toList());
 
-        // 闂備浇顕х换鎰崲閹邦儵娑橆煥閸偅鏅┑顔筋焾妞村憡鍒婃總鍛婄厪闊洦娲栧瓭缂備讲鍋撻悗锝庡枟閸婄敻鏌ｉ姀鐘典粵闁搞倐鍋撶紓鍌欓檷閸斿秹鎮￠敓鐘茬畾闁告劦鍠栫粈瀣亜閹哄棗浜惧銈忕稻閻擄繝寮婚敓鐘查唶婵犲灚鍔栨瓏闁荤喐绮嶅妯肩矓閻熸壆鏆︽い鎰剁稻婵挳鏌у顒€鈧崵绮诲鑸碘拺閻犲洠鈧啿瀛ｉ梺鎼炲姀娴滎剟鍩€椤掍礁鍝虹紒鐘崇墵閻涱噣骞掑Δ鈧敮闂侀潧顧€缁犳帡宕ラ锝囩闁瑰鍋炵亸銊╂煕鐎ｎ偅宕岄柟?
+        // 将该订单对应的所有菜品信息拼接在一起
         return String.join("", orderDishList);
     }
 
@@ -492,6 +573,7 @@ public class OrderServiceImpl implements OrderService {
         return System.currentTimeMillis() + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
     }
 
+    /** 商品小计只汇总现价乘数量，不包含配送、打包和优惠。 */
     private BigDecimal calculateCartAmount(List<ShoppingCart> shoppingCartList) {
         BigDecimal amount = BigDecimal.ZERO;
         for (ShoppingCart cart : shoppingCartList) {
@@ -510,10 +592,12 @@ public class OrderServiceImpl implements OrderService {
                 .sum();
     }
 
+    /** 读取购物车对象上的报价；建单时 refresh 已更新它，此方法本身不请求商品服务。 */
     private BigDecimal queryCurrentPrice(ShoppingCart cart) {
         return cart.getAmount() == null ? BigDecimal.ZERO : cart.getAmount();
     }
 
+    /** 校验用户券、有效期和门槛；折扣金额限制在商品小计范围，不抵扣额外费用。 */
     private BigDecimal calculateDiscount(Long userId, Long couponId, BigDecimal originAmount) {
         if (couponId == null) {
             return BigDecimal.ZERO;
@@ -575,6 +659,7 @@ public class OrderServiceImpl implements OrderService {
         return packets.isEmpty() ? null : packets.get(0).getId();
     }
 
+    /** 条件更新预占红包，竞争失败抛异常，使建单事务回滚。 */
     private void reserveRedPacket(Long userId, Long redPacketId, Long orderId) {
         if (redPacketId == null) {
             return;
@@ -584,6 +669,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    /** 仅从未使用状态转为使用；绑定 orderId 供取消时精确退回。 */
     private void markCouponUsed(Long userId, Long couponId, Long orderId) {
         if (couponId == null) {
             return;
@@ -599,16 +685,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷绀侀幉锟犳嚌閸撗€鍋撳闂撮偗闁哄苯鑻…銊╁醇閻旇渹姹楅梻浣哄帶閹芥粓銆傛禒瀣；闁规儳鐡ㄦ刊鎾煟閹寸儐鐒介柡鍡欏█閺岋綁鎮╅柆宥嗩€栭梺鎼炲妿閹虫捇鎮鹃悜鑺ュ亜闁绘挸瀛╅悗顒佺箾閺夋垵鎮戞繛鍏肩懃閳诲秹濡堕崶鈺冿紳婵炶揪绲介幖顐﹀几濞嗘劑浜?     *
+     * 各个状态的订单数量统计
+     *
      * @return
      */
     public OrderStatisticsVO statistics() {
-        // 闂傚倷绀侀幖顐ょ矓閻戞枻缍栧璺猴功閺嗐倕銆掑锝呬壕闂佽鍠掗弲鐘诲箠濠婂懎鏋堟俊顖濇〃婢规洘绻涢幘纾嬪闁挎洩濡囩划鍫熷緞閹邦厾鍘遍梺鍦劋閸ㄥ爼藟濠婂牊鐓曢柍杞扮劍椤ャ垻鈧鍠栭…閿嬩繆閻戣В鈧箓骞嬪┑鍥╂殸闂傚倷绀侀幉锟犲垂閻㈢绠规い鎰╁€栭浠嬫煟閺冨倸甯剁紒鐘冲▕閺屾洘寰勯崼婵嗗缂備讲鍋撻悗锝庡枟閻撳繘鏌涢埄鍐╃妞わ讣濡囩槐鎺楀礈娴ｅ憡鐎婚柣鎾卞€曡灃闁挎繂鎳庨弳濠囨煕鐎ｎ偅灏伴柟宄版噽閸犲﹤螣鏉炴澘顥氬┑鐐舵彧缂嶁偓妞ゎ偄顦甸幃婊堟晝閸屾稈鎷哄銈嗗姀閸撴繈藝閻戣姤鐓犻柛顭戝亜閻忔挳鏌熼姘殻鐎规洜鍠栭、姘跺川椤撶喎鈧洟姊绘担鍛婂暈妞ゃ劌妫楃叅婵せ鍋撶€殿喗濞婇幃銏ゅ礂閼测晛甯?
+        // 根据状态，分别查询出待接单、待派送、派送中的订单数量
         Integer toBeConfirmed = orderMapper.countStatus(Orders.TO_BE_CONFIRMED);
         Integer confirmed = orderMapper.countStatus(Orders.CONFIRMED);
         Integer deliveryInProgress = orderMapper.countStatus(Orders.DELIVERY_IN_PROGRESS);
 
-        // 闂備浇顕х换鎰崲閹邦儵娑樷枎閹炬潙浜楅梺鎸庣☉鐎氼厾鈧碍宀搁弻鏇＄疀閺囩倫銏℃叏閿濆拋妯€闁哄矉缍佹俊鎼佸Ψ閵夘喕鐥梻浣告惈濡盯宕伴弽顓犲祦闁硅揪瀵岄弫濠囨煠濞村娅嗘い鏂跨墦閺岋綁鎮㈤崜渚囨М闂佺懓鍟块柊锝呯暦閾忓厜鍋撻崷顓熺derStatisticsVO婵犵數鍋為崹鍫曞箹閳哄懎鍌ㄥ┑鍌滎焾缁犲綊姊洪崹顕呭剱闁?
+        // 将查询出的数据封装到orderStatisticsVO中响应
         OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();
         orderStatisticsVO.setToBeConfirmed(toBeConfirmed);
         orderStatisticsVO.setConfirmed(confirmed);
@@ -617,7 +704,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷娴囬～澶嬬娴犲纾块柛妤冨仧閺?
+     * 接单
      *
      * @param ordersConfirmDTO
      */
@@ -628,27 +715,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷绀佺紞濠囧绩鏉堚晜鏆滈柟鐑樺灩閺?
+     * 拒单
      *
      * @param ordersRejectionDTO
      */
-    @Transactional
     public void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception {
         lifecycle.cancel(ordersRejectionDTO.getId(),ordersRejectionDTO.getRejectionReason(),"REJECT");
     }
 
     /**
-     * 闂傚倷绀侀幉锟犳偡閿曞倹鍋嬫俊銈呭暟閻挸顪冪€ｎ亜顒㈠┑顖氥偢閺屾洝绠涢弴鐐愩垻绱掗埀?
+     * 取消订单
      *
      * @param ordersCancelDTO
      */
-    @Transactional
     public void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception {
         lifecycle.cancel(ordersCancelDTO.getId(),ordersCancelDTO.getCancelReason(),"ADMIN");
     }
 
     /**
-     * 濠电姷鏁搁崑鐐烘偂閿涘嫮涓嶉柡宥庡幖閻掑灚銇勯幋鐐差嚋缂佷胶澧楅妵鍕箻瀹曞洨楔閻?
+     * 派送订单
      *
      * @param id
      */
@@ -659,7 +744,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂備浇顕уù鐑藉箠閹捐瀚夋い鎺戝閸ㄥ倹鎱ㄥΟ鍧楀摵濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳?
+     * 完成订单
      *
      * @param id
      */
@@ -670,17 +755,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 闂傚倷鐒﹀鍨焽閸ф绀夌€广儱顦弰銉︾箾閹存瑥鐏╃痪鎯у悑閵囧嫰骞掗崱妞惧闁?
+     * 用户催单
      *
      * @param id
      */
     public void reminder(Long id) {
-        // 闂傚倷绀侀幖顐ゆ偖椤愶箑纾块柟缁㈠櫘閺佸淇婇妶鍛殲濠殿垰銈搁弻鏇＄疀閺囩倫銏㈢磼閳ь剛鈧綆鍠楅悡娑㈡煕閺囥垺娑ч柣蹇曞█閺岀喖顢涘▎鎺戝帯闂侀€炲苯澧紒瀣浮閺佸鈹戦悩顐壕?
+        // 查询订单是否存在
         Orders orders = requireOwnedOrder(id);
 
-        //闂傚倷鑳剁涵鍫曞疾閻愬樊娴栭柕濞у棗小闂佽崵鍋炲濉⊿ocket闂備浇顕ф绋匡耿闁秴纾婚柣鏃囧亹瀹撲線鏌涢妷顔煎缁炬儳鍚嬮妵鍕箳閸℃ぞ澹曢柣?
+        //基于WebSocket实现催单
         Map map = new HashMap();
-        map.put("type", 2);//2婵犵數鍋涢顓熷垔鐎靛摜绀婇柍褜鍓熼弻鏇㈠幢濡も偓閺嗭綁鏌熼鑽ょ煓濠碘剝鎮傞弫鍐焵椤掑嫭鍋傞柡鍥ュ灪閻撴洜鈧厜鍋撳┑鐘插€搁～鈺呮倵?
+        map.put("type", 2);//2代表用户催单
         map.put("orderId", id);
         map.put("content", "order number: " + orders.getNumber());
         businessEventOutbox.record("ORDER_REMINDER", id, map);
@@ -698,6 +783,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    /** 先用当前用户和 requestId 找订单号，再查该用户订单；绑定存在不等于建单成功。 */
     private OrderSubmitVO findSubmittedOrder(Long userId, String requestId) {
         String orderNumber = orderSubmitRequestMapper.findOrderNumber(userId, requestId);
         if (orderNumber == null) {
@@ -705,10 +791,18 @@ public class OrderServiceImpl implements OrderService {
         }
         Orders order = orderMapper.getByNumberAndUserId(orderNumber, userId);
         if (order == null) {
-            return null;
+            var row=orderSubmitRequestMapper.find(userId,requestId);
+            return row==null?null:OrderSubmitVO.builder().orderNumber(orderNumber).submitStatus((String)row.get("state"))
+                    .failureMessage((String)row.get("last_error")).build();
         }
         return OrderSubmitVO.builder().id(order.getId()).orderNumber(order.getNumber())
-                .orderAmount(order.getAmount()).orderTime(order.getOrderTime()).build();
+                .orderAmount(order.getAmount()).orderTime(order.getOrderTime()).submitStatus(Orders.CANCELLED.equals(order.getStatus())?"CANCELLED":"SUCCEEDED").build();
+    }
+
+    private String fingerprint(OrdersSubmitDTO dto) {
+        try {return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(
+                com.alibaba.fastjson.JSON.toJSONString(dto,com.alibaba.fastjson.serializer.SerializerFeature.SortField).getBytes(java.nio.charset.StandardCharsets.UTF_8)));}
+        catch(java.security.NoSuchAlgorithmException impossible){throw new IllegalStateException(impossible);}
     }
 
     private void ensureShopOpen() {

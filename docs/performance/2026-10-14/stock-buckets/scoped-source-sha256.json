@@ -1,0 +1,198 @@
+[
+  {
+    "path": "account-service/src/main/java/com/sky/config/DatabasePoolMetricsConfiguration.java",
+    "sha256": "bf71a49c18d96b25565f90c38c0b3ae1c102f4f693c1196c05ac78297dd074a5"
+  },
+  {
+    "path": "account-service/src/main/resources/application.yml",
+    "sha256": "2e3784130a0a58868c332b176affcb72dffb57d9f1763ccaf9731cee0e3ee4f2"
+  },
+  {
+    "path": "catalog-service/pom.xml",
+    "sha256": "2f7bc1f3b0f71e12598de1aa263889a3d916df5ea6357ebf1204121fa0c9caea"
+  },
+  {
+    "path": "catalog-service/src/main/java/com/sky/config/FeignPoolConfiguration.java",
+    "sha256": "bb98e581fe52579bb88682854d4a3205b1584533fe539e5c7475f6c486c6a369"
+  },
+  {
+    "path": "catalog-service/src/main/resources/application.yml",
+    "sha256": "a1da8a0760b9c10066f036f34ad7474b43dec4e72e6d501cb1c7e184ad647e5b"
+  },
+  {
+    "path": "sky-pojo/src/main/java/com/sky/dto/SeckillActivityDTO.java",
+    "sha256": "4604e90d683be48a0dd0f776bc48ec9a999261d16678f30fee5779951cc96e6c"
+  },
+  {
+    "path": "sky-pojo/src/main/java/com/sky/dto/SeckillOrderMessageDTO.java",
+    "sha256": "79a953c4e9dd8b8cb3541fe1d4d058677edfd5895c001995760262673f20f3df"
+  },
+  {
+    "path": "sky-pojo/src/main/java/com/sky/dto/SeckillOrderSubmitDTO.java",
+    "sha256": "25ba608a9fc8feedd421f8f7d21c199e78c71a1523eee004069aeb77a9db5035"
+  },
+  {
+    "path": "sky-pojo/src/main/java/com/sky/entity/SeckillActivity.java",
+    "sha256": "3b5b02b1d08e2bfadf035ba4c5f43fb44660206ce36599c9cfa74eb1f2d74e92"
+  },
+  {
+    "path": "sky-pojo/src/main/java/com/sky/entity/SeckillReservation.java",
+    "sha256": "d7f49fb1cb3d21215611da4e755e4018ba3936cf181a8f0a41254b71779ee657"
+  },
+  {
+    "path": "sky-pojo/src/main/java/com/sky/vo/SeckillActivityVO.java",
+    "sha256": "fef455524664797b1518805148520a5a992e95456fef0788cd604f5cb508cc8d"
+  },
+  {
+    "path": "sky-pojo/src/main/java/com/sky/vo/SeckillOrderVO.java",
+    "sha256": "3eedf6784f44991338374d292ec85cb52d3ede4a12c9e47cf393caaafa671ace"
+  },
+  {
+    "path": "trade-service/pom.xml",
+    "sha256": "87e13507bb9ac280300431f0a926f58b46bbff1c4a5e1d4fa468c8403374b49d"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/config/DatabasePoolMetricsConfiguration.java",
+    "sha256": "bf71a49c18d96b25565f90c38c0b3ae1c102f4f693c1196c05ac78297dd074a5"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/config/FeignPoolConfiguration.java",
+    "sha256": "bb98e581fe52579bb88682854d4a3205b1584533fe539e5c7475f6c486c6a369"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/config/RabbitMqConfiguration.java",
+    "sha256": "0c885fabf82ae3a5657bcf39d979d8ddb06110b084e32a15c1b864858749a17b"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/config/SeckillAsyncConfiguration.java",
+    "sha256": "652bad7d529a950da6535fd75a991f7c7784c73f517fc838549e4e69430c4ca6"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/config/SeckillLuaConfiguration.java",
+    "sha256": "c8c47181b1cc6e6c34d2ca2d82d030020853a4f03a742fece52101cd4e3ac2ac"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/controller/admin/SeckillActivityController.java",
+    "sha256": "b1c6c0f63b1882503039657cc0c4dbf359bd38748eead03f815b58dd9cf5b93a"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/controller/user/SeckillController.java",
+    "sha256": "e205e61d8fdad54d1b563277fd1aed8b7c47b848357cc97548aaadf7d6314071"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/listener/SeckillOrderListener.java",
+    "sha256": "ce496057f2f28e00ce597e166c3d34b017fa6b54556efa536fd905c0f9677a28"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/mapper/MqFailMessageMapper.java",
+    "sha256": "678bdfdcdd8c2f0526f95d862e214f8315fdcc941e6f04a7c57b9418d6f6be80"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/mapper/SeckillActivityMapper.java",
+    "sha256": "9818e7570a8da760ac93520622e4f82e283654a1591d02e6de449a6b28a90feb"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/mapper/SeckillOrderGuardMapper.java",
+    "sha256": "8f61c66bc25d22c7ced20e17710313ed23dc60826f6481adfe3e73f0b8f45ef7"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/mapper/SeckillReservationMapper.java",
+    "sha256": "2fffc41b77ebb829293811fcfd5f1a0a7e2e815895142d60d50a4fb9a98c2607"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/observability/SeckillJdbcTimingConfiguration.java",
+    "sha256": "264bb395d2de589ab76c74c0be79ab9a16f059ae9d88a83508c9dae147e37152"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/observability/SeckillTiming.java",
+    "sha256": "9ab59b7448282c1d2ea54bd15ff3b59db430883758e9a850ecc96eb548600fc3"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/payment/PaymentRecoveryStore.java",
+    "sha256": "e8c23dc1096fdc34dcb68db3654fdfa16aaabb8c8a57ada399a7041a747f373b"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/PreparedSeckillOrder.java",
+    "sha256": "53a7d9c51090c799c6434e9c100e47c38a1a1bf28616cd219335b681ab23c2d8"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/SeckillPreparation.java",
+    "sha256": "1b281922a8177533958d11458fa8126178f9e859cbb0c6a752510492970ef92f"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/SeckillService.java",
+    "sha256": "4a05563455e0f2b8292ee95837c5616fbdfb0b2ce85d123b0bd183d34b0cad5d"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillAsyncStore.java",
+    "sha256": "c137681069ac8e932429ca2b92a7eecc60f4d20ad81c7f3dd5e7273145c0cea3"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillBatchCoordinator.java",
+    "sha256": "00f8ba96d2dc773ac605026574749db1bfc1f618980b5b703a1e54255730f4bd"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillCache.java",
+    "sha256": "1c841ca242e677aaf9920ff14788d4078d25d578226ef4fd3b5a47a59eac9b23"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillInventory.java",
+    "sha256": "844e174feba51cf1e121e68fc4c25f1350924fac70730431b46664d5034ddd70"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillReconciler.java",
+    "sha256": "fd0f6074ff4b02c47579697444b7706b6ac43e3b5c3692c94e936838f6ff273f"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillReleaseProcessor.java",
+    "sha256": "e879d7502e1148ced5be3bfeaa91ee04fac713023599776c82dc7f1265b8cd71"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillReservationService.java",
+    "sha256": "3ce50a940eede248d1b2013718abd60b5e910da80364e3be1e75c65ce486148d"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/impl/SeckillServiceImpl.java",
+    "sha256": "8e98e1a9fd4f3d1a178e9b1513c0dd14e6fcde7316d95021c9ad1648d7107d89"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/mq/OrderMessagePublisher.java",
+    "sha256": "abd09b18261333135c3516934b673c590b7519a1afb23bd7bd67809e5ea5c128"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/mq/SeckillPublishStore.java",
+    "sha256": "fb8c7e44056b884870f535fb5057db6274b3f88dbaa4745626d2d3170575ee3f"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/service/mq/SeckillRouting.java",
+    "sha256": "17a027723c45fe843d4a1ab40b7534034221744eab98326606c3c772651be1a2"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/task/MqFailMessageRetryTask.java",
+    "sha256": "de931407ba13bdd1984d00777c627562d2359aa11426cf7bf6c7608235720383"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/task/SeckillActivityTask.java",
+    "sha256": "62070c2bc05c4594406f8c2eccdf5a269653980df9609a163ed93cead1c232ee"
+  },
+  {
+    "path": "trade-service/src/main/java/com/sky/task/SeckillAsyncTask.java",
+    "sha256": "0bd6cac5af229ea1a42990dfb0e3f4bf33392a89a803800496b7879cd1e71b1c"
+  },
+  {
+    "path": "trade-service/src/main/resources/application.yml",
+    "sha256": "e357f35a627f7b2d1b8fa3cb145b951de6979a84111a3f39a56b517b6ca7a758"
+  },
+  {
+    "path": "trade-service/src/main/resources/db/migration/V2026101403__seckill_stock_buckets.sql",
+    "sha256": "60284d356dd5d059e436fe6aec0a8db57f584a28c25779ddce83ab317b19b2a3"
+  },
+  {
+    "path": "trade-service/src/main/resources/lua/seckill_async_accept.lua",
+    "sha256": "feae1fbf995d07b4c49fd6006518042e58ae541f4f509986dd75a1c576106e68"
+  },
+  {
+    "path": "trade-service/src/main/resources/lua/seckill_async_finish.lua",
+    "sha256": "7ff4fb8ef055a8b02f529c0e8537b35d81d7fe21417c7f7e379d1cab74a94787"
+  }
+]

@@ -15,24 +15,24 @@ public class OrdersSubmitDTO implements Serializable {
      */
     private String requestId;
 
-    //鍦板潃绨縤d
+    //地址簿id
     private Long addressBookId;
-    //浠樻鏂瑰紡
+    //付款方式
     private int payMethod;
-    //澶囨敞
+    //备注
     private String remark;
-    //棰勮閫佽揪鏃堕棿
+    //预计送达时间
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime estimatedDeliveryTime;
-    //閰嶉€佺姸鎬? 1绔嬪嵆閫佸嚭  0閫夋嫨鍏蜂綋鏃堕棿
+    //配送状态  1立即送出  0选择具体时间
     private Integer deliveryStatus;
-    //椁愬叿鏁伴噺
+    //餐具数量
     private Integer tablewareNumber;
-    //椁愬叿鏁伴噺鐘舵€? 1鎸夐閲忔彁渚? 0閫夋嫨鍏蜂綋鏁伴噺
+    //餐具数量状态  1按餐量提供  0选择具体数量
     private Integer tablewareStatus;
-    //鎵撳寘璐?
+    //打包费
     private Integer packAmount;
-    //鎬婚噾棰?
+    //总金额
     private BigDecimal amount;
 
     private Long couponId;

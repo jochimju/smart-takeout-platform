@@ -2,6 +2,8 @@ server:
   port: ${SKY_GATEWAY_PORT:8080}
 
 spring:
+  profiles:
+    default: prod
   application:
     name: gateway-service
   config:
@@ -104,13 +106,16 @@ management:
       endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 
 sky:
+  internal:
+    token: ${SKY_INTERNAL_TOKEN:}
   jwt:
-    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:itcast}
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:}
     admin-token-name: token
-    user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
+    user-secret-key: ${SKY_JWT_USER_SECRET:}
     user-token-name: authentication
   gateway:
     auth:
+      docs-enabled: false
       # Browsers cannot add the admin token as an arbitrary WebSocket header.
       # This fallback is restricted to /ws/** and is re-validated by notification-service.
       allow-websocket-query-token: ${SKY_GATEWAY_ALLOW_WEBSOCKET_QUERY_TOKEN:true}

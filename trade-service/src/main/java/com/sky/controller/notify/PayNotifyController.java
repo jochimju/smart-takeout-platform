@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,30 +32,20 @@ public class PayNotifyController {
     @Autowired private com.sky.utils.WeChatPayUtil payment;
     @Autowired
     private WeChatProperties weChatProperties;
+    @Autowired private com.sky.payment.PaymentSettlement settlement;
 
     /**
      * 支付成功回调
      *
      * @param request
      */
-    @RequestMapping("/paySuccess")
+    @PostMapping("/paySuccess")
     public void paySuccessNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String body=org.springframework.util.StreamUtils.copyToString(request.getInputStream(),StandardCharsets.UTF_8);
         payment.verifyNotification(body,request.getHeader("Wechatpay-Timestamp"),
             request.getHeader("Wechatpay-Nonce"),request.getHeader("Wechatpay-Serial"),request.getHeader("Wechatpay-Signature"));
         JSONObject receipt=JSON.parseObject(decryptData(body));
-        if(!weChatProperties.getMchid().equals(receipt.getString("mchid")) ||
-            !weChatProperties.getAppid().equals(receipt.getString("appid")) ||
-            !"SUCCESS".equals(receipt.getString("trade_state")))
-            throw new SecurityException("payment receipt identity or state mismatch");
-        JSONObject amount=receipt.getJSONObject("amount");
-        if(amount==null || !"CNY".equals(amount.getString("currency")) || amount.getBigDecimal("total")==null)
-            throw new SecurityException("payment amount missing or currency mismatch");
-        String outTradeNo = receipt.getString("out_trade_no");
-        java.math.BigDecimal paidAmount = amount.getBigDecimal("total").movePointLeft(2);
-        if (!redPacketService.paySuccess(outTradeNo, receipt.getString("transaction_id"), paidAmount)) {
-            orderService.paySuccess(outTradeNo, receipt.getString("transaction_id"), paidAmount);
-        }
+        settlement.accept(receipt);
         responseToWeixin(response);
     }
 

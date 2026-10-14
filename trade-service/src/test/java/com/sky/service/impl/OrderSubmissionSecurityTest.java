@@ -91,11 +91,14 @@ class OrderSubmissionSecurityTest {
         ValueOperations values = mock(ValueOperations.class);
         when(redis.opsForValue()).thenReturn(values);
         when(values.get("SHOP_STATUS")).thenReturn(0);
+        var carts=mock(com.sky.mapper.ShoppingCartMapper.class);
+        when(carts.list(any())).thenReturn(java.util.List.of(com.sky.entity.ShoppingCart.builder().setmealId(48L).number(1).build()));
         when(addresses.address(11L, 1L)).thenReturn(new AccountAddressView());
         OrderServiceImpl service = new OrderServiceImpl();
         ReflectionTestUtils.setField(service, "orderMapper", orders);
         ReflectionTestUtils.setField(service, "accountClient", addresses);
         ReflectionTestUtils.setField(service, "redisTemplate", redis);
+        ReflectionTestUtils.setField(service, "shoppingCartMapper", carts);
         assertThrows(OrderBusinessException.class, () -> service.createOrderFromMessage(
                 OrderSubmitMessageDTO.builder().userId(11L).addressBookId(1L).orderNumber("x").build()));
         verify(orders, never()).insert(any(Orders.class));
@@ -107,11 +110,14 @@ class OrderSubmissionSecurityTest {
         OrderMapper orders = mock(OrderMapper.class);
         OrderSubmitRequestMapper requests = mock(OrderSubmitRequestMapper.class);
         OrderMessagePublisher publisher = mock(OrderMessagePublisher.class);
-        when(requests.claim(eq(11L), eq("normal_order_request_003"), anyString())).thenReturn(1);
+        when(requests.claimSnapshot(eq(11L), eq("normal_order_request_003"), anyString(),anyString(),anyString())).thenReturn(1);
         OrderServiceImpl service = new OrderServiceImpl();
         ReflectionTestUtils.setField(service, "orderMapper", orders);
         ReflectionTestUtils.setField(service, "orderSubmitRequestMapper", requests);
         ReflectionTestUtils.setField(service, "orderMessagePublisher", publisher);
+        var carts=mock(ShoppingCartMapper.class);
+        when(carts.list(any())).thenReturn(java.util.List.of(ShoppingCart.builder().id(1L).userId(11L).setmealId(48L).number(1).rowVersion(0L).build()));
+        ReflectionTestUtils.setField(service,"shoppingCartMapper",carts);
         OrdersSubmitDTO dto = new OrdersSubmitDTO();
         dto.setRequestId("normal_order_request_003");
 
@@ -138,6 +144,7 @@ class OrderSubmissionSecurityTest {
         ReflectionTestUtils.setField(service, "shoppingCartMapper", carts);
         ReflectionTestUtils.setField(service, "orderMapper", orders);
         ReflectionTestUtils.setField(service, "redisTemplate", redis);
+        ReflectionTestUtils.setField(service, "shoppingCartMapper", carts);
 
         assertThrows(OrderBusinessException.class, () -> service.createOrderFromMessage(
                 OrderSubmitMessageDTO.builder().userId(11L).addressBookId(1L).orderNumber("x").packAmount(1).tablewareNumber(0).build()));

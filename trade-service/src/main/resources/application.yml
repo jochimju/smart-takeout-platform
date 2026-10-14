@@ -1,4 +1,10 @@
 server:
+  tomcat:
+    accept-count: ${SKY_HTTP_ACCEPT_COUNT:1024}
+    max-connections: ${SKY_HTTP_MAX_CONNECTIONS:4096}
+    threads:
+      max: ${SKY_HTTP_MAX_THREADS:256}
+      min-spare: 32
   port: ${SKY_TRADE_PORT:8081}
 
 spring:
@@ -8,6 +14,19 @@ spring:
     import: ${NACOS_CONFIG_IMPORT:optional:nacos:trade-service.yml}
   cloud:
     openfeign:
+      httpclient:
+        enabled: true
+        connection-timeout: 1000
+        max-connections: ${SKY_FEIGN_MAX_CONNECTIONS:512}
+        max-connections-per-route: ${SKY_FEIGN_MAX_PER_ROUTE:256}
+        time-to-live: 60
+        time-to-live-unit: seconds
+        hc5:
+          enabled: true
+          connection-request-timeout: 1
+          connection-request-timeout-unit: seconds
+          socket-timeout: 3
+          socket-timeout-unit: seconds
       micrometer:
         enabled: true
       client:
@@ -53,11 +72,15 @@ spring:
         server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         namespace: ${NACOS_NAMESPACE:}
   profiles:
-    active: dev
+    default: prod
   main:
     allow-circular-references: true
   datasource:
     druid:
+      initial-size: ${SKY_DB_INITIAL_SIZE:8}
+      min-idle: ${SKY_DB_MIN_IDLE:8}
+      max-active: ${SKY_DB_MAX_ACTIVE:32}
+      max-wait: ${SKY_DB_MAX_WAIT_MS:1000}
       driver-class-name: ${sky.datasource.driver-class-name}
       url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${sky.datasource.username}
@@ -143,34 +166,72 @@ logging:
         controller: info
 
 sky:
+  seckill:
+    stock-buckets: ${SKY_SECKILL_STOCK_BUCKETS:8}
+    fulfill-batch-size: ${SKY_SECKILL_FULFILL_BATCH_SIZE:8}
+    max-outstanding: ${SKY_SECKILL_MAX_OUTSTANDING:500}
+    processing-seconds: ${SKY_SECKILL_PROCESSING_SECONDS:120}
+  payment:
+    mock-enabled: ${SKY_PAYMENT_MOCK_ENABLED:false}
+    recovery:
+      enabled: ${SKY_PAYMENT_RECOVERY_ENABLED:true}
+      interval-ms: 1000
+    reconciliation:
+      enabled: ${SKY_PAYMENT_RECONCILIATION_ENABLED:true}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: ${SKY_DB_HOST:127.0.0.1}
+    port: ${SKY_DB_PORT:3306}
+    database: ${SKY_TRADE_DB:sky_take_out_trade}
+    username: ${SKY_DB_USER:}
+    password: ${SKY_DB_PASSWORD:}
+  redis:
+    host: ${SKY_REDIS_HOST:127.0.0.1}
+    port: ${SKY_REDIS_PORT:6379}
+    password: ${SKY_REDIS_PASSWORD:}
+    database: ${SKY_TRADE_REDIS_DATABASE:10}
+  rabbitmq:
+    host: ${SKY_RABBIT_HOST:127.0.0.1}
+    port: ${SKY_RABBIT_PORT:5672}
+    username: ${SKY_RABBIT_USER:}
+    password: ${SKY_RABBIT_PASSWORD:}
+    virtual-host: ${SKY_RABBIT_VHOST:/}
+  security:
+    docs-enabled: false
+    cors-origins: ${SKY_CORS_ORIGINS:}
   internal:
-    token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}
+    token: ${SKY_INTERNAL_TOKEN:}
   jwt:
     # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:itcast}
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:}
     # 设置jwt过期时间
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
     #下面三条是用户端的
-    user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
+    user-secret-key: ${SKY_JWT_USER_SECRET:}
     user-ttl: 7200000
     user-token-name: authentication
 
   alioss:
-    endpoint: ${sky.alioss.endpoint}
-    access-key-id: ${sky.alioss.access-key-id}
-    access-key-secret: ${sky.alioss.access-key-secret}
-    bucket-name: ${sky.alioss.bucket-name}
+    endpoint: ${SKY_OSS_ENDPOINT:}
+    access-key-id: ${SKY_OSS_ACCESS_KEY_ID:}
+    access-key-secret: ${SKY_OSS_ACCESS_KEY_SECRET:}
+    bucket-name: ${SKY_OSS_BUCKET:}
 
   wechat:
-    appid: ${sky.wechat.appid}
-    secret: ${sky.wechat.secret}
-    mchid: ${sky.wechat.mchid}
-    mchSerialNo: ${sky.wechat.mchSerialNo}
-    privateKeyFilePath: ${sky.wechat.privateKeyFilePath}
-    apiV3Key: ${sky.wechat.apiV3Key}
-    weChatPayCertFilePath: ${sky.wechat.weChatPayCertFilePath}
-    notifyUrl: ${sky.wechat.notifyUrl}
-    refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
+    api-base-url: https://api.mch.weixin.qq.com
+    auto-update-certificates: ${SKY_WECHAT_AUTO_UPDATE_CERTIFICATES:true}
+    platform-certificate-paths: ${SKY_WECHAT_PLATFORM_CERTIFICATE_PATHS:}
+    public-key-id: ${SKY_WECHAT_PUBLIC_KEY_ID:}
+    public-key-file-path: ${SKY_WECHAT_PUBLIC_KEY_PATH:}
+    appid: ${SKY_WECHAT_APPID:}
+    secret: ${SKY_WECHAT_SECRET:}
+    mchid: ${SKY_WECHAT_MCHID:}
+    mchSerialNo: ${SKY_WECHAT_MCH_SERIAL_NO:}
+    privateKeyFilePath: ${SKY_WECHAT_PRIVATE_KEY_PATH:}
+    apiV3Key: ${SKY_WECHAT_API_V3_KEY:}
+    weChatPayCertFilePath: ${SKY_WECHAT_PAY_CERT_PATH:}
+    notifyUrl: ${SKY_WECHAT_NOTIFY_URL:}
+    refundNotifyUrl: ${SKY_WECHAT_REFUND_NOTIFY_URL:}
 

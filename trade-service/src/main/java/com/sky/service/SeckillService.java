@@ -13,7 +13,7 @@ import java.util.List;
 public interface SeckillService {
 
     /**
-     * 秒杀套餐下单（资格校验、防超卖、一人一单）
+     * 异步受理秒杀（Lua 预扣成功不等于订单已创建）
      * @param ordersSubmitDTO 秒杀套餐订单参数
      * @return 订单提交结果
      */
@@ -26,7 +26,7 @@ public interface SeckillService {
     void warmUpActivity(Long activityId);
 
     /**
-     * 获取 Redis 中的剩余库存；缺失时自动预热。
+     * 获取 Redis 剩余库存；缺失时拒绝受理，禁止自动重置预留。
      * @param activityId 秒杀活动 ID
      * @return 库存数量
      */
@@ -44,4 +44,9 @@ public interface SeckillService {
     void deleteActivity(Long activityId);
     void adjustStock(Long activityId, int targetTotal, int expectedTotal);
     OrderSubmitVO findRequest(String requestId);
+    OrderSubmitVO findRequest(String requestId, Long activityId);
+    void createSeckillOrder(com.sky.dto.SeckillOrderMessageDTO message);
+    PreparedSeckillOrder prepareSeckillOrder(com.sky.dto.SeckillOrderMessageDTO message);
+    SeckillPreparation prepareSeckillOrders(List<com.sky.dto.SeckillOrderMessageDTO> messages);
+    void createPreparedOrders(List<PreparedSeckillOrder> orders);
 }

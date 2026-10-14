@@ -34,11 +34,14 @@ public class GatewayAuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
-        if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS || isPublic(path)) {
-            return chain.filter(exchange);
-        }
         if (path.startsWith("/internal/")) {
             return reject(exchange, HttpStatus.FORBIDDEN, "internal endpoints are not exposed by the gateway");
+        }
+        exchange = exchange.mutate().request(builder -> builder.headers(headers -> {
+            headers.remove(AUTHENTICATED_ID); headers.remove(AUTHENTICATED_ROLE);
+        })).build();
+        if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS || isPublic(path, exchange.getRequest().getMethod())) {
+            return chain.filter(exchange);
         }
 
         Principal principal;
@@ -86,17 +89,14 @@ public class GatewayAuthenticationFilter implements GlobalFilter, Ordered {
         }
     }
 
-    private boolean isPublic(String path) {
-        return List.of(
-                "/admin/employee/login", "/user/user/login", "/user/shop/status", "/user/seckill/activity/list",
-                "/notify/paySuccess", "/actuator/health", "/actuator/health/liveness", "/actuator/health/readiness",
-                "/actuator/prometheus", "/doc.html", "/favicon.ico", "/v3/api-docs"
-        ).contains(path)
-                || path.startsWith("/webjars/")
-                || path.startsWith("/v3/api-docs/")
-                || path.startsWith("/swagger-ui/")
-                || path.startsWith("/dishes/")
-                || path.startsWith("/setmeals/");
+    private boolean isPublic(String path, HttpMethod method) {
+        if (method == HttpMethod.POST && List.of("/admin/employee/login", "/user/user/login", "/notify/paySuccess").contains(path)) return true;
+        if (method != HttpMethod.GET && method != HttpMethod.HEAD) return false;
+        return List.of("/user/shop/status", "/user/seckill/activity/list", "/actuator/health",
+                "/actuator/health/liveness", "/actuator/health/readiness", "/favicon.ico").contains(path)
+                || path.startsWith("/dishes/") || path.startsWith("/setmeals/")
+                || (properties.isDocsEnabled() && (path.equals("/doc.html") || path.equals("/v3/api-docs")
+                || path.startsWith("/webjars/") || path.startsWith("/v3/api-docs/") || path.startsWith("/swagger-ui/")));
     }
 
     private Mono<Void> reject(ServerWebExchange exchange, HttpStatus status, String message) {

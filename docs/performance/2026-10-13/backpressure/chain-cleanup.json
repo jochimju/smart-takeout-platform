@@ -1,0 +1,8 @@
+{
+  "allDedicatedServicesStopped": true,
+  "deletedOnlyVhost": "sky_perf_chain_20261013",
+  "testDatabaseRetained": true,
+  "businessServicesRestarted": false,
+  "businessDatabaseMigrated": false,
+  "futureTimeoutsRetainedInTestDatabase": true
+}

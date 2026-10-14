@@ -23,4 +23,7 @@ public interface AccountClient {
     Boolean permitted(@RequestParam("employeeId") Long employeeId,
                       @RequestParam("method") String method,
                       @RequestParam("path") String path);
+
+    @org.springframework.web.bind.annotation.PostMapping("/internal/account/sessions/check")
+    Boolean valid(@org.springframework.web.bind.annotation.RequestBody com.sky.contract.account.SessionCheck check);
 }

@@ -1,0 +1,18 @@
+{
+  "database": "sky_perf_pubdiag_20261014",
+  "vhost": "sky_perf_pubdiag_20261014",
+  "accountSchema": "sky_perf_1012232348_account",
+  "catalogSchema": "sky_perf_fulfill_catalog_20261013",
+  "jarSha256": {
+    "trade": "d568176836c56c6c80c1a23dd371dfc8ca1a2fbf162947e05a5ba6c1cd94e121",
+    "account": "936ac2a7615ae4015cd040e1988a200d9333f09ee96398d7ba1ae2211d01d801",
+    "catalog": "c6b8783edb11c8b64bba5c26ae2d9c37a13035adf4e6a5d05ffda1540849c2df"
+  },
+  "arrivalSeconds": 60,
+  "seckillRate": 800,
+  "ordinaryRate": 5,
+  "processingSeconds": 120,
+  "outstandingLimit": 500,
+  "batchSize": 8,
+  "diagnosticRevision": 2
+}

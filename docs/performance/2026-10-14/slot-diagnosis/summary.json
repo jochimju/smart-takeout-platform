@@ -1,0 +1,772 @@
+[
+  {
+    "round": "first",
+    "activityId": 2,
+    "arrivalWindowSeconds": 60,
+    "completed": 32769,
+    "completedPerArrivalSecond": 546.15,
+    "completedOverWholeRun": 529.8167731948315,
+    "capacityRejected": 15232,
+    "dropped": 0,
+    "unknown": 0,
+    "normalCompleted": 301,
+    "normalFailed": 0,
+    "submitMs": {
+      "avg": 4.442403015044724,
+      "med": 3.7121,
+      "p(95)": 7.477379999999998,
+      "p(99)": 19.580648,
+      "max": 145.2428
+    },
+    "normalSubmitMs": {
+      "avg": 138.6465541528239,
+      "med": 71.6007,
+      "p(95)": 513.1911,
+      "p(99)": 985.9528,
+      "max": 1181.9525
+    },
+    "slotSamples": 16,
+    "sampleWindowAfterLoadStartSeconds": [
+      28.45364022254944,
+      58.85299634933472
+    ],
+    "slotMean": 452.8125,
+    "occupancyShares": {
+      "not_bridged": 0.34133885438233263,
+      "awaiting_order": 0.5347135955831608,
+      "terminal_awaiting_release": 0.12394755003450655,
+      "unexpected_state": 0.0
+    },
+    "meanSlotCounts": {
+      "not_bridged": 154.5625,
+      "awaiting_order": 242.125,
+      "terminal_awaiting_release": 56.125,
+      "unexpected_state": 0.0
+    },
+    "medianSampleCostMs": 141.0000000000764,
+    "maxSampleCostMs": 2375.0,
+    "samplingErrors": 0,
+    "stageTimings": [
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"accept_insert\"",
+        "samples": 228,
+        "meanMs": 20.8479408377193
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"activity_metadata\"",
+        "samples": 228,
+        "meanMs": 0.5009109780701754
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"body\"",
+        "samples": 228,
+        "meanMs": 68.65040482017544
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"command_outbox\"",
+        "samples": 228,
+        "meanMs": 33.32182987719298
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"commit_window\"",
+        "samples": 228,
+        "meanMs": 34.808726350877194
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_false\"",
+        "samples": 228,
+        "meanMs": 0.2434310657894737
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_true\"",
+        "samples": 228,
+        "meanMs": 0.22422723245614032
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_commit\"",
+        "samples": 228,
+        "meanMs": 34.78451446929825
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_insert\"",
+        "samples": 228,
+        "meanMs": 56.04012820175439
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_select\"",
+        "samples": 228,
+        "meanMs": 5.628056991228071
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_sql\"",
+        "samples": 228,
+        "meanMs": 61.66818519298246
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"total\"",
+        "samples": 228,
+        "meanMs": 104.14817760526317
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_cleanup\"",
+        "samples": 228,
+        "meanMs": 0.23880262280701753
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_setup\"",
+        "samples": 228,
+        "meanMs": 0.41767496929824555
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_select\"",
+        "samples": 276,
+        "meanMs": 0.34504712681159416
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "samples": 276,
+        "meanMs": 0.34504712681159416
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"pending_scan\"",
+        "samples": 276,
+        "meanMs": 1.3806090036231882
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"request_validation\"",
+        "samples": 276,
+        "meanMs": 0.8694826340579711
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"total\"",
+        "samples": 276,
+        "meanMs": 89.78064709420289
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_delete\"",
+        "samples": 370,
+        "meanMs": 49.06816865135135
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "samples": 370,
+        "meanMs": 49.06816865135135
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"redis_pipeline\"",
+        "samples": 370,
+        "meanMs": 10.31399758108108
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"total\"",
+        "samples": 421,
+        "meanMs": 53.48406221140142
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"activity_lock\"",
+        "samples": 4936,
+        "meanMs": 0.9279500856969205
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"body\"",
+        "samples": 4936,
+        "meanMs": 22.625446685980553
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"commit_window\"",
+        "samples": 4936,
+        "meanMs": 29.494208038290118
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"details\"",
+        "samples": 4936,
+        "meanMs": 1.0317971199351703
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"guard_insert\"",
+        "samples": 4936,
+        "meanMs": 2.149368458265802
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_false\"",
+        "samples": 4936,
+        "meanMs": 0.23238905206645058
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_true\"",
+        "samples": 4936,
+        "meanMs": 0.23380613492706645
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_commit\"",
+        "samples": 4936,
+        "meanMs": 29.470699439627232
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_insert\"",
+        "samples": 4936,
+        "meanMs": 11.404780830834685
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_select\"",
+        "samples": 4936,
+        "meanMs": 1.1982144805510533
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_sql\"",
+        "samples": 4936,
+        "meanMs": 20.111678738452188
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_update\"",
+        "samples": 4936,
+        "meanMs": 7.50868342706645
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"order_insert\"",
+        "samples": 4936,
+        "meanMs": 2.525568636750405
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"request_lock\"",
+        "samples": 4936,
+        "meanMs": 0.6055274789303079
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"reservation\"",
+        "samples": 4936,
+        "meanMs": 1.936922729132901
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"stock_update\"",
+        "samples": 4936,
+        "meanMs": 5.949438616693679
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"success_state\"",
+        "samples": 4936,
+        "meanMs": 3.6770912745137765
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"timeout_outbox\"",
+        "samples": 4936,
+        "meanMs": 3.754969463533225
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"total\"",
+        "samples": 4936,
+        "meanMs": 52.67993543719611
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_cleanup\"",
+        "samples": 4936,
+        "meanMs": 0.24795483063209078
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_setup\"",
+        "samples": 4936,
+        "meanMs": 0.28674208123987033
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"writer_gate_wait\"",
+        "samples": 4936,
+        "meanMs": 0.0016503399513776336
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"address\"",
+        "samples": 4936,
+        "meanMs": 1.8305421689627226
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_select\"",
+        "samples": 4936,
+        "meanMs": 0.5591095852917342
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "samples": 4936,
+        "meanMs": 0.5591095852917342
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"quote\"",
+        "samples": 4936,
+        "meanMs": 2.8335671288492708
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"snapshot\"",
+        "samples": 4936,
+        "meanMs": 0.6842926614667747
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"total\"",
+        "samples": 4936,
+        "meanMs": 5.411453597649919
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"bridge\",code_namespace=\"com.sky.task.SeckillAsyncTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 276,
+        "meanMs": 89.87579094202898
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"closeExpiredPurchases\",code_namespace=\"com.sky.task.RedPacketPurchaseTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 1.4118000000000004
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"disableExpiredActivities\",code_namespace=\"com.sky.task.SeckillActivityTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 0.7120999999999998
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"dispatch\",code_namespace=\"com.sky.payment.PaymentRecoveryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 65,
+        "meanMs": 0.02006623076923077
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"dispatch\",code_namespace=\"com.sky.task.OrderReliabilityTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 65,
+        "meanMs": 0.6007138461538462
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"executeTask\",code_namespace=\"com.sky.task.MyTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 13,
+        "meanMs": 0.07437738461538462
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"flushSeckillConfirmations\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 349,
+        "meanMs": 130.0020779312321
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"processDeliveryOrder\",code_namespace=\"com.sky.task.OrderTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 0.5633000000000009
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"publishPending\",code_namespace=\"com.sky.service.impl.BusinessEventOutbox\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 65,
+        "meanMs": 0.6767202153846155
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"publishSeckillPending\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 224,
+        "meanMs": 172.13577495535716
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"publishSeckillTimeouts\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 249,
+        "meanMs": 137.89336542570283
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"reconcile\",code_namespace=\"com.sky.service.impl.SeckillReconciler\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 13,
+        "meanMs": 5.795484692307694
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"recover\",code_namespace=\"com.sky.task.SeckillAsyncTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 59,
+        "meanMs": 0.572744033898305
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"retryFailedMessages\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 34.203801
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"retryPending\",code_namespace=\"com.sky.service.impl.SeckillReservationService\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 13,
+        "meanMs": 0.5332998461538462
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"syncCacheEvents\",code_namespace=\"com.sky.task.SeckillAsyncTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 421,
+        "meanMs": 53.544650610451306
+      }
+    ]
+  },
+  {
+    "round": "repeat",
+    "activityId": 3,
+    "arrivalWindowSeconds": 60,
+    "completed": 27597,
+    "completedPerArrivalSecond": 459.95,
+    "completedOverWholeRun": 445.29532276408634,
+    "capacityRejected": 20404,
+    "dropped": 0,
+    "unknown": 0,
+    "normalCompleted": 301,
+    "normalFailed": 0,
+    "submitMs": {
+      "max": 154.5773,
+      "avg": 4.8025086422437075,
+      "med": 4.1169,
+      "p(95)": 8.605759999999993,
+      "p(99)": 15.170816000000105
+    },
+    "normalSubmitMs": {
+      "avg": 169.23467209302316,
+      "med": 96.8479,
+      "p(95)": 604.0943,
+      "p(99)": 1007.1238,
+      "max": 1169.7042
+    },
+    "slotSamples": 27,
+    "sampleWindowAfterLoadStartSeconds": [
+      6.258082389831543,
+      58.25383925437927
+    ],
+    "slotMean": 455.22222222222223,
+    "occupancyShares": {
+      "not_bridged": 0.3374013505817265,
+      "awaiting_order": 0.5884793751525507,
+      "terminal_awaiting_release": 0.07411927426572289,
+      "unexpected_state": 0.0
+    },
+    "meanSlotCounts": {
+      "not_bridged": 153.59259259259258,
+      "awaiting_order": 267.8888888888889,
+      "terminal_awaiting_release": 33.74074074074074,
+      "unexpected_state": 0.0
+    },
+    "medianSampleCostMs": 172.00000000002547,
+    "maxSampleCostMs": 344.00000000005093,
+    "samplingErrors": 0,
+    "stageTimings": [
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"accept_insert\"",
+        "samples": 194,
+        "meanMs": 24.898126804123706
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"activity_metadata\"",
+        "samples": 194,
+        "meanMs": 0.5056216082474226
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"body\"",
+        "samples": 194,
+        "meanMs": 87.14060820103094
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"command_outbox\"",
+        "samples": 194,
+        "meanMs": 43.06245828350515
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"commit_window\"",
+        "samples": 194,
+        "meanMs": 45.36814998453608
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_false\"",
+        "samples": 194,
+        "meanMs": 0.24957838659793807
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_true\"",
+        "samples": 194,
+        "meanMs": 0.2523216701030928
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_commit\"",
+        "samples": 194,
+        "meanMs": 45.35507835567011
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_insert\"",
+        "samples": 194,
+        "meanMs": 72.03230049484534
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_select\"",
+        "samples": 194,
+        "meanMs": 7.362702010309279
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_sql\"",
+        "samples": 194,
+        "meanMs": 79.39500250515464
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"total\"",
+        "samples": 194,
+        "meanMs": 133.07489996907216
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_cleanup\"",
+        "samples": 194,
+        "meanMs": 0.2612443298969072
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_setup\"",
+        "samples": 194,
+        "meanMs": 0.283239144329897
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_select\"",
+        "samples": 212,
+        "meanMs": 0.47135943396226426
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "samples": 212,
+        "meanMs": 0.47135943396226426
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"pending_scan\"",
+        "samples": 212,
+        "meanMs": 1.8042546792452836
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"request_validation\"",
+        "samples": 212,
+        "meanMs": 0.89959675
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"total\"",
+        "samples": 212,
+        "meanMs": 126.25561416509433
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_delete\"",
+        "samples": 352,
+        "meanMs": 57.9682721590909
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "samples": 352,
+        "meanMs": 57.9682721590909
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"redis_pipeline\"",
+        "samples": 352,
+        "meanMs": 10.246753687499998
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"total\"",
+        "samples": 377,
+        "meanMs": 66.03857693633951
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"activity_lock\"",
+        "samples": 4264,
+        "meanMs": 1.9658632082551597
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"body\"",
+        "samples": 4264,
+        "meanMs": 24.29604233161351
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"commit_window\"",
+        "samples": 4264,
+        "meanMs": 39.52762491135084
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"details\"",
+        "samples": 4264,
+        "meanMs": 1.0828296866791745
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"guard_insert\"",
+        "samples": 4264,
+        "meanMs": 2.3065235438555347
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_false\"",
+        "samples": 4264,
+        "meanMs": 0.2626453048780488
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_true\"",
+        "samples": 4264,
+        "meanMs": 0.2643722985459662
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_commit\"",
+        "samples": 4264,
+        "meanMs": 39.515220238273926
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_insert\"",
+        "samples": 4264,
+        "meanMs": 12.058790284474673
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_select\"",
+        "samples": 4264,
+        "meanMs": 2.347611143761726
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_sql\"",
+        "samples": 4264,
+        "meanMs": 21.581557671669795
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_update\"",
+        "samples": 4264,
+        "meanMs": 7.175156243433395
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"order_insert\"",
+        "samples": 4264,
+        "meanMs": 3.3603013928236396
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"request_lock\"",
+        "samples": 4264,
+        "meanMs": 0.7322006822232645
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"reservation\"",
+        "samples": 4264,
+        "meanMs": 3.036556144699812
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"stock_update\"",
+        "samples": 4264,
+        "meanMs": 5.752906848030019
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"success_state\"",
+        "samples": 4264,
+        "meanMs": 2.941681455675423
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"timeout_outbox\"",
+        "samples": 4264,
+        "meanMs": 3.0642152406191374
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"total\"",
+        "samples": 4264,
+        "meanMs": 64.40949591416509
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_cleanup\"",
+        "samples": 4264,
+        "meanMs": 0.27200632481238274
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_setup\"",
+        "samples": 4264,
+        "meanMs": 0.2962461751876173
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"writer_gate_wait\"",
+        "samples": 4264,
+        "meanMs": 0.00026400140712945616
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"address\"",
+        "samples": 4264,
+        "meanMs": 1.9108158076923076
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_select\"",
+        "samples": 4264,
+        "meanMs": 0.7323132901031894
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "samples": 4264,
+        "meanMs": 0.7323132901031894
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"quote\"",
+        "samples": 4264,
+        "meanMs": 2.183758233583489
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"snapshot\"",
+        "samples": 4264,
+        "meanMs": 0.8612660192307693
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"total\"",
+        "samples": 4264,
+        "meanMs": 5.011937376876172
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"bridge\",code_namespace=\"com.sky.task.SeckillAsyncTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 212,
+        "meanMs": 126.3294452735849
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"closeExpiredPurchases\",code_namespace=\"com.sky.task.RedPacketPurchaseTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 2.332099999999999
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"disableExpiredActivities\",code_namespace=\"com.sky.task.SeckillActivityTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 0.5694999999999997
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"dispatch\",code_namespace=\"com.sky.payment.PaymentRecoveryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 63,
+        "meanMs": 0.01476504761904762
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"dispatch\",code_namespace=\"com.sky.task.OrderReliabilityTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 63,
+        "meanMs": 1.1340412063492065
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"executeTask\",code_namespace=\"com.sky.task.MyTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 13,
+        "meanMs": 0.025807692307692313
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"flushSeckillConfirmations\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 225,
+        "meanMs": 220.3287849022222
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"processDeliveryOrder\",code_namespace=\"com.sky.task.OrderTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 0.5178999999999999
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"publishPending\",code_namespace=\"com.sky.service.impl.BusinessEventOutbox\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 63,
+        "meanMs": 0.6957348888888887
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"publishSeckillPending\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 169,
+        "meanMs": 260.1731993846153
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"publishSeckillTimeouts\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 192,
+        "meanMs": 177.55254633854165
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"reconcile\",code_namespace=\"com.sky.service.impl.SeckillReconciler\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 12,
+        "meanMs": 12.867566833333335
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"recover\",code_namespace=\"com.sky.task.SeckillAsyncTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 57,
+        "meanMs": 0.5627912456140352
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"retryFailedMessages\",code_namespace=\"com.sky.task.MqFailMessageRetryTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 1,
+        "meanMs": 851.249
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"retryPending\",code_namespace=\"com.sky.service.impl.SeckillReservationService\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 12,
+        "meanMs": 0.7554081666666668
+      },
+      {
+        "labels": "application=\"trade-service\",code_function=\"syncCacheEvents\",code_namespace=\"com.sky.task.SeckillAsyncTask\",error=\"none\",exception=\"none\",outcome=\"SUCCESS\"",
+        "samples": 377,
+        "meanMs": 66.09256949867374
+      }
+    ]
+  }
+]

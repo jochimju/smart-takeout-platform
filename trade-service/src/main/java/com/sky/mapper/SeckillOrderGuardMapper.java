@@ -17,4 +17,8 @@ public interface SeckillOrderGuardMapper {
                     @Param("activityId") Long activityId,
                     @Param("setmealId") Long setmealId,
                     @Param("orderNumber") String orderNumber);
+
+    @Insert({"<script>insert into seckill_order_guard(user_id,activity_id,setmeal_id,order_number,create_time) values",
+            "<foreach collection='rows' item='row' separator=','>(#{row.userId},#{row.activityId},#{row.setmealId},#{row.orderNumber},now())</foreach></script>"})
+    int insertBatch(@Param("rows") java.util.List<com.sky.entity.SeckillReservation> rows);
 }

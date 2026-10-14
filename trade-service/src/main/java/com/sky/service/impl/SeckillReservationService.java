@@ -15,21 +15,27 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 public class SeckillReservationService {
     @Autowired private SeckillReservationMapper mapper;
     @Autowired private SeckillReleaseProcessor processor;
+    @Autowired private SeckillAsyncStore asyncStore;
     @Autowired private com.sky.mapper.SeckillActivityMapper activities;
     @Autowired private com.sky.mapper.SeckillOrderGuardMapper guards;
+    @Autowired private SeckillInventoryReturn inventoryReturn;
 
     /** 必须在取消订单事务内调用；返回是否使用活动库存而非普通套餐库存。 */
     public boolean cancel(Orders order) {
         SeckillReservation reservation = mapper.get(order.getNumber());
         if (reservation == null) return false;
         if(reservation.getActivityId()!=null) {
-            if(activities.lock(reservation.getActivityId())==null)
+            var activity=activities.metadata(reservation.getActivityId());
+            boolean bucketed=activity!=null && activity.getBucketCount()!=null && activity.getBucketCount()>1;
+            if(bucketed ? activities.lockBucket(reservation.getActivityId(),reservation.getBucketId())==null : activities.lock(reservation.getActivityId())==null)
                 throw new com.sky.exception.OrderBusinessException("订单关联活动缺失，不能释放库存");
             reservation=mapper.lock(order.getNumber());
             if(mapper.releaseOnce(order.getNumber())==1) {
-                if(activities.restore(reservation.getActivityId())!=1)
+                if((bucketed ? activities.restoreBucket(reservation.getActivityId(),reservation.getBucketId()) : activities.restore(reservation.getActivityId()))!=1)
                     throw new com.sky.exception.OrderBusinessException("秒杀库存账不一致，取消已回滚");
                 guards.deleteByOrderNumber(order.getNumber());
+                inventoryReturn.cancelledAfterReturn(reservation.getActivityId());
+                asyncStore.event(order.getNumber(),reservation.getActivityId(),reservation.getUserId(),reservation.getRequestId(),"CANCELLED",null,reservation.getBucketId()==null?0:reservation.getBucketId());
             }
             return true;
         }

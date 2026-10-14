@@ -34,6 +34,8 @@ public class SetmealServiceImpl implements SetmealService {
     private final SetmealDishMapper setmealDishMapper;
     private final DishMapper dishMapper;
     private final MenuCache menuCache;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.sky.cache.MenuCacheInvalidationOutbox invalidations;
 
     @Override @Transactional
     public void saveWithDish(SetmealDTO dto) {
@@ -45,7 +47,7 @@ public class SetmealServiceImpl implements SetmealService {
         }
         setmealMapper.insert(setmeal);
         saveRelations(setmeal.getId(), dto.getSetmealDishes());
-        menuCache.invalidateAll();
+        invalidations.record("setmeal");
     }
     @Override public PageResult pageQuery(SetmealPageQueryDTO dto) {
         PageHelper.startPage(dto.getPage(), dto.getPageSize());
@@ -60,7 +62,7 @@ public class SetmealServiceImpl implements SetmealService {
                 throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
         }
         ids.forEach(id -> { setmealMapper.deleteById(id); setmealDishMapper.deleteBySetmealId(id); });
-        menuCache.invalidateAll();
+        invalidations.record("setmeal");
     }
     @Override public SetmealVO getByIdWithDish(Long id) {
         Setmeal setmeal = setmealMapper.getById(id);
@@ -76,7 +78,7 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.update(setmeal);
         setmealDishMapper.deleteBySetmealId(dto.getId());
         saveRelations(dto.getId(), dto.getSetmealDishes());
-        menuCache.invalidateAll();
+        invalidations.record("setmeal");
     }
     @Override @Transactional
     public void startOrStop(Integer status, Long id) {
@@ -87,7 +89,7 @@ public class SetmealServiceImpl implements SetmealService {
             }
         }
         setmealMapper.update(Setmeal.builder().id(id).status(status).build());
-        menuCache.invalidateAll();
+        invalidations.record("setmeal");
     }
     @Override public List<Setmeal> list(Setmeal value) { return setmealMapper.list(value); }
     @Override public List<Setmeal> listCache(Long categoryId) {

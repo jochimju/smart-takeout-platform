@@ -29,6 +29,9 @@ public class RedPacketServiceImpl implements RedPacketService {
     private final RedPacketMapper redPackets;
     private final AccountClient users;
     private final WeChatPayUtil weChatPay;
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.jdbc.core.JdbcTemplate jdbc;
+    @org.springframework.beans.factory.annotation.Autowired private OrderReliabilityStore jobs;
+    @org.springframework.beans.factory.annotation.Autowired private com.sky.payment.PaymentRecoveryStore recovery;
     @Value("$" + "{sky.payment.mock-enabled:false}")
     private boolean mockPaymentEnabled;
 
@@ -80,7 +83,8 @@ public class RedPacketServiceImpl implements RedPacketService {
             return OrderPaymentVO.builder().mockPayment(true).build();
         }
         AccountUserView user = users.user(order.getUserId());
-        JSONObject result = weChatPay.pay(order.getOrderNo(), order.getPayAmount(), "Sky red packet package", user.getOpenid());
+        recovery.begin(order.getOrderNo(),order.getPayAmount(),order.getExpireTime());
+        JSONObject result = weChatPay.pay(order.getOrderNo(), order.getPayAmount(), "Sky red packet package", user.getOpenid(),order.getExpireTime());
         if (result.getString("code") != null) throw new OrderBusinessException("payment request failed: " + result.getString("code"));
         OrderPaymentVO vo = result.toJavaObject(OrderPaymentVO.class);
         vo.setPackageStr(result.getString("package"));
@@ -101,19 +105,33 @@ public class RedPacketServiceImpl implements RedPacketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean paySuccess(String orderNo, String transactionId, BigDecimal amount) {
+        return settle(orderNo,transactionId,amount,false);
+    }
+    private boolean settle(String orderNo, String transactionId, BigDecimal amount, boolean mock) {
         if (orderNo == null || !orderNo.startsWith("RP")) return false;
         RedPacketPurchaseOrder order = redPackets.lockPurchase(orderNo);
         if (order == null) throw new OrderBusinessException("red packet purchase order not found");
         if (amount == null || order.getPayAmount().compareTo(amount) != 0) throw new OrderBusinessException("red packet payment amount mismatch");
-        if (RedPacketPurchaseOrder.PAID.equals(order.getStatus())) {
+        if (transactionId==null || transactionId.isBlank()) throw new OrderBusinessException("payment transaction missing");
+        if (RedPacketPurchaseOrder.PAID.equals(order.getStatus()) || RedPacketPurchaseOrder.REFUND_PENDING.equals(order.getStatus())
+                || RedPacketPurchaseOrder.REFUNDED.equals(order.getStatus())) {
             if (!transactionId.equals(order.getTransactionId())) throw new OrderBusinessException("conflicting red packet payment receipt");
+              // Older purchases had no common receipt. A verified duplicate can safely repair it.
+              jdbc.update("insert into order_payment_receipt(order_number,transaction_id,amount,mock_payment) values(?,?,?,?) on duplicate key update order_number=order_number",orderNo,transactionId,amount,mock);
             return true;
         }
-        if (!RedPacketPurchaseOrder.PENDING.equals(order.getStatus())) throw new OrderBusinessException("red packet purchase order state invalid");
-        if (!order.getExpireTime().isAfter(LocalDateTime.now())) {
-            // The scheduled closer performs the state change and budget release in its
-            // own transaction. Do not issue packets for a late payment callback.
-            throw new OrderBusinessException("red packet purchase order expired");
+        if (!RedPacketPurchaseOrder.PENDING.equals(order.getStatus()) && !RedPacketPurchaseOrder.CLOSED.equals(order.getStatus()))
+            throw new OrderBusinessException("red packet purchase order state invalid");
+        boolean expired=!order.getExpireTime().isAfter(LocalDateTime.now()) || RedPacketPurchaseOrder.CLOSED.equals(order.getStatus());
+        if (mock && expired) throw new OrderBusinessException("red packet purchase order expired");
+        jdbc.update("insert into order_payment_receipt(order_number,transaction_id,amount,mock_payment) values(?,?,?,?)",orderNo,transactionId,amount,mock);
+        if (expired) {
+            if (RedPacketPurchaseOrder.PENDING.equals(order.getStatus()) && redPackets.releaseBudget(order.getPackageId(),order.getPacketTotalAmountSnapshot())!=1)
+                throw new OrderBusinessException("red packet budget state changed");
+            if (jdbc.update("update red_packet_purchase_order set status=3,transaction_id=?,paid_time=now() where id=? and status in (0,2)",transactionId,order.getId())!=1)
+                throw new OrderBusinessException("red packet refund state changed");
+            jobs.refund(Orders.builder().number(orderNo).amount(amount).build(),false);
+            return true;
         }
         LocalDateTime paidAt = LocalDateTime.now();
         if (redPackets.markPurchasePaid(order.getId(), transactionId, paidAt) != 1) throw new OrderBusinessException("red packet payment state changed");
@@ -143,7 +161,7 @@ public class RedPacketServiceImpl implements RedPacketService {
         if (order == null || !BaseContext.getCurrentId().equals(order.getUserId())) {
             throw new OrderBusinessException("red packet purchase order not found");
         }
-        paySuccess(order.getOrderNo(), "mock:" + order.getOrderNo(), order.getPayAmount());
+        settle(order.getOrderNo(), "mock:" + order.getOrderNo(), order.getPayAmount(),true);
     }
 
     private RedPacketCheckoutVO toVO(UserRedPacket packet) {

@@ -9,6 +9,8 @@ public class RedPacketPurchaseOrder {
     public static final Integer PENDING = 0;
     public static final Integer PAID = 1;
     public static final Integer CLOSED = 2;
+    public static final Integer REFUND_PENDING = 3;
+    public static final Integer REFUNDED = 4;
     private Long id;
     private String orderNo;
     private Long userId;

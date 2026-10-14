@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 鑷畾涔夊畾鏃朵换鍔★紝瀹炵幇璁㈠崟鐘舵€佸畾鏃跺鐞?
+ * 自定义定时任务，实现订单状态定时处理
  */
 @Component
 @Slf4j
@@ -23,8 +23,8 @@ public class OrderTask {
 
     @Scheduled(cron = "0 * * * * ?")
     public void processDeliveryOrder(){
-        log.info("澶勭悊娲鹃€佷腑璁㈠崟锛歿}", new Date());
-        // select * from orders where status = 4 and order_time < 褰撳墠鏃堕棿-1灏忔椂
+        log.info("处理派送中订单：{}", new Date());
+        // select * from orders where status = 4 and order_time < 当前时间-1小时
         LocalDateTime time = LocalDateTime.now().plusMinutes(-60);
         List<Orders> ordersList = orderMapper.getByStatusAndOrdertimeLT(Orders.DELIVERY_IN_PROGRESS, time);
 

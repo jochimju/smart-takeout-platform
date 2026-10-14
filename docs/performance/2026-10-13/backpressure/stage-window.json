@@ -1,0 +1,17 @@
+{
+  "startWall": 1791864949.0006447,
+  "endWall": 1791865005.0030527,
+  "seconds": 56.002408027648926,
+  "rates": {
+    "accepted": 93.56740512681101,
+    "bridged": 93.78168162710142,
+    "publishedRows": 93.78168162710142,
+    "succeeded": 95.69231375469087
+  },
+  "maxOutstanding": 500,
+  "maxDbPending": 494,
+  "lockWaitersMax": 6,
+  "sampleCostMedianMs": 15.99999999962165,
+  "sampleCostMaxMs": 31.9999999992433,
+  "allSucceededObservedSecondsAfterLoadEnded": 3.760525703430176
+}

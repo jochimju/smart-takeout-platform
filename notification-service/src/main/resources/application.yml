@@ -1,6 +1,8 @@
 server:
   port: ${SKY_NOTIFICATION_PORT:8084}
 spring:
+  profiles:
+    default: prod
   application:
     name: notification-service
   config:
@@ -58,11 +60,11 @@ management:
       endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 sky:
   jwt:
-    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:itcast}
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:}
     admin-token-name: token
-    user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
+    user-secret-key: ${SKY_JWT_USER_SECRET:}
     user-token-name: authentication
   internal:
-    token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}
+    token: ${SKY_INTERNAL_TOKEN:}
   websocket:
     allow-query-token: ${SKY_GATEWAY_ALLOW_WEBSOCKET_QUERY_TOKEN:true}

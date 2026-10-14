@@ -1,0 +1,6 @@
+{
+  "isolatedProcessesStopped": true,
+  "isolatedDatabasesRemoved": true,
+  "isolatedVhostRemoved": true,
+  "credentialFilesRemoved": true
+}

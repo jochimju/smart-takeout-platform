@@ -22,7 +22,7 @@ public interface ShoppingCartMapper {
      *
      * @param shoppingCart
      */
-    @Update("update shopping_cart set number = #{number} where id = #{id}")
+    @Update("update shopping_cart set number = #{number}, row_version=row_version+1 where id = #{id}")
     void updateNumberById(ShoppingCart shoppingCart);
 
     /**
@@ -47,6 +47,9 @@ public interface ShoppingCartMapper {
      */
     @Delete("delete from shopping_cart where id = #{id}")
     void deleteById(Long id);
+
+    @Delete("delete from shopping_cart where id=#{id} and user_id=#{userId} and row_version=#{rowVersion}")
+    int deleteSubmitted(ShoppingCart snapshot);
 
     /**
      * 批量插入购物车数据

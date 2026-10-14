@@ -14,13 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class RedPacketPurchaseTask {
     private final RedPacketMapper redPackets;
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.jdbc.core.JdbcTemplate jdbc;
 
     @Scheduled(cron = "0 * * * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void closeExpiredPurchases() {
         for (RedPacketPurchaseOrder order : redPackets.expiredPendingPurchases()) {
             if (redPackets.closeExpiredPurchase(order.getId()) == 1) {
-                redPackets.releaseBudget(order.getPackageId(), order.getPacketTotalAmountSnapshot());
+                if(redPackets.releaseBudget(order.getPackageId(), order.getPacketTotalAmountSnapshot())!=1)
+                    throw new IllegalStateException("red packet budget release failed");
+                com.sky.payment.PaymentRecoveryStore.close(jdbc,order.getOrderNo());
                 log.info("closed expired red packet purchase {}", order.getOrderNo());
             }
         }

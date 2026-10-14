@@ -13,6 +13,7 @@ import java.util.List;
 @FeignClient(name = "catalog-service", configuration = AccountFeignConfiguration.class,
         fallbackFactory = CatalogClientFallbackFactory.class)
 public interface CatalogClient {
+    /** 交易服务批量查询商品报价、状态和基础库存；此接口不执行交易库存扣减。 */
     @PostMapping("/internal/catalog/quotes")
     List<ProductQuote> quotes(@RequestBody ProductQuoteRequest request);
 

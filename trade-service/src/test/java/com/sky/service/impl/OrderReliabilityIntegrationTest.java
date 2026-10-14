@@ -60,12 +60,14 @@ class OrderReliabilityIntegrationTest {
         jdbc.execute("create table orders(id bigint primary key,number varchar(64) unique,status int,pay_status int,amount decimal(12,2),"+
             "user_id bigint,order_time datetime,checkout_time datetime,cancel_reason varchar(255),rejection_reason varchar(255),cancel_time datetime,delivery_time datetime) engine=InnoDB");
         jdbc.execute("create table dish(id bigint primary key,stock int) engine=InnoDB");
+        jdbc.execute("create table trade_inventory(product_type varchar(16),product_id bigint,stock int,version bigint default 0,primary key(product_type,product_id)) engine=InnoDB");
         jdbc.execute("create table setmeal(id bigint primary key,stock int) engine=InnoDB");
         jdbc.execute("create table order_detail(id bigint primary key,order_id bigint,dish_id bigint,setmeal_id bigint,number int) engine=InnoDB");
         jdbc.execute("create table user_coupon(id bigint primary key,status int,order_id bigint,use_time datetime) engine=InnoDB");
         jdbc.update("insert into orders(id,number,status,pay_status,order_time) values(99,'historical',1,0,?)",LocalDateTime.now().minusMinutes(16));
         try(Connection c=dataSource.getConnection()) {
             ScriptUtils.executeSqlScript(c,new ClassPathResource("db/migration/V2026091201__order_reliability.sql"));
+            ScriptUtils.executeSqlScript(c,new ClassPathResource("db/migration/V2026101502__payment_recovery.sql"));
         }
         assertEquals(1,jdbc.queryForObject("select count(*) from order_reliability_job where order_number='historical'",Integer.class));
         SqlSessionFactoryBean factory=new SqlSessionFactoryBean();
@@ -79,7 +81,7 @@ class OrderReliabilityIntegrationTest {
         jobs=new OrderReliabilityStore(jdbc);
         DataSourceTransactionManager manager=new DataSourceTransactionManager(dataSource); tx=new TransactionTemplate(manager);
         OrderLifecycleService target=new OrderLifecycleService(sql.getMapper(OrderMapper.class),sql.getMapper(OrderDetailMapper.class),
-            mock(TradeInventoryService.class),sql.getMapper(UserCouponMapper.class),
+            new TradeInventoryService(jdbc,mock(CatalogQuoteService.class)),sql.getMapper(UserCouponMapper.class),
             mock(SeckillReservationService.class),jobs,mock(BusinessEventOutbox.class),jdbc);
         ReflectionTestUtils.setField(target,"mockEnabled",true);
         ProxyFactory proxy=new ProxyFactory(target);
@@ -96,7 +98,7 @@ class OrderReliabilityIntegrationTest {
                 Statement s=c.createStatement()) { s.execute("drop database "+schema); }
     }
     @BeforeEach void resetData() {
-        for(String table:Arrays.asList("order_reliability_job","order_payment_receipt","order_detail","user_coupon","orders","dish","setmeal"))
+        for(String table:Arrays.asList("order_reliability_job","order_payment_receipt","order_detail","user_coupon","orders","dish","setmeal","trade_inventory"))
             jdbc.update("delete from "+table);
         reset(gateway); BaseContext.setCurrentId(1L);
         if(container!=null) { container.stop(); container=null; }
@@ -110,6 +112,7 @@ class OrderReliabilityIntegrationTest {
         jdbc.update("insert into orders(id,number,user_id,status,pay_status,amount,order_time,expire_time) values(1,?,1,1,0,?,?,?)",
             order.getNumber(),order.getAmount(),time,order.getExpireTime());
         jdbc.update("insert into dish values(1,5)");
+        jdbc.update("insert into trade_inventory(product_type,product_id,stock) values('DISH',1,5)");
         jdbc.update("insert into order_detail values(1,1,1,null,2)");
         jdbc.update("insert into user_coupon values(1,1,1,now())");
         tx.executeWithoutResult(s->jobs.scheduleTimeout(order));
@@ -131,7 +134,7 @@ class OrderReliabilityIntegrationTest {
     }
     @Test void simultaneousTimeoutsRestoreStockOnce() throws Exception {
         seed(true); parallel(8,()->lifecycle.timeout("test-order"));
-        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from dish"));
+        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
         assertEquals(0,value("select status from user_coupon")); assertEquals("DONE",state("timeout:test-order"));
     }
     @Test void setmealStockIsAlsoRestoredExactlyOnce() throws Exception {
@@ -139,28 +142,30 @@ class OrderReliabilityIntegrationTest {
         jdbc.update("delete from order_detail");
         jdbc.update("delete from dish");
         jdbc.update("insert into setmeal values(1,5)");
+        jdbc.update("insert into trade_inventory(product_type,product_id,stock) values('SETMEAL',1,5)");
         jdbc.update("insert into order_detail values(1,1,null,1,2)");
         parallel(8,()->lifecycle.timeout("test-order"));
         assertEquals(6,value("select status from orders"));
-        assertEquals(7,value("select stock from setmeal"));
+        assertEquals(7,value("select stock from trade_inventory where product_type='SETMEAL' and product_id=1"));
     }
     @Test void manualAndTimeoutCancellationShareOneStockReturn() throws Exception {
         seed(true); AtomicInteger calls=new AtomicInteger();
         parallel(8,()->{ if(calls.getAndIncrement()%2==0) lifecycle.timeout("test-order"); else lifecycle.cancel(1L,"user","USER"); });
-        assertEquals(7,value("select stock from dish"));
+        assertEquals(7,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
     }
     @Test void pendingDeadlineIsCheckedAgain() {
         Orders order=seed(false); lifecycle.timeout(order.getNumber());
-        assertEquals(1,value("select status from orders")); assertEquals(5,value("select stock from dish"));
+        assertEquals(1,value("select status from orders")); assertEquals(5,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
         assertEquals(order.getExpireTime(),jdbc.queryForObject("select next_at from order_reliability_job",Timestamp.class).toLocalDateTime());
     }
     @Test void databaseFailureRollsBackCancellationAndCoupon() {
-        seed(true); jdbc.update("delete from dish");
+        seed(true); jdbc.update("delete from dish"); jdbc.update("delete from trade_inventory");
         assertThrows(RuntimeException.class,()->lifecycle.timeout("test-order"));
         assertEquals(1,value("select status from orders")); assertEquals(1,value("select status from user_coupon"));
         assertEquals("READY",state("timeout:test-order"));
-        jdbc.update("insert into dish values(1,5)"); lifecycle.timeout("test-order");
-        assertEquals(7,value("select stock from dish"));
+        jdbc.update("insert into dish values(1,5)");
+        jdbc.update("insert into trade_inventory(product_type,product_id,stock) values('DISH',1,5)"); lifecycle.timeout("test-order");
+        assertEquals(7,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
     }
     @Test void duplicatePaymentsOnlyTransitionOnce() throws Exception {
         seed(false); AtomicInteger accepted=new AtomicInteger();
@@ -168,13 +173,13 @@ class OrderReliabilityIntegrationTest {
         assertEquals(1,accepted.get()); assertEquals(1,value("select count(*) from order_payment_receipt"));
         jdbc.update("update orders set expire_time=?",LocalDateTime.now().minusSeconds(1));
         lifecycle.timeout("test-order");
-        assertEquals(2,value("select status from orders")); assertEquals(5,value("select stock from dish"));
+        assertEquals(2,value("select status from orders")); assertEquals(5,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
     }
     @Test void latePaymentRacingTimeoutNeverRevivesOrder() throws Exception {
         seed(true); AtomicInteger calls=new AtomicInteger();
         parallel(8,()->{if(calls.getAndIncrement()%2==0) lifecycle.timeout("test-order");
             else lifecycle.paid("test-order","late-transaction",new BigDecimal("12.50"),false);});
-        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from dish"));
+        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
         assertEquals(1,value("select count(*) from order_reliability_job where kind='REFUND'"));
     }
     @Test void wrongAmountCannotChangeOrder() {
@@ -267,6 +272,10 @@ class OrderReliabilityIntegrationTest {
         admin.declareExchange(rabbitConfig.orderDelayExchange());
         admin.declareQueue(rabbitConfig.orderDelayQueue()); admin.declareQueue(rabbitConfig.orderDeadQueue());
         admin.declareBinding(rabbitConfig.orderDelayBinding()); admin.declareBinding(rabbitConfig.orderDeadBinding());
+        for(var declaration:rabbitConfig.timeoutLanes().getDeclarables()) {
+            if(declaration instanceof org.springframework.amqp.core.Queue q)admin.declareQueue(q);
+            if(declaration instanceof org.springframework.amqp.core.Binding b)admin.declareBinding(b);
+        }
         rabbitWorker=new OrderReliabilityTask(jobs,rabbitConfig.rabbitTemplate(rabbitConnection,rabbitConfig.messageConverter()),gateway,jdbc,tx);
     }
     static void closeRabbit() throws Exception {
@@ -282,7 +291,7 @@ class OrderReliabilityIntegrationTest {
             lifecycle.timeout(invocation.getArgument(0)); return null;
         }).when(orderService).cancelTimeoutOrder(anyString());
         com.sky.listener.OrderMessageListener listener=new com.sky.listener.OrderMessageListener(orderService,
-            new TimeoutFailureService(jobs));
+            new TimeoutFailureService(jobs,mock(com.sky.mapper.MqFailMessageMapper.class)),mock(com.sky.mapper.MqFailMessageMapper.class));
         container=new org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer(rabbitConnection);
         container.setQueueNames(com.sky.constant.MqConstant.ORDER_DEAD_QUEUE);
         container.setAcknowledgeMode(org.springframework.amqp.core.AcknowledgeMode.MANUAL);
@@ -302,7 +311,7 @@ class OrderReliabilityIntegrationTest {
         seed(false); initRabbit(); setDeadline(LocalDateTime.now().plusSeconds(3).withNano(0));
         CountDownLatch consumed=listen(false); rabbitWorker.dispatch();
         assertTrue(consumed.await(12,TimeUnit.SECONDS));
-        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from dish"));
+        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
         assertTrue(death.get().contains("expired")); assertEquals("DONE",state("timeout:test-order"));
     }
     @Test @EnabledIfSystemProperty(named="order.rabbit",matches="true")
@@ -323,7 +332,7 @@ class OrderReliabilityIntegrationTest {
         container.stop(); CountDownLatch second=listen(false);
         jdbc.update("update order_reliability_job set next_at=now()");
         rabbitWorker.dispatch(); assertTrue(second.await(10,TimeUnit.SECONDS));
-        assertEquals(7,value("select stock from dish")); assertEquals("DONE",state("timeout:test-order"));
+        assertEquals(7,value("select stock from trade_inventory where product_type='DISH' and product_id=1")); assertEquals("DONE",state("timeout:test-order"));
     }
     @Test @EnabledIfSystemProperty(named="order.ttl15",matches="true")
     void fullFifteenMinuteTtlWithoutWatchdog() throws Exception {
@@ -340,7 +349,7 @@ class OrderReliabilityIntegrationTest {
         }
         long elapsed=TimeUnit.NANOSECONDS.toSeconds(System.nanoTime()-start);
         assertEquals(0,consumed.getCount()); assertTrue(elapsed>=898 && elapsed<960);
-        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from dish"));
+        assertEquals(6,value("select status from orders")); assertEquals(7,value("select stock from trade_inventory where product_type='DISH' and product_id=1"));
         assertTrue(death.get().contains("expired"));
         System.out.println("FULL_TTL_PASS elapsedSeconds="+elapsed);
     }

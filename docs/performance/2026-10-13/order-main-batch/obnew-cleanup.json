@@ -1,0 +1,12 @@
+{
+  "dedicatedProcessesStopped": [
+    "trade",
+    "account",
+    "catalog",
+    "redis"
+  ],
+  "dedicatedVhostDeleted": "sky_perf_ordernew_20261013",
+  "testDatabaseRetained": true,
+  "businessServicesTouched": false,
+  "businessDatabaseTouched": false
+}

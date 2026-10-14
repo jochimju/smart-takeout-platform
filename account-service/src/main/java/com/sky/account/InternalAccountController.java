@@ -3,6 +3,7 @@ package com.sky.account;
 import com.sky.entity.AddressBook;
 import com.sky.entity.User;
 import com.sky.contract.account.AccountAddressView;
+import com.sky.contract.account.AccountAddressLookup;
 import com.sky.contract.account.AccountUserView;
 import com.sky.mapper.AddressBookMapper;
 import com.sky.mapper.PermissionMapper;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class InternalAccountController {
     private final UserMapper users;
+    @org.springframework.beans.factory.annotation.Autowired private LocalAccountAccess access;
     private final AddressBookMapper addresses;
     private final PermissionMapper permissions;
 
@@ -38,6 +42,18 @@ public class InternalAccountController {
                 address.getConsignee(), address.getPhone(), address.getDetail());
     }
 
+    @PostMapping("/addresses/batch")
+    public java.util.List<AccountAddressView> addresses(@RequestBody java.util.List<AccountAddressLookup> lookups) {
+        if (lookups == null || lookups.isEmpty() || lookups.size() > 16 ||
+                lookups.stream().anyMatch(row -> row == null || row.userId() == null || row.addressId() == null))
+            throw new IllegalArgumentException("Invalid address batch");
+        var owned = new java.util.HashSet<>(lookups);
+        return addresses.getByIds(lookups.stream().map(AccountAddressLookup::addressId).distinct().toList())
+                .stream().filter(row -> owned.contains(new AccountAddressLookup(row.getUserId(), row.getId())))
+                .map(row -> new AccountAddressView(row.getId(), row.getUserId(), row.getConsignee(), row.getPhone(), row.getDetail()))
+                .toList();
+    }
+
     @GetMapping("/users/count")
     public Integer countUsers(@RequestParam(required = false) String begin,
                               @RequestParam(required = false) String end) {
@@ -51,7 +67,11 @@ public class InternalAccountController {
     public Boolean permitted(@RequestParam Long employeeId,
                              @RequestParam String method,
                              @RequestParam String path) {
-        if (permissions.countPermission(method, path) == 0) return true;
-        return permissions.countEmployeePermission(employeeId, method, path) > 0;
+        return access.permitted(employeeId, method, path);
+    }
+
+    @PostMapping("/sessions/check")
+    public Boolean valid(@RequestBody com.sky.contract.account.SessionCheck check) {
+        return check != null && access.valid(check.token(), check.admin());
     }
 }

@@ -19,6 +19,8 @@ public interface OrderService {
     OrderCheckoutVO checkout();
 
     void createOrderFromMessage(OrderSubmitMessageDTO orderSubmitMessageDTO);
+    PreparedNormalOrder prepareNormalOrder(OrderSubmitMessageDTO command);
+    void createPreparedNormalOrder(PreparedNormalOrder prepared);
 
     /** Releases an idempotency binding only when its command failed before an order was created. */
     void releaseFailedSubmission(String orderNumber);

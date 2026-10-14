@@ -15,6 +15,11 @@ import java.time.LocalDateTime;
 public class OrderSubmitMessageDTO implements Serializable {
 
     private Long userId;
+    private Long acceptedAt;
+    private java.util.List<com.sky.entity.ShoppingCart> cartSnapshot;
+    private String requestId;
+    private String requestHash;
+    private java.math.BigDecimal expectedAmount;
     private Long addressBookId;
     private int payMethod;
     private String remark;

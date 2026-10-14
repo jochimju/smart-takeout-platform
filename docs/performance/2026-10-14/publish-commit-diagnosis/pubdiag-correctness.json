@@ -1,0 +1,12 @@
+{
+  "activityId": 2,
+  "orders": 16083,
+  "mysqlRemaining": 43917,
+  "redisRemaining": 43917,
+  "requestStates": {
+    "SUCCEEDED": 16083
+  },
+  "outstanding": 0,
+  "unbridged": 0,
+  "bucketConservationPassed": true
+}

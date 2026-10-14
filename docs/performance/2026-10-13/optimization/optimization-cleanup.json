@@ -1,0 +1,19 @@
+{
+  "stoppedOnlyDedicatedServices": [
+    "trade",
+    "account",
+    "catalog",
+    "redis",
+    "test-redis"
+  ],
+  "deletedOnlyTestVhosts": [
+    "sky_perf_opt_baseline_20261013",
+    "sky_perf_optimized_20261013"
+  ],
+  "testDatabasesRetained": true,
+  "cacheEventsBeforeStop": 0,
+  "acceptedBacklogBeforeStop": 0,
+  "seckillUnsentOutboxBeforeStop": 0,
+  "businessServicesRestarted": false,
+  "businessDatabaseMigrated": false
+}

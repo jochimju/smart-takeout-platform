@@ -1,0 +1,30 @@
+[
+  {
+    "mode": "single_ab",
+    "states": {
+      "SUCCEEDED": 5591
+    },
+    "normalOrders": 300
+  },
+  {
+    "mode": "batch_ab",
+    "states": {
+      "SUCCEEDED": 8939
+    },
+    "normalOrders": 301
+  },
+  {
+    "mode": "batch4_ab",
+    "states": {
+      "SUCCEEDED": 7748
+    },
+    "normalOrders": 301
+  },
+  {
+    "mode": "batch_gate_ab",
+    "states": {
+      "SUCCEEDED": 10139
+    },
+    "normalOrders": 301
+  }
+]

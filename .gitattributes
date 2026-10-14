@@ -1,0 +1,3 @@
+# Preserve generated Prometheus snapshots, including valid trailing spaces on HELP lines.
+docs/performance/**/*.prom whitespace=-blank-at-eol
+docs/performance/**/*.svg whitespace=-blank-at-eol

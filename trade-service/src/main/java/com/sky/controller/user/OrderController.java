@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 閻犱降鍨瑰畷?
+ * 订单
  */
 @RestController("userOrderController")
 @RequestMapping("/user/order")
@@ -26,8 +26,8 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     @GetMapping("/seckill/result")
-    public Result<OrderSubmitVO> seckillResult(@RequestParam String requestId) {
-        return Result.success(seckillService.findRequest(requestId));
+    public Result<OrderSubmitVO> seckillResult(@RequestParam String requestId, @RequestParam(required=false) Long activityId) {
+        return Result.success(seckillService.findRequest(requestId, activityId));
     }
 
     @Autowired
@@ -40,19 +40,21 @@ public class OrderController {
     }
 
     /**
-     * 闁活潿鍔嶉崺娑欑▔鐎ｎ亜绀?
+     * 用户下单
      *
      * @param ordersSubmitDTO
      * @return
      */
+    /** 普通下单受理；首次成功不保证订单已落库，用同一 requestId 轮询结果。 */
     @PostMapping("/submit")
     @ApiOperation("submit order")
     public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO) {
-        log.info("闁活潿鍔嶉崺娑欑▔鐎ｎ亜绀嬮柨娑欘劯}", ordersSubmitDTO);
+        log.info("用户下单：{}", ordersSubmitDTO);
         OrderSubmitVO orderSubmitVO = orderService.submitOrder(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
     }
 
+    /** 查询当前用户提交对应的真实订单，前端取得 id 和金额后进入支付页。 */
     @GetMapping("/submit-result")
     @ApiOperation("query asynchronously submitted order result")
     public Result<OrderSubmitVO> submitResult(@RequestParam String requestId) {
@@ -66,7 +68,7 @@ public class OrderController {
     }
 
     /**
-     * 閻犱降鍨瑰畷鐔煎绩椤栨瑧甯?
+     * 订单支付
      *
      * @param ordersPaymentDTO
      * @return
@@ -74,9 +76,9 @@ public class OrderController {
     @PutMapping("/payment")
     @ApiOperation("pay order")
     public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
-        log.info("閻犱降鍨瑰畷鐔煎绩椤栨瑧甯涢柨娑欘劯}", ordersPaymentDTO);
+        log.info("订单支付：{}", ordersPaymentDTO);
         OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
-        log.info("闁汇垻鍠愰崹姘紣閸曨剚鏆滃ù鐘趁煎锕傚及閹惧啿绀嬮柨娑欘劯}", orderPaymentVO);
+        log.info("生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
     }
 
@@ -92,11 +94,11 @@ public class OrderController {
     }
 
     /**
-     * 闁告ê妫楄ぐ鍓佹媼閵忕姴绀嬮柡灞诲劥椤?
+     * 历史订单查询
      *
      * @param page
      * @param pageSize
-     * @param status   閻犱降鍨瑰畷鐔兼偐閼哥鍋?1鐎垫澘鎳嶇划顖氣枎?2鐎垫澘鎳忕敮鎾础?3鐎圭寮剁敮鎾础?4婵炴煡绠栭埀顑挎閼?5鐎瑰憡褰冮悾顒勫箣?6鐎瑰憡褰冭ぐ鍥р槈?
+     * @param status   订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
      * @return
      */
     @GetMapping("/historyOrders")
@@ -107,7 +109,7 @@ public class OrderController {
     }
 
     /**
-     * 闁哄被鍎撮妤冩媼閵忕姴绀嬮悹鍥烽檮閸?
+     * 查询订单详情
      *
      * @param id
      * @return
@@ -120,10 +122,11 @@ public class OrderController {
     }
 
     /**
-     * 闁活潿鍔嶉崺娑㈠矗閺嶃劎啸閻犱降鍨瑰畷?
+     * 用户取消订单
      *
      * @return
      */
+    /** 取消已创建订单；生命周期服务负责归属校验、状态限制和资源释放。 */
     @PutMapping("/cancel/{id}")
     @ApiOperation("cancel order")
     public Result cancel(@PathVariable("id") Long id) throws Exception {
@@ -139,7 +142,7 @@ public class OrderController {
     }
 
     /**
-     * 闁告劕绉靛鍨▔閳ь剟宕?
+     * 再来一单
      *
      * @param id
      * @return
@@ -150,7 +153,7 @@ public class OrderController {
         return Result.success(orderService.repetition(id));
     }
     /**
-     * 闁活潿鍔嶉崺娑㈠磼椤掆偓瀹?
+     * 用户催单
      *
      * @param id
      * @return

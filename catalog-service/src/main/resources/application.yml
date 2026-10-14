@@ -7,6 +7,19 @@ spring:
     import: ${NACOS_CONFIG_IMPORT:optional:nacos:catalog-service.yml}
   cloud:
     openfeign:
+      httpclient:
+        enabled: true
+        connection-timeout: 1000
+        max-connections: ${SKY_FEIGN_MAX_CONNECTIONS:512}
+        max-connections-per-route: ${SKY_FEIGN_MAX_PER_ROUTE:256}
+        time-to-live: 60
+        time-to-live-unit: seconds
+        hc5:
+          enabled: true
+          connection-request-timeout: 1
+          connection-request-timeout-unit: seconds
+          socket-timeout: 3
+          socket-timeout-unit: seconds
       micrometer:
         enabled: true
       client:
@@ -52,7 +65,7 @@ spring:
         server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         namespace: ${NACOS_NAMESPACE:}
   profiles:
-    active: dev
+    default: prod
   datasource:
     druid:
       driver-class-name: ${sky.datasource.driver-class-name}
@@ -61,6 +74,7 @@ spring:
       password: ${sky.datasource.password}
   data:
     redis:
+      timeout: ${SKY_REDIS_TIMEOUT:2s}
       host: ${sky.redis.host}
       port: ${sky.redis.port}
       password: ${sky.redis.password}
@@ -102,17 +116,31 @@ management:
     tracing:
       endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 sky:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: ${SKY_DB_HOST:127.0.0.1}
+    port: ${SKY_DB_PORT:3306}
+    database: ${SKY_CATALOG_DB:sky_take_out_catalog}
+    username: ${SKY_DB_USER:}
+    password: ${SKY_DB_PASSWORD:}
+  redis:
+    host: ${SKY_REDIS_HOST:127.0.0.1}
+    port: ${SKY_REDIS_PORT:6379}
+    password: ${SKY_REDIS_PASSWORD:}
+  security:
+    docs-enabled: false
+    cors-origins: ${SKY_CORS_ORIGINS:}
   internal:
-    token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}
+    token: ${SKY_INTERNAL_TOKEN:}
   jwt:
-    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:itcast}
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:}
     admin-ttl: 7200000
     admin-token-name: token
-    user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
+    user-secret-key: ${SKY_JWT_USER_SECRET:}
     user-ttl: 7200000
     user-token-name: authentication
   alioss:
-    endpoint: ${sky.alioss.endpoint}
-    access-key-id: ${sky.alioss.access-key-id}
-    access-key-secret: ${sky.alioss.access-key-secret}
-    bucket-name: ${sky.alioss.bucket-name}
+    endpoint: ${SKY_OSS_ENDPOINT:}
+    access-key-id: ${SKY_OSS_ACCESS_KEY_ID:}
+    access-key-secret: ${SKY_OSS_ACCESS_KEY_SECRET:}
+    bucket-name: ${SKY_OSS_BUCKET:}

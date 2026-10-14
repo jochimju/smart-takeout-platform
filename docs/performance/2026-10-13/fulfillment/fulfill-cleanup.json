@@ -1,0 +1,14 @@
+{
+  "dedicatedServicesStopped": true,
+  "onlyTestVhostsDeleted": [
+    "sky_perf_fulfill_single_20261013",
+    "sky_perf_fulfill_single_ab_20261013",
+    "sky_perf_fulfill_batch_ab_20261013",
+    "sky_perf_fulfill_batch4_ab_20261013",
+    "sky_perf_fulfill_batch_gate_ab_20261013"
+  ],
+  "testDatabasesRetained": true,
+  "futureNormalDelayMessagesWereTestOnly": true,
+  "businessServicesRestarted": false,
+  "businessDatabaseMigrated": false
+}

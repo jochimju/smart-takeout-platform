@@ -1,0 +1,34 @@
+{
+  "100": {
+    "startWall": 1791861129.403637,
+    "endWall": 1791861143.4136968,
+    "seconds": 14.010059833526611,
+    "rates": {
+      "accepted": 100.14232748974898,
+      "bridged": 100.21370477235037,
+      "publishedUnique": 83.5827979262267,
+      "succeeded": 47.46589292992379
+    },
+    "maxRedisPending": 25,
+    "maxDbPending": 1132,
+    "activityLockWaitersMax": 6,
+    "sampleCostMedianMs": 30.99999999994907,
+    "sampleCostMaxMs": 30.99999999994907
+  },
+  "800": {
+    "startWall": 1791861232.4930415,
+    "endWall": 1791861286.4933002,
+    "seconds": 54.000258684158325,
+    "rates": {
+      "accepted": 800.0146860902645,
+      "bridged": 779.7370054516487,
+      "publishedUnique": 67.77745309345542,
+      "succeeded": 40.57387970703848
+    },
+    "maxRedisPending": 1241,
+    "maxDbPending": 43570,
+    "activityLockWaitersMax": 10,
+    "sampleCostMedianMs": 836.0000000002401,
+    "sampleCostMaxMs": 1407.0000000001528
+  }
+}

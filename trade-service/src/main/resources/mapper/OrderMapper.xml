@@ -14,6 +14,21 @@
                 #{canteenId}, #{canteenName})
     </insert>
 
+    <insert id="insertSeckillBatch" useGeneratedKeys="true" keyProperty="orders.id" keyColumn="id">
+        insert into orders
+        (number, status, user_id, address_book_id, order_time, expire_time, checkout_time, pay_method, pay_status, amount,
+         coupon_id, discount_amount, user_red_packet_id, remark,
+         phone, address, consignee, estimated_delivery_time, delivery_status, pack_amount, tableware_number,
+         tableware_status, canteen_id, canteen_name)
+        values
+        <foreach collection="orders" item="o" separator=",">
+            (#{o.number}, #{o.status}, #{o.userId}, #{o.addressBookId}, #{o.orderTime}, #{o.expireTime}, #{o.checkoutTime}, #{o.payMethod},
+             #{o.payStatus}, #{o.amount}, #{o.couponId}, #{o.discountAmount}, #{o.userRedPacketId}, #{o.remark}, #{o.phone}, #{o.address}, #{o.consignee},
+             #{o.estimatedDeliveryTime}, #{o.deliveryStatus}, #{o.packAmount}, #{o.tablewareNumber}, #{o.tablewareStatus},
+             #{o.canteenId}, #{o.canteenName})
+        </foreach>
+    </insert>
+
     <update id="update" parameterType="com.sky.entity.Orders">
         update orders
         <set>

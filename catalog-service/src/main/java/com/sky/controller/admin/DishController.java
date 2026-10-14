@@ -8,7 +8,6 @@ import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import com.sky.entity.Dish;
 import com.sky.constant.StatusConstant;
-import com.sky.cache.MenuCache;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -33,15 +32,13 @@ public class DishController {
 
     @Autowired
     private DishService dishService;
-    @Autowired
-    private MenuCache menuCache;
 
     @PostMapping
     @ApiOperation("add dish")
     public Result save(@RequestBody DishDTO dishDTO) {
         log.info("add dish: {}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
-        menuCache.invalidateDishes();
+
         return Result.success();
     }
 
@@ -56,7 +53,7 @@ public class DishController {
     @ApiOperation("delete dishes")
     public Result delete(@RequestParam List<Long> ids) {
         dishService.deleteBatch(ids);
-        menuCache.invalidateDishes();
+
         return Result.success();
     }
 
@@ -71,7 +68,7 @@ public class DishController {
     @ApiOperation("update dish")
     public Result update(@RequestBody DishDTO dishDTO) {
         dishService.updateWithFlavor(dishDTO);
-        menuCache.invalidateDishes();
+
         return Result.success();
     }
 

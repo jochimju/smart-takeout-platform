@@ -15,13 +15,29 @@ import java.util.List;
 @Mapper
 public interface MqFailMessageMapper extends BaseMapper<MqFailMessage> {
 
-    @Insert("insert into mq_fail_message(exchange_name, routing_key, message_body, fail_reason, status, retry_count, create_time) " +
-            "values(#{exchangeName}, #{routingKey}, #{messageBody}, #{failReason}, #{status}, #{retryCount}, #{createTime})")
+    @Insert("insert into mq_fail_message(exchange_name, routing_key, message_body, fail_reason, status, retry_count, create_time,available_at,delivery_deadline) " +
+            "values(#{exchangeName}, #{routingKey}, #{messageBody}, #{failReason}, #{status}, #{retryCount}, #{createTime},#{availableAt},#{deliveryDeadline})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(MqFailMessage mqFailMessage);
 
-    @Select("select * from mq_fail_message where status = 0 and retry_count < #{limit} order by create_time asc limit #{size}")
+    @Insert({"<script>insert into mq_fail_message(exchange_name,routing_key,message_body,fail_reason,status,retry_count,create_time,available_at,delivery_deadline) values",
+        "<foreach collection='rows' item='row' separator=','>(#{row.exchangeName},#{row.routingKey},#{row.messageBody},#{row.failReason},#{row.status},#{row.retryCount},#{row.createTime},#{row.availableAt},#{row.deliveryDeadline})</foreach></script>"})
+    int insertBatch(@Param("rows") List<MqFailMessage> rows);
+
+    @Select("select * from mq_fail_message where status = 0 and retry_count < #{limit} and (routing_key is null or (routing_key not in ('order.submit','seckill.timeout','seckill.order') and routing_key not like 'seckill.order.bucket.%')) order by create_time asc limit #{size}")
     List<MqFailMessage> listRetryable(@Param("limit") int limit, @Param("size") int size);
+
+    @Select("select * from mq_fail_message where status=0 and routing_key='seckill.order' and retry_count<#{limit} order by create_time limit #{size}")
+    List<MqFailMessage> listSeckillPending(@Param("limit") int limit,@Param("size") int size);
+
+    @Select("select * from mq_fail_message where status=0 and routing_key='seckill.timeout' and available_at<=now(3) order by available_at,create_time limit #{size}")
+    List<MqFailMessage> listSeckillTimeoutPending(int size);
+
+    @Update("update mq_fail_message set status=3,lease_until=date_add(now(),interval 2 minute),update_time=now() where id=#{id} and status=0 and routing_key='seckill.timeout' and available_at<=now(3)")
+    int claimTimeout(Long id);
+
+    @Update("update mq_fail_message set status=0,lease_until=null,retry_count=least(retry_count+1,100000),fail_reason=#{reason},available_at=date_add(now(3),interval 5 second),update_time=now() where id=#{id} and status=3 and routing_key='seckill.timeout'")
+    int retryTimeout(@Param("id") Long id,@Param("reason") String reason);
 
     @Update("update mq_fail_message set status = 3, lease_until = date_add(now(), interval 2 minute), " +
             "update_time = now() where id = #{id} and status = 0 and retry_count < #{limit}")

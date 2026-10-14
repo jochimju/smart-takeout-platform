@@ -1,0 +1,22 @@
+{
+  "activities": [
+    {
+      "activityId": 1,
+      "stock": 60000,
+      "mysqlRemaining": 54000,
+      "redisRemaining": 54000,
+      "effectiveGuards": 6000,
+      "duplicates": 0
+    },
+    {
+      "activityId": 2,
+      "stock": 60000,
+      "mysqlRemaining": 53689,
+      "redisRemaining": 53689,
+      "effectiveGuards": 6311,
+      "duplicates": 0
+    }
+  ],
+  "pendingCacheEvents": 0,
+  "failedWithOrder": 0
+}

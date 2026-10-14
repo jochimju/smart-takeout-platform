@@ -1,0 +1,32 @@
+{
+  "sky-common": {
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "sky-security": {
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "trade-service": {
+    "tests": 173,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "account-service": {
+    "tests": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "catalog-service": {
+    "tests": 52,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

@@ -29,21 +29,22 @@ public class UserController {
     private UserService userService;
     @Autowired
     private JwtProperties jwtProperties;
+    @Autowired private com.sky.account.SessionService sessions;
 
     /**
-     * 寰俊鐧诲綍
+     * 微信登录
      * @param userLoginDTO
      * @return
      */
     @PostMapping("/login")
-    @ApiOperation("寰俊鐧诲綍")
+    @ApiOperation("微信登录")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
-        log.info("寰俊鐢ㄦ埛鐧诲綍锛歿}",userLoginDTO.getCode());
+        log.info("微信用户登录请求");
 
-        //寰俊鐧诲綍
-        User user = userService.wxLogin(userLoginDTO);//鍚庣华姝ラ瀹炵幇
+        //微信登录
+        User user = userService.wxLogin(userLoginDTO);//后绪步骤实现
 
-        //涓哄井淇＄敤鎴风敓鎴恓wt浠ょ墝
+        //为微信用户生成jwt令牌
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaimsConstant.USER_ID,user.getId());
         String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
@@ -54,5 +55,11 @@ public class UserController {
                 .token(token)
                 .build();
         return Result.success(userLoginVO);
+    }
+
+    @PostMapping("/logout")
+    public Result<String> logout(jakarta.servlet.http.HttpServletRequest request) {
+        sessions.revoke(request.getHeader(jwtProperties.getUserTokenName()), false);
+        return Result.success();
     }
 }

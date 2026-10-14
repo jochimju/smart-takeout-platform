@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderSubmitVO implements Serializable {
+    // 秒杀异步受理状态；普通订单沿用原字段。
+    private String submitStatus;
+    private String failureMessage;
     //订单id
     private Long id;
     //订单号

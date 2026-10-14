@@ -1,0 +1,1877 @@
+{
+  "label": "arch_44798b25c1a543a2",
+  "activity": 7,
+  "rate": 800,
+  "seconds": 60,
+  "k6Exit": 0,
+  "started": 1791961439.543045,
+  "ended": 1791961500.980645,
+  "samples": [
+    {
+      "time": 1791961439.6464636,
+      "states": {},
+      "cpuPercent": 34.8,
+      "availableMemoryBytes": 5206515712,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          4477
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          3958
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          3970
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          3969
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          3967
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          3970
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          3957
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          3965
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          3957
+        ],
+        [
+          "seckill.timeout",
+          1,
+          36044
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961440.8460464,
+      "states": {},
+      "cpuPercent": 58.0,
+      "availableMemoryBytes": 4656721920
+    },
+    {
+      "time": 1791961442.034614,
+      "states": {
+        "ACCEPTED": 39
+      },
+      "cpuPercent": 87.1,
+      "availableMemoryBytes": 4249763840
+    },
+    {
+      "time": 1791961443.578302,
+      "states": {
+        "SUCCEEDED": 239
+      },
+      "cpuPercent": 98.3,
+      "availableMemoryBytes": 4192006144
+    },
+    {
+      "time": 1791961445.1701715,
+      "states": {
+        "ACCEPTED": 290,
+        "SUCCEEDED": 476
+      },
+      "cpuPercent": 96.7,
+      "availableMemoryBytes": 4114513920
+    },
+    {
+      "time": 1791961446.758873,
+      "states": {
+        "ACCEPTED": 327,
+        "SUCCEEDED": 1120
+      },
+      "cpuPercent": 96.7,
+      "availableMemoryBytes": 4127236096,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          4508
+        ],
+        [
+          "order.submit",
+          3,
+          2
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          35
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          4062
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          56
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          34
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          4086
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          58
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          35
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          4077
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          61
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          32
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          4077
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          61
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          34
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          4083
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          60
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          32
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          4066
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          59
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          33
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          4078
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          61
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          35
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          4064
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          60
+        ],
+        [
+          "seckill.timeout",
+          0,
+          527
+        ],
+        [
+          "seckill.timeout",
+          1,
+          36565
+        ],
+        [
+          "seckill.timeout",
+          3,
+          324
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961449.1304908,
+      "states": {
+        "ACCEPTED": 437,
+        "SUCCEEDED": 1761
+      },
+      "cpuPercent": 97.7,
+      "availableMemoryBytes": 4155015168
+    },
+    {
+      "time": 1791961450.8692086,
+      "states": {
+        "ACCEPTED": 315,
+        "SUCCEEDED": 2227
+      },
+      "cpuPercent": 98.6,
+      "availableMemoryBytes": 4117430272
+    },
+    {
+      "time": 1791961452.676253,
+      "states": {
+        "ACCEPTED": 359,
+        "SUCCEEDED": 2772
+      },
+      "cpuPercent": 98.1,
+      "availableMemoryBytes": 4120522752
+    },
+    {
+      "time": 1791961454.4539502,
+      "states": {
+        "ACCEPTED": 472,
+        "SUCCEEDED": 3361
+      },
+      "cpuPercent": 96.7,
+      "availableMemoryBytes": 4158316544
+    },
+    {
+      "time": 1791961457.1488125,
+      "states": {
+        "ACCEPTED": 382,
+        "SUCCEEDED": 3896
+      },
+      "cpuPercent": 96.3,
+      "availableMemoryBytes": 4136460288,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          1
+        ],
+        [
+          "order.submit",
+          1,
+          4560
+        ],
+        [
+          "order.submit",
+          3,
+          2
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          14
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          4446
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          53
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          15
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          4474
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          51
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          14
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          4467
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          52
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          15
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          4458
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          52
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          15
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          4462
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          13
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          4450
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          14
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          4462
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          50
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          15
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          4455
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          50
+        ],
+        [
+          "seckill.timeout",
+          0,
+          1622
+        ],
+        [
+          "seckill.timeout",
+          1,
+          38484
+        ],
+        [
+          "seckill.timeout",
+          3,
+          392
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961459.7671726,
+      "states": {
+        "ACCEPTED": 406,
+        "SUCCEEDED": 4640
+      },
+      "cpuPercent": 96.3,
+      "availableMemoryBytes": 4120506368
+    },
+    {
+      "time": 1791961461.0375478,
+      "states": {
+        "ACCEPTED": 313,
+        "SUCCEEDED": 5382
+      },
+      "cpuPercent": 96.1,
+      "availableMemoryBytes": 4147888128
+    },
+    {
+      "time": 1791961462.4888954,
+      "states": {
+        "ACCEPTED": 306,
+        "SUCCEEDED": 5982
+      },
+      "cpuPercent": 93.9,
+      "availableMemoryBytes": 4143759360
+    },
+    {
+      "time": 1791961464.348733,
+      "states": {
+        "ACCEPTED": 337,
+        "SUCCEEDED": 6650
+      },
+      "cpuPercent": 94.8,
+      "availableMemoryBytes": 4149198848
+    },
+    {
+      "time": 1791961465.4593241,
+      "states": {
+        "ACCEPTED": 199,
+        "SUCCEEDED": 7317
+      },
+      "cpuPercent": 82.0,
+      "availableMemoryBytes": 4247134208,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          1
+        ],
+        [
+          "order.submit",
+          1,
+          4599
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          4826
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          39
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          4868
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          30
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          4859
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          32
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          25
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          4852
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          30
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          25
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          4855
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          28
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          24
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          4837
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          31
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          25
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          4847
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          28
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          23
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          4843
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          30
+        ],
+        [
+          "seckill.timeout",
+          0,
+          2897
+        ],
+        [
+          "seckill.timeout",
+          1,
+          40300
+        ],
+        [
+          "seckill.timeout",
+          3,
+          287
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961466.9050326,
+      "states": {
+        "ACCEPTED": 259,
+        "SUCCEEDED": 7776
+      },
+      "cpuPercent": 79.5,
+      "availableMemoryBytes": 4208238592
+    },
+    {
+      "time": 1791961468.2967691,
+      "states": {
+        "ACCEPTED": 267,
+        "SUCCEEDED": 8146
+      },
+      "cpuPercent": 73.0,
+      "availableMemoryBytes": 4223369216
+    },
+    {
+      "time": 1791961469.3913133,
+      "states": {
+        "ACCEPTED": 38,
+        "SUCCEEDED": 9142
+      },
+      "cpuPercent": 83.3,
+      "availableMemoryBytes": 4214984704
+    },
+    {
+      "time": 1791961470.662456,
+      "states": {
+        "ACCEPTED": 200,
+        "SUCCEEDED": 9180
+      },
+      "cpuPercent": 46.4,
+      "availableMemoryBytes": 4297957376
+    },
+    {
+      "time": 1791961471.979447,
+      "states": {
+        "ACCEPTED": 417,
+        "SUCCEEDED": 9908
+      },
+      "cpuPercent": 83.9,
+      "availableMemoryBytes": 4254965760,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          1
+        ],
+        [
+          "order.submit",
+          1,
+          4636
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          16
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          5211
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          36
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          16
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          5240
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          37
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          17
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          5234
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          38
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          17
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          5228
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          36
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          16
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          5228
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          37
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          16
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          5217
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          37
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          16
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          5222
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          39
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          16
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          5223
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          34
+        ],
+        [
+          "seckill.timeout",
+          0,
+          4044
+        ],
+        [
+          "seckill.timeout",
+          1,
+          42284
+        ],
+        [
+          "seckill.timeout",
+          3,
+          168
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961473.510054,
+      "states": {
+        "ACCEPTED": 96,
+        "SUCCEEDED": 11106
+      },
+      "cpuPercent": 77.8,
+      "availableMemoryBytes": 4245200896
+    },
+    {
+      "time": 1791961474.6301596,
+      "states": {
+        "ACCEPTED": 73,
+        "SUCCEEDED": 11279
+      },
+      "cpuPercent": 37.4,
+      "availableMemoryBytes": 4261068800
+    },
+    {
+      "time": 1791961475.9948876,
+      "states": {
+        "ACCEPTED": 266,
+        "SUCCEEDED": 12069
+      },
+      "cpuPercent": 80.0,
+      "availableMemoryBytes": 4314951680
+    },
+    {
+      "time": 1791961477.2788465,
+      "states": {
+        "ACCEPTED": 258,
+        "SUCCEEDED": 13204
+      },
+      "cpuPercent": 78.7,
+      "availableMemoryBytes": 4268789760
+    },
+    {
+      "time": 1791961478.3788342,
+      "states": {
+        "ACCEPTED": 200,
+        "SUCCEEDED": 13354
+      },
+      "cpuPercent": 48.1,
+      "availableMemoryBytes": 4281245696,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          2
+        ],
+        [
+          "order.submit",
+          1,
+          4662
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          5596
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          34
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          5627
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          31
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          5622
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          34
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          5613
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          36
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          12
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          5607
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          44
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          5606
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          35
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          5615
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          33
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          11
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          5605
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          37
+        ],
+        [
+          "seckill.timeout",
+          0,
+          4732
+        ],
+        [
+          "seckill.timeout",
+          1,
+          44652
+        ],
+        [
+          "seckill.timeout",
+          3,
+          200
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961479.8665173,
+      "states": {
+        "ACCEPTED": 172,
+        "SUCCEEDED": 14217
+      },
+      "cpuPercent": 73.1,
+      "availableMemoryBytes": 4274917376
+    },
+    {
+      "time": 1791961480.9662452,
+      "states": {
+        "ACCEPTED": 151,
+        "SUCCEEDED": 14544
+      },
+      "cpuPercent": 46.7,
+      "availableMemoryBytes": 4294307840
+    },
+    {
+      "time": 1791961482.1426976,
+      "states": {
+        "ACCEPTED": 185,
+        "SUCCEEDED": 15322
+      },
+      "cpuPercent": 76.3,
+      "availableMemoryBytes": 4282408960
+    },
+    {
+      "time": 1791961483.3834767,
+      "states": {
+        "ACCEPTED": 126,
+        "SUCCEEDED": 16028
+      },
+      "cpuPercent": 71.2,
+      "availableMemoryBytes": 4299579392
+    },
+    {
+      "time": 1791961484.5999973,
+      "states": {
+        "ACCEPTED": 176,
+        "SUCCEEDED": 16833
+      },
+      "cpuPercent": 83.0,
+      "availableMemoryBytes": 4260532224,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          4699
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          6061
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          12
+        ],
+        [
+          "seckill.order.bucket.1",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          6094
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          9
+        ],
+        [
+          "seckill.order.bucket.2",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          6096
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          5
+        ],
+        [
+          "seckill.order.bucket.3",
+          0,
+          20
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          6081
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          11
+        ],
+        [
+          "seckill.order.bucket.4",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          6083
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          10
+        ],
+        [
+          "seckill.order.bucket.5",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          6074
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          9
+        ],
+        [
+          "seckill.order.bucket.6",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          6084
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          7
+        ],
+        [
+          "seckill.order.bucket.7",
+          0,
+          19
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          6079
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          7
+        ],
+        [
+          "seckill.timeout",
+          0,
+          5942
+        ],
+        [
+          "seckill.timeout",
+          1,
+          47252
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961486.1725852,
+      "states": {
+        "ACCEPTED": 366,
+        "SUCCEEDED": 17107
+      },
+      "cpuPercent": 60.0,
+      "availableMemoryBytes": 4244897792
+    },
+    {
+      "time": 1791961487.8753104,
+      "states": {
+        "ACCEPTED": 309,
+        "SUCCEEDED": 17926
+      },
+      "cpuPercent": 79.1,
+      "availableMemoryBytes": 4182315008
+    },
+    {
+      "time": 1791961489.1130912,
+      "states": {
+        "ACCEPTED": 358,
+        "SUCCEEDED": 18196
+      },
+      "cpuPercent": 65.5,
+      "availableMemoryBytes": 4216864768
+    },
+    {
+      "time": 1791961490.5206149,
+      "states": {
+        "ACCEPTED": 354,
+        "SUCCEEDED": 18984
+      },
+      "cpuPercent": 85.2,
+      "availableMemoryBytes": 4200222720
+    },
+    {
+      "time": 1791961491.990827,
+      "states": {
+        "ACCEPTED": 262,
+        "SUCCEEDED": 20098
+      },
+      "cpuPercent": 88.0,
+      "availableMemoryBytes": 4202221568,
+      "publication": [
+        [
+          "order.submit",
+          0,
+          1
+        ],
+        [
+          "order.submit",
+          1,
+          4735
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          6443
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          49
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          6467
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          58
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          6470
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          54
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          6461
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          52
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          6457
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          56
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          6451
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          48
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          6452
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          54
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          6444
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          57
+        ],
+        [
+          "seckill.timeout",
+          0,
+          7184
+        ],
+        [
+          "seckill.timeout",
+          1,
+          49089
+        ],
+        [
+          "seckill.timeout",
+          3,
+          200
+        ]
+      ],
+      "lockWaits": []
+    },
+    {
+      "time": 1791961493.559616,
+      "states": {
+        "ACCEPTED": 278,
+        "SUCCEEDED": 20573
+      },
+      "cpuPercent": 69.6,
+      "availableMemoryBytes": 4221480960
+    },
+    {
+      "time": 1791961494.746698,
+      "states": {
+        "ACCEPTED": 236,
+        "SUCCEEDED": 21294
+      },
+      "cpuPercent": 78.9,
+      "availableMemoryBytes": 4214177792
+    },
+    {
+      "time": 1791961496.527923,
+      "states": {
+        "ACCEPTED": 331,
+        "SUCCEEDED": 21399
+      },
+      "cpuPercent": 66.0,
+      "availableMemoryBytes": 4214173696
+    },
+    {
+      "time": 1791961498.035809,
+      "states": {
+        "ACCEPTED": 290,
+        "SUCCEEDED": 22458
+      },
+      "cpuPercent": 81.7,
+      "availableMemoryBytes": 4210597888
+    },
+    {
+      "time": 1791961500.2714217,
+      "states": {
+        "ACCEPTED": 114,
+        "SUCCEEDED": 22980
+      },
+      "cpuPercent": 62.1,
+      "availableMemoryBytes": 4175720448,
+      "publication": [
+        [
+          "order.submit",
+          1,
+          4777
+        ],
+        [
+          "order.submit",
+          3,
+          1
+        ],
+        [
+          "seckill.order.bucket.0",
+          1,
+          6861
+        ],
+        [
+          "seckill.order.bucket.0",
+          3,
+          24
+        ],
+        [
+          "seckill.order.bucket.1",
+          1,
+          6892
+        ],
+        [
+          "seckill.order.bucket.1",
+          3,
+          25
+        ],
+        [
+          "seckill.order.bucket.2",
+          1,
+          6889
+        ],
+        [
+          "seckill.order.bucket.2",
+          3,
+          27
+        ],
+        [
+          "seckill.order.bucket.3",
+          1,
+          6877
+        ],
+        [
+          "seckill.order.bucket.3",
+          3,
+          24
+        ],
+        [
+          "seckill.order.bucket.4",
+          1,
+          6880
+        ],
+        [
+          "seckill.order.bucket.4",
+          3,
+          24
+        ],
+        [
+          "seckill.order.bucket.5",
+          1,
+          6868
+        ],
+        [
+          "seckill.order.bucket.5",
+          3,
+          23
+        ],
+        [
+          "seckill.order.bucket.6",
+          1,
+          6870
+        ],
+        [
+          "seckill.order.bucket.6",
+          3,
+          25
+        ],
+        [
+          "seckill.order.bucket.7",
+          1,
+          6870
+        ],
+        [
+          "seckill.order.bucket.7",
+          3,
+          28
+        ],
+        [
+          "seckill.timeout",
+          0,
+          8484
+        ],
+        [
+          "seckill.timeout",
+          1,
+          50999
+        ],
+        [
+          "seckill.timeout",
+          3,
+          171
+        ]
+      ],
+      "lockWaits": [
+        [
+          "seckill_submit_request",
+          1
+        ]
+      ]
+    }
+  ],
+  "actualCommittedTps": 415.80885093890754,
+  "states": {
+    "SUCCEEDED": 23638
+  },
+  "guards": 23638,
+  "duplicates": 0,
+  "remaining": 56362,
+  "redisStock": 56362,
+  "outstanding": 0,
+  "normalSucceeded": 301,
+  "normalFailed": 0,
+  "normalStates": {
+    "SUCCEEDED": 301
+  },
+  "jarSha256": {
+    "account": "a6a42a707f51e6e056bb697635b14506c77c82008e782f30832d0f9e7352d99e",
+    "catalog": "31d8b950730171bf40a4b469b69d57fb771b4022f284edf300f9230072529799",
+    "trade": "4ea83461e3873d5c9f53ff295be91462d9d074d170275ad4aea081d8ddfcde5a"
+  },
+  "testedSettings": {
+    "sky.seckill.fulfill-batch-size": 16,
+    "sky.seckill.max-outstanding": 500,
+    "sky.seckill.profile-enabled": false,
+    "sky.seckill.publisher-workers": 2
+  },
+  "raw": {
+    "metrics": {
+      "http_req_duration{expected_response:true}": {
+        "contains": "time",
+        "values": {
+          "avg": 48.767296408015774,
+          "med": 3.95345,
+          "p(95)": 364.98182999999693,
+          "p(99)": 1008.2929039999954,
+          "max": 1572.7488
+        },
+        "type": "trend"
+      },
+      "http_req_sending": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 0.04122164092584159,
+          "med": 0,
+          "p(95)": 0,
+          "p(99)": 1.0018989999999999,
+          "max": 17.0739
+        }
+      },
+      "dropped_iterations": {
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 0,
+          "rate": 0
+        },
+        "thresholds": {
+          "count==0": {
+            "ok": true
+          }
+        }
+      },
+      "vus_max": {
+        "contains": "default",
+        "values": {
+          "max": 1620,
+          "value": 1620,
+          "min": 1620
+        },
+        "type": "gauge"
+      },
+      "rejected": {
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 24363,
+          "rate": 405.9225105640321
+        }
+      },
+      "http_req_receiving": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 0.2837139849281597,
+          "med": 0,
+          "p(95)": 1.0092,
+          "p(99)": 2.263825999999985,
+          "max": 52.2521
+        }
+      },
+      "data_sent": {
+        "type": "counter",
+        "contains": "data",
+        "values": {
+          "rate": 414132.51535379444,
+          "count": 24855755
+        }
+      },
+      "http_req_connecting": {
+        "values": {
+          "p(95)": 0,
+          "p(99)": 1.0511979999999994,
+          "max": 15.6398,
+          "avg": 0.03577313154734791,
+          "med": 0
+        },
+        "type": "trend",
+        "contains": "time"
+      },
+      "accepted_ms": {
+        "values": {
+          "avg": 35.819786047888805,
+          "med": 3.75145,
+          "p(95)": 16.639489999999817,
+          "p(99)": 1064.0680170000005,
+          "max": 1572.7488
+        },
+        "type": "trend",
+        "contains": "time"
+      },
+      "iteration_duration": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 49.099440161897796,
+          "med": 4.10985,
+          "p(95)": 365.08942499999984,
+          "p(99)": 1008.8168049999964,
+          "max": 1574.7219
+        }
+      },
+      "http_req_duration": {
+        "contains": "time",
+        "values": {
+          "avg": 48.767296408015774,
+          "med": 3.95345,
+          "p(95)": 364.98182999999693,
+          "p(99)": 1008.2929039999954,
+          "max": 1572.7488
+        },
+        "type": "trend"
+      },
+      "data_received": {
+        "type": "counter",
+        "contains": "data",
+        "values": {
+          "count": 26331789,
+          "rate": 438725.3580643749
+        }
+      },
+      "start_epoch_ms": {
+        "values": {
+          "min": 1791961440066,
+          "max": 1791961440066,
+          "value": 1791961440066
+        },
+        "type": "gauge",
+        "contains": "default"
+      },
+      "http_req_tls_handshaking": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "p(95)": 0,
+          "p(99)": 0,
+          "max": 0,
+          "avg": 0,
+          "med": 0
+        }
+      },
+      "http_reqs": {
+        "values": {
+          "count": 48302,
+          "rate": 804.7805732161014
+        },
+        "type": "counter",
+        "contains": "default"
+      },
+      "http_req_failed": {
+        "contains": "default",
+        "values": {
+          "rate": 0,
+          "passes": 0,
+          "fails": 48302
+        },
+        "type": "rate"
+      },
+      "accepted": {
+        "values": {
+          "count": 23638,
+          "rate": 393.8429710919259
+        },
+        "type": "counter",
+        "contains": "default"
+      },
+      "normal_accepted": {
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 301,
+          "rate": 5.015091560143401
+        }
+      },
+      "normal_accepted_ms": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 167.92673455149503,
+          "med": 52.2701,
+          "p(95)": 744.536,
+          "p(99)": 1048.2776,
+          "max": 1534.6327
+        }
+      },
+      "http_req_waiting": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "p(95)": 363.9247899999973,
+          "p(99)": 1007.6765959999956,
+          "max": 1572.7488,
+          "avg": 48.44236078216136,
+          "med": 3.73825
+        }
+      },
+      "iterations": {
+        "type": "counter",
+        "contains": "default",
+        "values": {
+          "count": 48302,
+          "rate": 804.7805732161014
+        }
+      },
+      "http_req_blocked": {
+        "type": "trend",
+        "contains": "time",
+        "values": {
+          "avg": 0.04627652478158258,
+          "med": 0,
+          "p(95)": 0,
+          "p(99)": 1.131260999999992,
+          "max": 26.3262
+        }
+      },
+      "vus": {
+        "values": {
+          "min": 0,
+          "max": 790,
+          "value": 3
+        },
+        "type": "gauge",
+        "contains": "default"
+      }
+    },
+    "root_group": {
+      "name": "",
+      "path": "",
+      "id": "d41d8cd98f00b204e9800998ecf8427e",
+      "groups": [],
+      "checks": []
+    },
+    "options": {
+      "summaryTrendStats": [
+        "avg",
+        "med",
+        "p(95)",
+        "p(99)",
+        "max"
+      ],
+      "summaryTimeUnit": "",
+      "noColor": true
+    },
+    "state": {
+      "isStdOutTTY": false,
+      "isStdErrTTY": false,
+      "testRunDurationMs": 60018.8444
+    }
+  },
+  "client": {
+    "host": "local-development-machine",
+    "independentVerified": false,
+    "mode": "same-machine"
+  },
+  "server": {
+    "host": "local-development-machine",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "logicalCpus": 20,
+    "memoryBytes": 34071240704
+  },
+  "stageTimings": [],
+  "workload": {
+    "NORMAL_RATE": "5",
+    "NORMAL_ONLY": "0",
+    "NORMAL_MODE": "async"
+  },
+  "loadScriptSha256": "ae4be0f39dd187f00d730ddcdfb72701f5df4cb7127e4e856694d2bf5d55613f",
+  "acceptanceVerdict": {
+    "validLoad": true,
+    "actual800TpsPassed": false,
+    "independentClient": false,
+    "droppedIterations": 0,
+    "unknownRequests": 0,
+    "seckillAcceptance": {
+      "avg": 35.819786047888805,
+      "med": 3.75145,
+      "p(95)": 16.639489999999817,
+      "p(99)": 1064.0680170000005,
+      "max": 1572.7488
+    },
+    "normalAcceptance": {
+      "avg": 167.92673455149503,
+      "med": 52.2701,
+      "p(95)": 744.536,
+      "p(99)": 1048.2776,
+      "max": 1534.6327
+    },
+    "rejectionCount": 24363,
+    "normalRejected": 0
+  },
+  "creationWait": {
+    "normal": {
+      "commitsObserved": 301.0,
+      "averageMs": 363.1528239202658,
+      "rollingP95Ms": 1138.7535360000002,
+      "p95Scope": "Meter rolling window; mean and count use run counter deltas"
+    },
+    "seckill": {
+      "commitsObserved": 23638.0,
+      "averageMs": 1084.6379135290633,
+      "rollingP95Ms": 2071.986176,
+      "p95Scope": "Meter rolling window; mean and count use run counter deltas"
+    }
+  }
+}

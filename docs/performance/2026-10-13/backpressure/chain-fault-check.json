@@ -1,0 +1,9 @@
+{
+  "activityId": 6,
+  "unroutableConfirmedMessagesNotMarkedSuccessful": true,
+  "threeRetriesPersistedBeforeBindingRestored": true,
+  "outstandingRetainedDuringOutage": 3,
+  "createdAfterRestore": 3,
+  "mysqlStock": 7,
+  "outstandingAfterRecovery": 0
+}

@@ -1,0 +1,577 @@
+[
+  {
+    "service": "account-service",
+    "method": "POST",
+    "path": "/admin/employee/login"
+  },
+  {
+    "service": "account-service",
+    "method": "POST",
+    "path": "/admin/employee/logout"
+  },
+  {
+    "service": "account-service",
+    "method": "POST",
+    "path": "/admin/employee"
+  },
+  {
+    "service": "account-service",
+    "method": "GET",
+    "path": "/admin/employee/page"
+  },
+  {
+    "service": "account-service",
+    "method": "POST",
+    "path": "/admin/employee/status/{status}"
+  },
+  {
+    "service": "account-service",
+    "method": "GET",
+    "path": "/admin/employee/{id}"
+  },
+  {
+    "service": "account-service",
+    "method": "PUT",
+    "path": "/admin/employee"
+  },
+  {
+    "service": "account-service",
+    "method": "PUT",
+    "path": "/admin/employee/editPassword"
+  },
+  {
+    "service": "account-service",
+    "method": "GET",
+    "path": "/user/addressBook/list"
+  },
+  {
+    "service": "account-service",
+    "method": "POST",
+    "path": "/user/addressBook"
+  },
+  {
+    "service": "account-service",
+    "method": "GET",
+    "path": "/user/addressBook/{id}"
+  },
+  {
+    "service": "account-service",
+    "method": "PUT",
+    "path": "/user/addressBook"
+  },
+  {
+    "service": "account-service",
+    "method": "PUT",
+    "path": "/user/addressBook/default"
+  },
+  {
+    "service": "account-service",
+    "method": "DELETE",
+    "path": "/user/addressBook"
+  },
+  {
+    "service": "account-service",
+    "method": "GET",
+    "path": "/user/addressBook/default"
+  },
+  {
+    "service": "account-service",
+    "method": "POST",
+    "path": "/user/user/login"
+  },
+  {
+    "service": "account-service",
+    "method": "POST",
+    "path": "/user/user/logout"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/category"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/category/page"
+  },
+  {
+    "service": "catalog-service",
+    "method": "DELETE",
+    "path": "/admin/category"
+  },
+  {
+    "service": "catalog-service",
+    "method": "PUT",
+    "path": "/admin/category"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/category/status/{status}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/category/list"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/common/upload"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/dish"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/dish/page"
+  },
+  {
+    "service": "catalog-service",
+    "method": "DELETE",
+    "path": "/admin/dish"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/dish/{id}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "PUT",
+    "path": "/admin/dish"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/dish/status/{status}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/dish/list"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/cache/stats"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/restaurant"
+  },
+  {
+    "service": "catalog-service",
+    "method": "PUT",
+    "path": "/admin/restaurant"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/restaurant/page"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/restaurant/campus-zones"
+  },
+  {
+    "service": "catalog-service",
+    "method": "PUT",
+    "path": "/admin/restaurant/{id}/status"
+  },
+  {
+    "service": "catalog-service",
+    "method": "DELETE",
+    "path": "/admin/restaurant/{id}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/setmeal"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/setmeal/page"
+  },
+  {
+    "service": "catalog-service",
+    "method": "DELETE",
+    "path": "/admin/setmeal"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/admin/setmeal/{id}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "PUT",
+    "path": "/admin/setmeal"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/admin/setmeal/status/{status}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/dishes/{fileName:.+}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/setmeals/{fileName:.+}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "POST",
+    "path": "/internal/catalog/quotes"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/category/list"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/dish/list"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/restaurants"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/restaurants/{restaurantId}"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/restaurants/{restaurantId}/categories"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/restaurants/{restaurantId}/dishes"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/restaurants/{restaurantId}/setmeals"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/setmeal/list"
+  },
+  {
+    "service": "catalog-service",
+    "method": "GET",
+    "path": "/user/setmeal/dish/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/order/conditionSearch"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/order/statistics"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/order/details/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/order/confirm"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/order/rejection"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/order/cancel"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/order/delivery/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/order/complete/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/order/reliability/failures"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/admin/order/reliability/replay"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/report/turnoverStatistics"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/report/userStatistics"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/report/ordersStatistics"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/report/top10"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/seckill/activity/{activityId}/stock"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/admin/seckill/activity/{activityId}/warm-up"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/seckill/activity"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/admin/seckill/activity"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/seckill/activity"
+  },
+  {
+    "service": "trade-service",
+    "method": "DELETE",
+    "path": "/admin/seckill/activity/{activityId}"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/admin/shop/{status}"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/shop/status"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/workspace/businessData"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/workspace/overviewOrders"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/workspace/overviewDishes"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/workspace/overviewSetmeals"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/internal/trade/orders/count"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/notify/paySuccess"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/user/coupon/receive"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/order/seckill/result"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/user/order/seckill/submit"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/user/order/submit"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/order/submit-result"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/order/checkout"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/user/order/payment"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/user/order/payment/mock/confirm"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/order/historyOrders"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/order/orderDetail/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/user/order/cancel/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "DELETE",
+    "path": "/user/order/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/user/order/repetition/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/order/reminder/{id}"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/red-packet/package"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/user/red-packet/purchase-orders"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/user/red-packet/purchase-orders/payment"
+  },
+  {
+    "service": "trade-service",
+    "method": "PUT",
+    "path": "/user/red-packet/purchase-orders/payment/mock/confirm"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/red-packet/my"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/seckill/activity/list"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/shop/status"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/user/shoppingCart/add"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/user/shoppingCart/sub"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/user/shoppingCart/list"
+  },
+  {
+    "service": "trade-service",
+    "method": "DELETE",
+    "path": "/user/shoppingCart/clean"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/payment/recovery/failures"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/admin/payment/recovery/replay"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/admin/payment/reconciliation/download"
+  },
+  {
+    "service": "trade-service",
+    "method": "POST",
+    "path": "/admin/payment/reconciliation/import"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/payment/reconciliation/runs"
+  },
+  {
+    "service": "trade-service",
+    "method": "GET",
+    "path": "/admin/payment/reconciliation/differences"
+  }
+]

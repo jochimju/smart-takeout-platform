@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 @Component
 public class MenuCache {
     private static final String DISH_CACHE_VERSION_KEY = "dish:cache:version";
+    private static final String SETMEAL_CACHE_VERSION_KEY = "setmeal:cache:version";
     private final RedisTemplate redis;
     private final RedisCacheLock lock;
     private final MenuCacheMetrics metrics;
@@ -31,20 +32,26 @@ public class MenuCache {
     }
     /** O(1) logical invalidation: old, versioned entries expire naturally. */
     public void invalidateDishes() {
-        cacheVersion(); // Migrate legacy Java-serialized values before Redis INCR.
+        incrementVersion(DISH_CACHE_VERSION_KEY);
+    }
+    public void invalidateSetmeals() {
+        incrementVersion(SETMEAL_CACHE_VERSION_KEY);
+    }
+    private void incrementVersion(String versionKey) {
+        cacheVersion(versionKey);
         redis.execute((RedisCallback<Long>) connection ->
-                connection.stringCommands().incr(DISH_CACHE_VERSION_KEY.getBytes(StandardCharsets.UTF_8)));
+                connection.stringCommands().incr(versionKey.getBytes(StandardCharsets.UTF_8)));
     }
     public void invalidateAll() {
         invalidateDishes();
-        java.util.Set<String> keys = redis.keys("userSetmealCache::*");
-        if (keys != null && !keys.isEmpty()) redis.delete(keys);
+        invalidateSetmeals();
     }
     private <T> List<T> query(String kind, Long categoryId, Supplier<List<T>> loader, boolean warm) {
+        if (Thread.currentThread().isInterrupted()) throw new BaseException("菜单查询已中断，请稍后重试");
         if (categoryId == null || !("dish".equals(kind) || "setmeal".equals(kind))) {
             throw new BaseException("请选择有效的菜单分类");
         }
-        String key = "dish".equals(kind) ? dishKey(categoryId) : "userSetmealCache::" + categoryId;
+        String key = "dish".equals(kind) ? dishKey(categoryId) : setmealKey(categoryId);
         metrics.increment(kind, warm ? "warmups" : "requests");
         boolean first = true;
         boolean contended = false;
@@ -89,14 +96,17 @@ public class MenuCache {
         }
     }
     private String dishKey(Long categoryId) {
-        return "dish:v" + cacheVersion() + ":" + categoryId;
+        return "dish:v" + cacheVersion(DISH_CACHE_VERSION_KEY) + ":" + categoryId;
+    }
+    private String setmealKey(Long categoryId) {
+        return "setmeal:v" + cacheVersion(SETMEAL_CACHE_VERSION_KEY) + ":" + categoryId;
     }
     /**
      * Cache payloads use Java serialization, but this counter must be a Redis-native integer for INCR.
      * A non-numeric legacy value is safe to reset because it only versions disposable cache entries.
      */
-    private long cacheVersion() {
-        byte[] key = DISH_CACHE_VERSION_KEY.getBytes(StandardCharsets.UTF_8);
+    private long cacheVersion(String versionKey) {
+        byte[] key = versionKey.getBytes(StandardCharsets.UTF_8);
         byte[] value = (byte[]) redis.execute((RedisCallback<byte[]>) connection -> connection.stringCommands().get(key));
         if (value == null) {
             redis.execute((RedisCallback<Boolean>) connection -> connection.stringCommands().setNX(key, "1".getBytes(StandardCharsets.UTF_8)));

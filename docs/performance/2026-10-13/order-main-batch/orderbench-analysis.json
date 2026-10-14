@@ -1,0 +1,1784 @@
+{
+  "base2": {
+    "completed": 25024,
+    "rejected": 22977,
+    "dropped": 0,
+    "jdbcCallsPerOrder": 2.2560342071611252,
+    "seckillP95Ms": 2005,
+    "normalSubmitP95Ms": 93.2205,
+    "normalReadyP95Ms": 1095,
+    "ordinaryCompleted": 301,
+    "resource": {
+      "sampleSeconds": 51.99081301689148,
+      "actualCreatedPerSecond": 416.7851730450894,
+      "hostCpuAvg": 37.48888888888889,
+      "hostCpuMax": 50.1,
+      "testLockWaitersMax": 2,
+      "testDbConnectionsMax": 8,
+      "testDbQueriesMax": 5,
+      "testTransactionsMax": 5,
+      "observerMedianMs": 32.000000000152795,
+      "observerMaxMs": 47.000000000025466,
+      "poolMetricsAvailable": false,
+      "processMeanCores": {
+        "trade": 1.8182962962962963,
+        "account": 0.18955555555555556,
+        "catalog": 0.1889259259259259,
+        "redis": 0.16725925925925927,
+        "mysql": 0.8845925925925926,
+        "k6": 0.7354074074074074
+      },
+      "mysqlStatusStart": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 13016,
+        "Innodb_data_written": 632135680,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 24715,
+        "Innodb_row_lock_waits": 1479,
+        "Threads_connected": 15,
+        "Threads_running": 2
+      },
+      "mysqlStatusEnd": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 19698,
+        "Innodb_data_written": 1030412800,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 38777,
+        "Innodb_row_lock_waits": 2611,
+        "Threads_connected": 15,
+        "Threads_running": 4
+      },
+      "mysqlStatusDelta": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 6682,
+        "Innodb_data_written": 398277120,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 14062,
+        "Innodb_row_lock_waits": 1132,
+        "Threads_connected": 0,
+        "Threads_running": 2
+      },
+      "mysqlThreadsRunningMax": 7,
+      "hostDiskDelta": {
+        "read_count": 748,
+        "write_count": 33273,
+        "read_bytes": 33205760,
+        "write_bytes": 980299776,
+        "read_time": 0,
+        "write_time": 2
+      }
+    },
+    "phases": [
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "accept_insert",
+        "count": 419,
+        "sumSeconds": 1.2714813,
+        "avgMs": 3.034561575178998
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "activity_lock",
+        "count": 419,
+        "sumSeconds": 5.0990499,
+        "avgMs": 12.169570167064439
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "body",
+        "count": 419,
+        "sumSeconds": 8.5878681,
+        "avgMs": 20.496105250596656
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "command_outbox",
+        "count": 419,
+        "sumSeconds": 1.5434508999999998,
+        "avgMs": 3.683653699284009
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "commit_window",
+        "count": 419,
+        "sumSeconds": 3.6090824999999995,
+        "avgMs": 8.613562052505966
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_false",
+        "count": 419,
+        "sumSeconds": 0.060826000000000005,
+        "avgMs": 0.1451694510739857
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_true",
+        "count": 419,
+        "sumSeconds": 0.0681663,
+        "avgMs": 0.16268806682577563
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_commit",
+        "count": 419,
+        "sumSeconds": 3.6022188999999996,
+        "avgMs": 8.597181145584724
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_insert",
+        "count": 419,
+        "sumSeconds": 2.2312228000000003,
+        "avgMs": 5.3251140811455855
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_select",
+        "count": 419,
+        "sumSeconds": 5.603398400000001,
+        "avgMs": 13.37326587112172
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_sql",
+        "count": 419,
+        "sumSeconds": 7.8346212,
+        "avgMs": 18.698379952267302
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "total",
+        "count": 419,
+        "sumSeconds": 12.3502029,
+        "avgMs": 29.475424582338903
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_cleanup",
+        "count": 419,
+        "sumSeconds": 0.0720231,
+        "avgMs": 0.1718928400954654
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_setup",
+        "count": 419,
+        "sumSeconds": 0.07167,
+        "avgMs": 0.17105011933174225
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "activity_lock",
+        "count": 3143,
+        "sumSeconds": 7.9132728,
+        "avgMs": 2.5177450843143494
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "body",
+        "count": 3143,
+        "sumSeconds": 36.4779957,
+        "avgMs": 11.60610744511613
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "commit_window",
+        "count": 3143,
+        "sumSeconds": 23.4492453,
+        "avgMs": 7.46078437798282
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "details",
+        "count": 3143,
+        "sumSeconds": 1.9555002,
+        "avgMs": 0.6221763283487114
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "guard_insert",
+        "count": 3143,
+        "sumSeconds": 2.1471286,
+        "avgMs": 0.683146229716831
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_false",
+        "count": 3143,
+        "sumSeconds": 0.41672839999999994,
+        "avgMs": 0.13258937321030861
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_true",
+        "count": 3143,
+        "sumSeconds": 0.4592965,
+        "avgMs": 0.14613315303849825
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_commit",
+        "count": 3143,
+        "sumSeconds": 23.4000239,
+        "avgMs": 7.44512373528476
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_insert",
+        "count": 3143,
+        "sumSeconds": 18.801297499999997,
+        "avgMs": 5.98195911549475
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_select",
+        "count": 3143,
+        "sumSeconds": 8.6231669,
+        "avgMs": 2.7436102131721287
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_sql",
+        "count": 3143,
+        "sumSeconds": 30.683765899999997,
+        "avgMs": 9.762572669424117
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_update",
+        "count": 3143,
+        "sumSeconds": 3.2593015000000003,
+        "avgMs": 1.0370033407572385
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "order_insert",
+        "count": 3143,
+        "sumSeconds": 11.558568699999999,
+        "avgMs": 3.677559242761692
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "request_lock",
+        "count": 3143,
+        "sumSeconds": 1.2854779,
+        "avgMs": 0.4089971046770602
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "reservation",
+        "count": 3143,
+        "sumSeconds": 2.2626225,
+        "avgMs": 0.7198926185173401
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "stock_update",
+        "count": 3143,
+        "sumSeconds": 1.5358052999999998,
+        "avgMs": 0.4886431116767419
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "success_state",
+        "count": 3143,
+        "sumSeconds": 5.1914445,
+        "avgMs": 1.651748170537703
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "timeout_outbox",
+        "count": 3143,
+        "sumSeconds": 2.4490125999999997,
+        "avgMs": 0.7791958638243714
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "total",
+        "count": 3143,
+        "sumSeconds": 139.9085356,
+        "avgMs": 44.51432885777919
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_cleanup",
+        "count": 3143,
+        "sumSeconds": 0.5023693,
+        "avgMs": 0.15983751193127585
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_setup",
+        "count": 3143,
+        "sumSeconds": 79.4168254,
+        "avgMs": 25.26784136175628
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "writer_gate_wait",
+        "count": 3143,
+        "sumSeconds": 78.8881716,
+        "avgMs": 25.099640979955456
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "address",
+        "count": 3143,
+        "sumSeconds": 16.5467788,
+        "avgMs": 5.2646448615972
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_select",
+        "count": 3143,
+        "sumSeconds": 1.0550768000000001,
+        "avgMs": 0.3356909958638244
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_sql",
+        "count": 3143,
+        "sumSeconds": 1.0550768000000001,
+        "avgMs": 0.3356909958638244
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "quote",
+        "count": 3143,
+        "sumSeconds": 16.6476703,
+        "avgMs": 5.2967452433980275
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "snapshot",
+        "count": 3143,
+        "sumSeconds": 1.2890256,
+        "avgMs": 0.41012586700604514
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "total",
+        "count": 3143,
+        "sumSeconds": 34.6257102,
+        "avgMs": 11.016770664969775
+      }
+    ]
+  },
+  "base4": {
+    "completed": 9712,
+    "rejected": 20287,
+    "dropped": 0,
+    "jdbcCallsPerOrder": 2.3885914332784184,
+    "seckillP95Ms": 34199.99999999998,
+    "normalSubmitP95Ms": 277.66767999999905,
+    "normalReadyP95Ms": 1369.6999999999996,
+    "ordinaryCompleted": 179,
+    "resource": {
+      "sampleSeconds": 52.00020623207092,
+      "actualCreatedPerSecond": 151.4417070742909,
+      "hostCpuAvg": 81.16296296296296,
+      "hostCpuMax": 96.6,
+      "testLockWaitersMax": 6,
+      "testDbConnectionsMax": 8,
+      "testDbQueriesMax": 8,
+      "testTransactionsMax": 7,
+      "observerMedianMs": 77.99999999997453,
+      "observerMaxMs": 172.00000000002547,
+      "poolMetricsAvailable": false,
+      "processMeanCores": {
+        "trade": 6.083592592592593,
+        "account": 1.0857037037037036,
+        "catalog": 0.15548148148148147,
+        "redis": 0.11607407407407407,
+        "mysql": 1.0524074074074075,
+        "k6": 0.7997037037037037
+      },
+      "mysqlStatusStart": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 27977,
+        "Innodb_data_written": 1339072512,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 68655,
+        "Innodb_row_lock_waits": 3548,
+        "Threads_connected": 20,
+        "Threads_running": 4
+      },
+      "mysqlStatusEnd": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 31699,
+        "Innodb_data_written": 1529008128,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 103653,
+        "Innodb_row_lock_waits": 5329,
+        "Threads_connected": 20,
+        "Threads_running": 2
+      },
+      "mysqlStatusDelta": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 3722,
+        "Innodb_data_written": 189935616,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 34998,
+        "Innodb_row_lock_waits": 1781,
+        "Threads_connected": 0,
+        "Threads_running": -2
+      },
+      "mysqlThreadsRunningMax": 10,
+      "hostDiskDelta": {
+        "read_count": 1105,
+        "write_count": 23271,
+        "read_bytes": 67827712,
+        "write_bytes": 705978880,
+        "read_time": 0,
+        "write_time": 1
+      },
+      "innodbIoDelta": {
+        "wait/io/file/innodb/innodb_dblwr_file": {
+          "writes": 1474,
+          "writeTimerPs": 454167375180,
+          "misc": 0,
+          "miscTimerPs": 0,
+          "avgWriteMs": 0.30811897909090913,
+          "avgMiscMs": null
+        },
+        "wait/io/file/innodb/innodb_data_file": {
+          "writes": 5891,
+          "writeTimerPs": 297064279405,
+          "misc": 3722,
+          "miscTimerPs": 23792171734605,
+          "avgWriteMs": 0.05042680010269903,
+          "avgMiscMs": 6.39230836502015
+        },
+        "wait/io/file/innodb/innodb_log_file": {
+          "writes": 20001,
+          "writeTimerPs": 779455016990,
+          "misc": 182,
+          "miscTimerPs": 356307089755,
+          "avgWriteMs": 0.03897080230938453,
+          "avgMiscMs": 1.9577312623901097
+        },
+        "wait/io/file/innodb/innodb_temp_file": {
+          "writes": 20,
+          "writeTimerPs": 1211910070,
+          "misc": 0,
+          "miscTimerPs": 0,
+          "avgWriteMs": 0.0605955035,
+          "avgMiscMs": null
+        }
+      }
+    },
+    "phases": [
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "accept_insert",
+        "count": 224,
+        "sumSeconds": 0.8729170000000002,
+        "avgMs": 3.8969508928571437
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "activity_lock",
+        "count": 224,
+        "sumSeconds": 5.0477062,
+        "avgMs": 22.534402678571432
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "body",
+        "count": 224,
+        "sumSeconds": 7.546211700000001,
+        "avgMs": 33.688445089285715
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "command_outbox",
+        "count": 224,
+        "sumSeconds": 1.1271626,
+        "avgMs": 5.031975892857142
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "commit_window",
+        "count": 224,
+        "sumSeconds": 2.2801321000000003,
+        "avgMs": 10.179161160714287
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_false",
+        "count": 224,
+        "sumSeconds": 0.0588519,
+        "avgMs": 0.2627316964285714
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_true",
+        "count": 224,
+        "sumSeconds": 0.06336839999999999,
+        "avgMs": 0.28289464285714283
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_commit",
+        "count": 224,
+        "sumSeconds": 2.2728710999999997,
+        "avgMs": 10.146745982142857
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_insert",
+        "count": 224,
+        "sumSeconds": 1.5897401999999998,
+        "avgMs": 7.097054464285713
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_select",
+        "count": 224,
+        "sumSeconds": 5.3872172,
+        "avgMs": 24.050076785714285
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_sql",
+        "count": 224,
+        "sumSeconds": 6.976957400000001,
+        "avgMs": 31.147131250000005
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "total",
+        "count": 224,
+        "sumSeconds": 9.975845199999998,
+        "avgMs": 44.53502321428571
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_cleanup",
+        "count": 224,
+        "sumSeconds": 0.06751940000000001,
+        "avgMs": 0.3014258928571429
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_setup",
+        "count": 224,
+        "sumSeconds": 0.0718589,
+        "avgMs": 0.32079866071428575
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "activity_lock",
+        "count": 1345,
+        "sumSeconds": 6.110058199999999,
+        "avgMs": 4.542794200743494
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "body",
+        "count": 1345,
+        "sumSeconds": 26.3074789,
+        "avgMs": 19.559463866171
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "commit_window",
+        "count": 1345,
+        "sumSeconds": 10.7605044,
+        "avgMs": 8.000375018587361
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "details",
+        "count": 1345,
+        "sumSeconds": 1.4955966,
+        "avgMs": 1.1119677323420074
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "guard_insert",
+        "count": 1345,
+        "sumSeconds": 1.5725623000000002,
+        "avgMs": 1.169191301115242
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_false",
+        "count": 1345,
+        "sumSeconds": 0.33328800000000003,
+        "avgMs": 0.24779776951672863
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_true",
+        "count": 1345,
+        "sumSeconds": 0.37033699999999997,
+        "avgMs": 0.2753434944237918
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_commit",
+        "count": 1345,
+        "sumSeconds": 10.7233905,
+        "avgMs": 7.972781040892194
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_insert",
+        "count": 1345,
+        "sumSeconds": 13.080307,
+        "avgMs": 9.72513531598513
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_select",
+        "count": 1345,
+        "sumSeconds": 6.5777895,
+        "avgMs": 4.890549814126394
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_sql",
+        "count": 1345,
+        "sumSeconds": 22.0303302,
+        "avgMs": 16.379427657992565
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_update",
+        "count": 1345,
+        "sumSeconds": 2.3722337,
+        "avgMs": 1.7637425278810408
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "order_insert",
+        "count": 1345,
+        "sumSeconds": 8.369431500000001,
+        "avgMs": 6.222625650557621
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "request_lock",
+        "count": 1345,
+        "sumSeconds": 0.8742380999999999,
+        "avgMs": 0.6499911524163569
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "reservation",
+        "count": 1345,
+        "sumSeconds": 1.5631795999999998,
+        "avgMs": 1.1622153159851298
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "stock_update",
+        "count": 1345,
+        "sumSeconds": 1.0893378999999999,
+        "avgMs": 0.8099166542750927
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "success_state",
+        "count": 1345,
+        "sumSeconds": 3.3239737000000003,
+        "avgMs": 2.4713559107806695
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "timeout_outbox",
+        "count": 1345,
+        "sumSeconds": 1.7984746,
+        "avgMs": 1.3371558364312268
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "total",
+        "count": 1345,
+        "sumSeconds": 82.3634313,
+        "avgMs": 61.23675189591078
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_cleanup",
+        "count": 1345,
+        "sumSeconds": 0.40038440000000003,
+        "avgMs": 0.2976835687732342
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_setup",
+        "count": 1345,
+        "sumSeconds": 44.8541246,
+        "avgMs": 33.348791524163566
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "writer_gate_wait",
+        "count": 1345,
+        "sumSeconds": 44.3979681,
+        "avgMs": 33.00964171003717
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "address",
+        "count": 1345,
+        "sumSeconds": 6.9333841,
+        "avgMs": 5.154932416356877
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_select",
+        "count": 1345,
+        "sumSeconds": 0.6731441,
+        "avgMs": 0.5004788847583643
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_sql",
+        "count": 1345,
+        "sumSeconds": 0.6731441,
+        "avgMs": 0.5004788847583643
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "quote",
+        "count": 1345,
+        "sumSeconds": 9.0023614,
+        "avgMs": 6.693205501858736
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "snapshot",
+        "count": 1345,
+        "sumSeconds": 0.9420951,
+        "avgMs": 0.7004424535315985
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "total",
+        "count": 1345,
+        "sumSeconds": 17.0078976,
+        "avgMs": 12.645277026022304
+      },
+      {
+        "operation": "prepare",
+        "outcome": "error",
+        "phase": "address",
+        "count": 267,
+        "sumSeconds": 16.1370614,
+        "avgMs": 60.43843220973783
+      },
+      {
+        "operation": "prepare",
+        "outcome": "error",
+        "phase": "jdbc_select",
+        "count": 287,
+        "sumSeconds": 0.2178591,
+        "avgMs": 0.7590909407665506
+      },
+      {
+        "operation": "prepare",
+        "outcome": "error",
+        "phase": "jdbc_sql",
+        "count": 287,
+        "sumSeconds": 0.2178591,
+        "avgMs": 0.7590909407665506
+      },
+      {
+        "operation": "prepare",
+        "outcome": "error",
+        "phase": "quote",
+        "count": 287,
+        "sumSeconds": 6.5170771,
+        "avgMs": 22.707585714285713
+      },
+      {
+        "operation": "prepare",
+        "outcome": "error",
+        "phase": "snapshot",
+        "count": 287,
+        "sumSeconds": 0.2495727,
+        "avgMs": 0.8695912891986063
+      },
+      {
+        "operation": "prepare",
+        "outcome": "error",
+        "phase": "total",
+        "count": 287,
+        "sumSeconds": 22.9277552,
+        "avgMs": 79.88764878048781
+      }
+    ]
+  },
+  "base5": {
+    "completed": 18278,
+    "rejected": 29723,
+    "dropped": 0,
+    "jdbcCallsPerOrder": 2.264470948681475,
+    "seckillP95Ms": 3118,
+    "normalSubmitP95Ms": 650.5715,
+    "normalReadyP95Ms": 1934,
+    "ordinaryCompleted": 301,
+    "resource": {
+      "sampleSeconds": 52.034873962402344,
+      "actualCreatedPerSecond": 307.0440799288596,
+      "hostCpuAvg": 65.0037037037037,
+      "hostCpuMax": 83.4,
+      "testLockWaitersMax": 2,
+      "testDbConnectionsMax": 8,
+      "testDbQueriesMax": 8,
+      "testTransactionsMax": 8,
+      "observerMedianMs": 47.000000000025466,
+      "observerMaxMs": 1952.9999999999745,
+      "poolMetricsAvailable": false,
+      "processMeanCores": {
+        "trade": 3.8123703703703704,
+        "account": 1.5444444444444445,
+        "catalog": 0.22162962962962962,
+        "redis": 0.1842962962962963,
+        "mysql": 1.5052592592592593,
+        "k6": 0.9588518518518518
+      },
+      "mysqlStatusStart": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 36804,
+        "Innodb_data_written": 1736308736,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 121898,
+        "Innodb_row_lock_waits": 6493,
+        "Threads_connected": 20,
+        "Threads_running": 2
+      },
+      "mysqlStatusEnd": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 42111,
+        "Innodb_data_written": 2042348032,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 137907,
+        "Innodb_row_lock_waits": 7383,
+        "Threads_connected": 20,
+        "Threads_running": 5
+      },
+      "mysqlStatusDelta": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 5307,
+        "Innodb_data_written": 306039296,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 16009,
+        "Innodb_row_lock_waits": 890,
+        "Threads_connected": 0,
+        "Threads_running": 3
+      },
+      "mysqlThreadsRunningMax": 11,
+      "hostDiskDelta": {
+        "read_count": 1746,
+        "write_count": 29900,
+        "read_bytes": 31036416,
+        "write_bytes": 1004974592,
+        "read_time": 1,
+        "write_time": 1
+      },
+      "innodbIoDelta": {
+        "wait/io/file/innodb/innodb_dblwr_file": {
+          "writes": 2067,
+          "writeTimerPs": 477976837550,
+          "misc": 0,
+          "miscTimerPs": 0,
+          "avgWriteMs": 0.23124181787614903,
+          "avgMiscMs": null
+        },
+        "wait/io/file/innodb/innodb_data_file": {
+          "writes": 8313,
+          "writeTimerPs": 344497946130,
+          "misc": 5306,
+          "miscTimerPs": 30528517198810,
+          "avgWriteMs": 0.04144086925658607,
+          "avgMiscMs": 5.753584093254806
+        },
+        "wait/io/file/innodb/innodb_log_file": {
+          "writes": 29689,
+          "writeTimerPs": 717413612955,
+          "misc": 415,
+          "miscTimerPs": 562270654775,
+          "avgWriteMs": 0.024164290240661523,
+          "avgMiscMs": 1.3548690476506025
+        },
+        "wait/io/file/innodb/innodb_temp_file": {
+          "writes": 21,
+          "writeTimerPs": 871071355,
+          "misc": 0,
+          "miscTimerPs": 0,
+          "avgWriteMs": 0.04147958833333333,
+          "avgMiscMs": null
+        }
+      }
+    },
+    "phases": [
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "accept_insert",
+        "count": 354,
+        "sumSeconds": 1.299754,
+        "avgMs": 3.671621468926554
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "activity_lock",
+        "count": 354,
+        "sumSeconds": 5.878242299999999,
+        "avgMs": 16.60520423728813
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "body",
+        "count": 354,
+        "sumSeconds": 9.4332496,
+        "avgMs": 26.647597740112992
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "command_outbox",
+        "count": 354,
+        "sumSeconds": 1.5568902999999998,
+        "avgMs": 4.397995197740112
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "commit_window",
+        "count": 354,
+        "sumSeconds": 5.238732300000001,
+        "avgMs": 14.798678813559324
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_false",
+        "count": 354,
+        "sumSeconds": 0.0735131,
+        "avgMs": 0.2076641242937853
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_true",
+        "count": 354,
+        "sumSeconds": 0.07445370000000001,
+        "avgMs": 0.210321186440678
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_commit",
+        "count": 354,
+        "sumSeconds": 5.2266181,
+        "avgMs": 14.764457909604518
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_insert",
+        "count": 354,
+        "sumSeconds": 2.2325991,
+        "avgMs": 6.306777118644067
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_select",
+        "count": 354,
+        "sumSeconds": 6.3789667,
+        "avgMs": 18.019679943502826
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_sql",
+        "count": 354,
+        "sumSeconds": 8.6115658,
+        "avgMs": 24.32645706214689
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "total",
+        "count": 354,
+        "sumSeconds": 14.9184537,
+        "avgMs": 42.142524576271185
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_cleanup",
+        "count": 354,
+        "sumSeconds": 0.07999990000000001,
+        "avgMs": 0.2259884180790961
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_setup",
+        "count": 354,
+        "sumSeconds": 0.15588429999999998,
+        "avgMs": 0.44035112994350273
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "activity_lock",
+        "count": 2311,
+        "sumSeconds": 8.3224669,
+        "avgMs": 3.60124054521852
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "body",
+        "count": 2311,
+        "sumSeconds": 37.9580611,
+        "avgMs": 16.42495071397663
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "commit_window",
+        "count": 2311,
+        "sumSeconds": 19.3154543,
+        "avgMs": 8.358050324534833
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "details",
+        "count": 2311,
+        "sumSeconds": 2.1547322,
+        "avgMs": 0.9323808740804848
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "guard_insert",
+        "count": 2311,
+        "sumSeconds": 2.1792782,
+        "avgMs": 0.9430022501081784
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_false",
+        "count": 2311,
+        "sumSeconds": 0.4323878,
+        "avgMs": 0.18709987018606664
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_true",
+        "count": 2311,
+        "sumSeconds": 0.477281,
+        "avgMs": 0.20652574643011684
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_commit",
+        "count": 2311,
+        "sumSeconds": 19.2572851,
+        "avgMs": 8.332879749026397
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_insert",
+        "count": 2311,
+        "sumSeconds": 18.993679500000002,
+        "avgMs": 8.218814149718737
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_select",
+        "count": 2311,
+        "sumSeconds": 9.014482300000001,
+        "avgMs": 3.900684681955864
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_sql",
+        "count": 2311,
+        "sumSeconds": 31.4958939,
+        "avgMs": 13.628686239723063
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_update",
+        "count": 2311,
+        "sumSeconds": 3.4877321,
+        "avgMs": 1.509187408048464
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "order_insert",
+        "count": 2311,
+        "sumSeconds": 12.501409500000001,
+        "avgMs": 5.409523799221117
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "request_lock",
+        "count": 2311,
+        "sumSeconds": 1.2767768000000002,
+        "avgMs": 0.5524780614452618
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "reservation",
+        "count": 2311,
+        "sumSeconds": 2.3959970999999998,
+        "avgMs": 1.0367793595845953
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "stock_update",
+        "count": 2311,
+        "sumSeconds": 1.6517033,
+        "avgMs": 0.7147136737343142
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "success_state",
+        "count": 2311,
+        "sumSeconds": 4.743069,
+        "avgMs": 2.052388143660753
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "timeout_outbox",
+        "count": 2311,
+        "sumSeconds": 2.564871,
+        "avgMs": 1.1098533102553008
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "total",
+        "count": 2311,
+        "sumSeconds": 141.065273,
+        "avgMs": 61.04079316313284
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_cleanup",
+        "count": 2311,
+        "sumSeconds": 0.5273047,
+        "avgMs": 0.22817165729121588
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_setup",
+        "count": 2311,
+        "sumSeconds": 83.2035073,
+        "avgMs": 36.003248507139766
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "writer_gate_wait",
+        "count": 2311,
+        "sumSeconds": 81.18151440000001,
+        "avgMs": 35.12830566854176
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "address",
+        "count": 2311,
+        "sumSeconds": 12.0443464,
+        "avgMs": 5.211746603202077
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_select",
+        "count": 2311,
+        "sumSeconds": 0.9946438000000001,
+        "avgMs": 0.4303954132410212
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_sql",
+        "count": 2311,
+        "sumSeconds": 0.9946438000000001,
+        "avgMs": 0.4303954132410212
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "quote",
+        "count": 2311,
+        "sumSeconds": 10.6935419,
+        "avgMs": 4.627235785374297
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "snapshot",
+        "count": 2311,
+        "sumSeconds": 2.6991572,
+        "avgMs": 1.1679607096495024
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "total",
+        "count": 2311,
+        "sumSeconds": 25.5908527,
+        "avgMs": 11.073497490263955
+      }
+    ]
+  },
+  "new": {
+    "completed": 20482,
+    "rejected": 27518,
+    "dropped": 0,
+    "jdbcCallsPerOrder": 1.3968850698174007,
+    "seckillP95Ms": 3078,
+    "normalSubmitP95Ms": 601.7514350000001,
+    "normalReadyP95Ms": 1933.7000000000003,
+    "ordinaryCompleted": 300,
+    "resource": {
+      "sampleSeconds": 52.00618767738342,
+      "actualCreatedPerSecond": 356.30375590976786,
+      "hostCpuAvg": 71.43703703703703,
+      "hostCpuMax": 99.3,
+      "testLockWaitersMax": 1,
+      "testDbConnectionsMax": 8,
+      "testDbQueriesMax": 5,
+      "testTransactionsMax": 5,
+      "observerMedianMs": 47.00000000048021,
+      "observerMaxMs": 313.00000000010186,
+      "poolMetricsAvailable": false,
+      "processMeanCores": {
+        "trade": 4.188148148148148,
+        "account": 1.865,
+        "catalog": 0.28844444444444445,
+        "redis": 0.20896296296296296,
+        "mysql": 1.6006296296296296,
+        "k6": 1.0016296296296296
+      },
+      "mysqlStatusStart": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 45923,
+        "Innodb_data_written": 2186328064,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 142266,
+        "Innodb_row_lock_waits": 7615,
+        "Threads_connected": 20,
+        "Threads_running": 4
+      },
+      "mysqlStatusEnd": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 51842,
+        "Innodb_data_written": 2533611008,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 159670,
+        "Innodb_row_lock_waits": 8569,
+        "Threads_connected": 20,
+        "Threads_running": 3
+      },
+      "mysqlStatusDelta": {
+        "Innodb_buffer_pool_wait_free": 0,
+        "Innodb_data_fsyncs": 5919,
+        "Innodb_data_written": 347282944,
+        "Innodb_log_waits": 0,
+        "Innodb_row_lock_time": 17404,
+        "Innodb_row_lock_waits": 954,
+        "Threads_connected": 0,
+        "Threads_running": -1
+      },
+      "mysqlThreadsRunningMax": 7,
+      "hostDiskDelta": {
+        "read_count": 1195,
+        "write_count": 30442,
+        "read_bytes": 35791872,
+        "write_bytes": 919384064,
+        "read_time": 0,
+        "write_time": 1
+      },
+      "innodbIoDelta": {
+        "wait/io/file/innodb/innodb_dblwr_file": {
+          "writes": 2336,
+          "writeTimerPs": 597774303510,
+          "misc": 0,
+          "miscTimerPs": 0,
+          "avgWriteMs": 0.25589653403681506,
+          "avgMiscMs": null
+        },
+        "wait/io/file/innodb/innodb_data_file": {
+          "writes": 9380,
+          "writeTimerPs": 426532153180,
+          "misc": 5919,
+          "miscTimerPs": 33907189255190,
+          "avgWriteMs": 0.045472511,
+          "avgMiscMs": 5.728533410236527
+        },
+        "wait/io/file/innodb/innodb_log_file": {
+          "writes": 33451,
+          "writeTimerPs": 902200663850,
+          "misc": 491,
+          "miscTimerPs": 753487482610,
+          "avgWriteMs": 0.02697081294580132,
+          "avgMiscMs": 1.5345977242566191
+        },
+        "wait/io/file/innodb/innodb_temp_file": {
+          "writes": 18,
+          "writeTimerPs": 500449800,
+          "misc": 0,
+          "miscTimerPs": 0,
+          "avgWriteMs": 0.027802766666666662,
+          "avgMiscMs": null
+        }
+      }
+    },
+    "phases": [
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "accept_insert",
+        "count": 331,
+        "sumSeconds": 1.478901409,
+        "avgMs": 4.4679800876132925
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "activity_lock",
+        "count": 331,
+        "sumSeconds": 4.774702297,
+        "avgMs": 14.425082468277946
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "body",
+        "count": 331,
+        "sumSeconds": 9.466163102,
+        "avgMs": 28.598680066465253
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "command_outbox",
+        "count": 331,
+        "sumSeconds": 2.434743102,
+        "avgMs": 7.355719341389728
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "commit_window",
+        "count": 331,
+        "sumSeconds": 3.996989,
+        "avgMs": 12.075495468277946
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_false",
+        "count": 331,
+        "sumSeconds": 0.068210107,
+        "avgMs": 0.20607283081570998
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_auto_commit_true",
+        "count": 331,
+        "sumSeconds": 0.073383906,
+        "avgMs": 0.2217036435045317
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_commit",
+        "count": 331,
+        "sumSeconds": 3.987419391,
+        "avgMs": 12.046584262839879
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_insert",
+        "count": 331,
+        "sumSeconds": 3.1167570099999997,
+        "avgMs": 9.41618432024169
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_select",
+        "count": 331,
+        "sumSeconds": 5.325751883,
+        "avgMs": 16.0898848429003
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "jdbc_sql",
+        "count": 331,
+        "sumSeconds": 8.442508893,
+        "avgMs": 25.506069163141994
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "total",
+        "count": 331,
+        "sumSeconds": 13.977751781999999,
+        "avgMs": 42.22885734743202
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_cleanup",
+        "count": 331,
+        "sumSeconds": 0.07957289000000001,
+        "avgMs": 0.24040148036253778
+      },
+      {
+        "operation": "bridge_batch",
+        "outcome": "bridged",
+        "phase": "transaction_setup",
+        "count": 331,
+        "sumSeconds": 0.423938386,
+        "avgMs": 1.2807806223564955
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "activity_lock",
+        "count": 2601,
+        "sumSeconds": 9.46335049,
+        "avgMs": 3.638350822760477
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "body",
+        "count": 2601,
+        "sumSeconds": 36.208812781000006,
+        "avgMs": 13.921112180315266
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "commit_window",
+        "count": 2601,
+        "sumSeconds": 20.949950730999998,
+        "avgMs": 8.054575444444444
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "details",
+        "count": 2601,
+        "sumSeconds": 2.5884389089999997,
+        "avgMs": 0.995170668589004
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "guard_insert",
+        "count": 2601,
+        "sumSeconds": 2.672300273,
+        "avgMs": 1.0274126386005382
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_false",
+        "count": 2601,
+        "sumSeconds": 0.500566708,
+        "avgMs": 0.1924516370626682
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_auto_commit_true",
+        "count": 2601,
+        "sumSeconds": 0.5532288989999999,
+        "avgMs": 0.212698538638985
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_commit",
+        "count": 2601,
+        "sumSeconds": 20.87797637,
+        "avgMs": 8.026903640907344
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_insert",
+        "count": 2601,
+        "sumSeconds": 14.739242992,
+        "avgMs": 5.666760089196463
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_select",
+        "count": 2601,
+        "sumSeconds": 10.171339724000001,
+        "avgMs": 3.9105496824298354
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_sql",
+        "count": 2601,
+        "sumSeconds": 29.066125657000004,
+        "avgMs": 11.174981029219532
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "jdbc_update",
+        "count": 2601,
+        "sumSeconds": 4.155542941,
+        "avgMs": 1.5976712575932337
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "order_insert",
+        "count": 2601,
+        "sumSeconds": 4.7765547129999995,
+        "avgMs": 1.8364301088043058
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "request_lock",
+        "count": 2601,
+        "sumSeconds": 1.478375126,
+        "avgMs": 0.5683872072279892
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "reservation",
+        "count": 2601,
+        "sumSeconds": 2.767884059,
+        "avgMs": 1.0641614990388313
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "stock_update",
+        "count": 2601,
+        "sumSeconds": 1.946485422,
+        "avgMs": 0.7483604083044982
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "success_state",
+        "count": 2601,
+        "sumSeconds": 7.122661603,
+        "avgMs": 2.7384319888504423
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "timeout_outbox",
+        "count": 2601,
+        "sumSeconds": 3.180803993,
+        "avgMs": 1.222915798923491
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "total",
+        "count": 2601,
+        "sumSeconds": 132.895742564,
+        "avgMs": 51.09409556478277
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_cleanup",
+        "count": 2601,
+        "sumSeconds": 0.620936303,
+        "avgMs": 0.2387298358323722
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "transaction_setup",
+        "count": 2601,
+        "sumSeconds": 75.038445287,
+        "avgMs": 28.849844400999615
+      },
+      {
+        "operation": "consume_batch",
+        "outcome": "created",
+        "phase": "writer_gate_wait",
+        "count": 2601,
+        "sumSeconds": 74.108809028,
+        "avgMs": 28.492429460976542
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "address",
+        "count": 2601,
+        "sumSeconds": 13.732473395,
+        "avgMs": 5.279689886582084
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_select",
+        "count": 2601,
+        "sumSeconds": 1.282668389,
+        "avgMs": 0.49314432487504806
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "jdbc_sql",
+        "count": 2601,
+        "sumSeconds": 1.282668389,
+        "avgMs": 0.49314432487504806
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "quote",
+        "count": 2601,
+        "sumSeconds": 12.806106395,
+        "avgMs": 4.923531870434449
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "snapshot",
+        "count": 2601,
+        "sumSeconds": 1.804022019,
+        "avgMs": 0.6935878581314879
+      },
+      {
+        "operation": "prepare",
+        "outcome": "done",
+        "phase": "total",
+        "count": 2601,
+        "sumSeconds": 28.588262276000002,
+        "avgMs": 10.991258083813918
+      }
+    ]
+  }
+}

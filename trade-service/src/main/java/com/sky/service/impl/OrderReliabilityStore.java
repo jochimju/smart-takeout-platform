@@ -11,6 +11,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderReliabilityStore {
     private final JdbcTemplate jdbc;
+    /** 已有任务体系的登记入口；当前普通 createOrderFromMessage 使用另一条 MQ 持久化路径。 */
     public void scheduleTimeout(Orders order) {
         jdbc.update("insert into order_reliability_job(id,order_number,kind,due_at,next_at) values(?,?,'TIMEOUT',?,now())",
             "timeout:"+order.getNumber(),order.getNumber(),order.getExpireTime());
@@ -20,17 +21,22 @@ public class OrderReliabilityStore {
             "values(?,?,'REFUND',now(),now(),?,?) on duplicate key update id=id",
             "refund:"+order.getNumber(),order.getNumber(),order.getAmount(),mock);
     }
+    /** 完成已有任务；如果没有对应行，更新 0 行，不会新增任务或撤回队列消息。 */
     public void done(String id) {
         jdbc.update("update order_reliability_job set state='DONE',lease_token=null,lease_until=null,updated_at=now() where id=?",id);
     }
     public void early(String number, LocalDateTime due) {
-        jdbc.update("update order_reliability_job set state='READY',next_at=?,lease_token=null,lease_until=null,updated_at=now() "+
-            "where id=? and state not in ('DONE','FAILED')",due,"timeout:"+number);
+        // New MQ outbox orders need a recovery row if an early message is consumed and ACKed.
+        jdbc.update("insert into order_reliability_job(id,order_number,kind,due_at,next_at) values(?,?,'TIMEOUT',?,?) "+
+            "on duplicate key update next_at=if(state in ('DONE','FAILED'),next_at,values(next_at)),"+
+            "lease_token=if(state in ('DONE','FAILED'),lease_token,null),lease_until=if(state in ('DONE','FAILED'),lease_until,null),"+
+            "updated_at=now(),state=if(state in ('DONE','FAILED'),state,'READY')", "timeout:"+number,number,due,due);
     }
     public List<Map<String,Object>> ready() {
         return jdbc.queryForList("select * from order_reliability_job where (state='READY' and next_at<=now()) "+
             "or (state='RUNNING' and lease_until<=now()) order by next_at limit 20");
     }
+    /** 使用租约竞争任务执行权，进程异常退出后允许过期任务被重新领取。 */
     public String claim(String id) {
         String token=UUID.randomUUID().toString();
         return jdbc.update("update order_reliability_job set state='RUNNING',lease_token=?,lease_until=?,updated_at=now() "+

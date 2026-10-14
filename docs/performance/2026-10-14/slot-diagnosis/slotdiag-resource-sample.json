@@ -1,0 +1,100 @@
+{
+  "wallTime": 1791942207.1500459,
+  "mysqlDurability": {
+    "innodb_flush_log_at_trx_commit": 1,
+    "sync_binlog": 1,
+    "log_bin": 1
+  },
+  "globalWaitsCumulativeNotAttributable": [
+    [
+      "wait/io/file/sql/binlog",
+      179112,
+      105515754334426
+    ],
+    [
+      "wait/io/file/sql/binlog_cache",
+      0,
+      0
+    ],
+    [
+      "wait/io/file/sql/binlog_index",
+      23,
+      11013055814
+    ],
+    [
+      "wait/io/file/sql/binlog_index_cache",
+      0,
+      0
+    ],
+    [
+      "wait/io/file/innodb/innodb_dblwr_file",
+      4685,
+      1355834562946
+    ],
+    [
+      "wait/io/file/innodb/innodb_tablespace_open_file",
+      0,
+      0
+    ],
+    [
+      "wait/io/file/innodb/innodb_data_file",
+      38058,
+      91753221189388
+    ],
+    [
+      "wait/io/file/innodb/innodb_log_file",
+      86316,
+      6595333814284
+    ],
+    [
+      "wait/io/file/innodb/innodb_temp_file",
+      90,
+      97146604398
+    ],
+    [
+      "wait/io/file/innodb/innodb_arch_file",
+      0,
+      0
+    ],
+    [
+      "wait/io/file/innodb/innodb_clone_file",
+      0,
+      0
+    ],
+    [
+      "wait/io/file/innodb/meb::redo_log_archive_file",
+      0,
+      0
+    ]
+  ],
+  "lockWaiters": [],
+  "services": [
+    {
+      "port": 18081,
+      "metrics": [
+        "feign_pool_available{application=\"trade-service\"} 14.0",
+        "feign_pool_leased{application=\"trade-service\"} 2.0",
+        "feign_pool_max{application=\"trade-service\"} 512.0",
+        "feign_pool_pending{application=\"trade-service\"} 0.0",
+        "jvm_gc_pause_seconds_sum{action=\"end of minor GC\",application=\"trade-service\",cause=\"G1 Evacuation Pause\",gc=\"G1 Young Generation\"} 1.565",
+        "jvm_gc_pause_seconds_sum{action=\"end of minor GC\",application=\"trade-service\",cause=\"Metadata GC Threshold\",gc=\"G1 Young Generation\"} 0.007",
+        "sky_jdbc_pool_active{application=\"trade-service\"} 11.0",
+        "sky_jdbc_pool_idle{application=\"trade-service\"} 21.0",
+        "sky_jdbc_pool_max{application=\"trade-service\"} 32.0",
+        "sky_jdbc_pool_pending{application=\"trade-service\"} 0.0"
+      ]
+    },
+    {
+      "port": 18082,
+      "metrics": [
+        "jvm_gc_pause_seconds_sum{action=\"end of minor GC\",application=\"account-service\",cause=\"G1 Evacuation Pause\",gc=\"G1 Young Generation\"} 0.254",
+        "jvm_gc_pause_seconds_sum{action=\"end of minor GC\",application=\"account-service\",cause=\"Metadata GC Threshold\",gc=\"G1 Young Generation\"} 0.007",
+        "sky_jdbc_pool_active{application=\"account-service\"} 0.0",
+        "sky_jdbc_pool_idle{application=\"account-service\"} 22.0",
+        "sky_jdbc_pool_max{application=\"account-service\"} 32.0",
+        "sky_jdbc_pool_pending{application=\"account-service\"} 0.0"
+      ]
+    }
+  ],
+  "availableMemoryBytes": 13356355584
+}

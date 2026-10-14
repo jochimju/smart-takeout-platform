@@ -29,6 +29,7 @@ public class WebSocketAuthConfigurator extends ServerEndpointConfig.Configurator
             Object employeeId = claims.get(JwtClaimsConstant.EMP_ID);
             if (employeeId == null) throw new IllegalArgumentException("employee claim missing");
             config.getUserProperties().put(AUTHENTICATED_USER_ID, String.valueOf(employeeId));
+            config.getUserProperties().remove(AUTH_REJECTED);
         } catch (RuntimeException ex) {
             config.getUserProperties().put(AUTH_REJECTED, Boolean.TRUE);
         }

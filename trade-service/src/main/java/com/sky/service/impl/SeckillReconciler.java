@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/** Cache is a projection, never the inventory ledger. Repairs include process-crash predebits. */
+/** Initializes new activities and checks readiness; never resets live Redis inventory. */
 @Component
 @Slf4j
 public class SeckillReconciler {
@@ -17,7 +17,7 @@ public class SeckillReconciler {
     public void reconcile() {
         for(Long id:activities.allIds()) {
             try { service.warmUpActivity(id); }
-            catch(Exception e) { log.warn("秒杀缓存 {} 重建失败，下次继续校准: {}",id,e.getMessage()); }
+            catch(Exception e) { log.warn("秒杀缓存 {} 未就绪，暂停受理并等待核对: {}",id,e.getMessage()); }
         }
     }
 }

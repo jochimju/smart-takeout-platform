@@ -24,4 +24,7 @@ public class MqFailMessage implements Serializable {
     private Integer retryCount;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private LocalDateTime availableAt;
+    private LocalDateTime deliveryDeadline;
+    private String claimToken;
 }

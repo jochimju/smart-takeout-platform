@@ -19,6 +19,9 @@ public interface OrderMapper {
      */
     void insert(Orders order);
 
+    /** Seckill only: JDBC-generated keys are assigned back to each list entry. */
+    int insertSeckillBatch(@Param("orders") List<Orders> orders);
+
     /**
      * 根据订单号查询订单
      * @param orderNumber
@@ -91,11 +94,13 @@ public interface OrderMapper {
      */
     Integer countByMap(Map map);
 
+    // 生命周期操作先持有订单行锁，在事务内串行处理取消、超时与到账。
     @Select("select * from orders where id=#{id} for update")
     Orders lockById(Long id);
     @Select("select * from orders where number=#{number} for update")
     Orders lockByNumber(String number);
 
+    // 原状态和支付状态必须仍匹配；超时取消还需待支付、未付款且截止时间已到。
     @org.apache.ibatis.annotations.Update("update orders set status=6,cancel_time=#{now}," +
         "cancel_reason=case when #{rejected}=false then #{reason} else cancel_reason end," +
         "rejection_reason=case when #{rejected}=true then #{reason} else rejection_reason end " +

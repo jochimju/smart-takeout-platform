@@ -15,8 +15,10 @@ public class AccountClientFallbackFactory implements FallbackFactory<AccountClie
     public AccountClient create(Throwable cause) {
         log.warn("account-service Feign fallback activated", cause);
         return new AccountClient() {
+            @Override public Boolean valid(com.sky.contract.account.SessionCheck check) { return false; }
             @Override public AccountUserView user(Long id) { throw unavailable(); }
             @Override public AccountAddressView address(Long userId, Long id) { throw unavailable(); }
+            @Override public java.util.List<AccountAddressView> addresses(java.util.List<com.sky.contract.account.AccountAddressLookup> lookups) { throw unavailable(); }
             @Override public Integer countUsers(String begin, String end) { throw unavailable(); }
             @Override public Boolean permitted(Long employeeId, String method, String path) { return false; }
         };

@@ -19,7 +19,7 @@ public class AddressBookController {
     private AddressBookService addressBookService;
 
     /**
-     * 闁哄被鍎撮妤勩亹閹惧啿顤呴柣褑顕х紞宥夋偨閵婏箑鐓曢柣銊ュ婢у秹寮垫径濠冨嬀闁秆€鍋撳ǎ鍥ｅ墲娴?
+     * 查询当前登录用户的所有地址信息
      *
      * @return
      */
@@ -33,7 +33,7 @@ public class AddressBookController {
     }
 
     /**
-     * 闁哄倹婢橀·鍐捶閺夋寧绲?
+     * 新增地址
      *
      * @param addressBook
      * @return
@@ -53,7 +53,7 @@ public class AddressBookController {
     }
 
     /**
-     * 闁哄秷顫夊畵涔甦濞ｅ浂鍠楅弫濂稿捶閺夋寧绲?
+     * 根据id修改地址
      *
      * @param addressBook
      * @return
@@ -66,7 +66,7 @@ public class AddressBookController {
     }
 
     /**
-     * 閻犱礁澧介悿鍡橆渶濡鍚囬柛锔芥緲濞?
+     * 设置默认地址
      *
      * @param addressBook
      * @return
@@ -79,20 +79,20 @@ public class AddressBookController {
     }
 
     /**
-     * 闁哄秷顫夊畵涔甦闁告帞濞€濞呭酣宕烽弶鎸庣祷
+     * 根据id删除地址
      *
      * @param id
      * @return
      */
     @DeleteMapping
-    @ApiOperation("闁哄秷顫夊畵涔甦闁告帞濞€濞呭酣宕烽弶鎸庣祷")
+    @ApiOperation("根据id删除地址")
     public Result deleteById(Long id) {
         addressBookService.deleteById(id);
         return Result.success();
     }
 
     /**
-     * 闁哄被鍎撮妤侇渶濡鍚囬柛锔芥緲濞?
+     * 查询默认地址
      */
     @GetMapping("default")
     @ApiOperation("get address by id")

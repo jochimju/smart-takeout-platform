@@ -1,0 +1,37 @@
+{
+  "database": "sky_perf_ordernew_20261013",
+  "activityId": 2,
+  "tradeStoppedForSnapshot": true,
+  "queues": {
+    "sky.seckill.order.v2.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.order.submit.v2.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.order.dead.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    }
+  },
+  "pendingAcceptance": 0,
+  "cacheEvents": 0,
+  "pendingCommandOutbox": 0,
+  "dueTimeoutOutbox": 0,
+  "initialStock": 60000,
+  "mysqlStock": 39518,
+  "redisStock": 39518,
+  "guards": 20482,
+  "redisUsers": 20482,
+  "outstanding": 0,
+  "outstandingCount": 0,
+  "unbridged": 0,
+  "requestStates": {
+    "SUCCEEDED": 20482
+  },
+  "seckillOrders": 20482,
+  "duplicateUsers": 0,
+  "ordinaryOrders": 300
+}

@@ -1,0 +1,17 @@
+{
+  "database": "sky_perf_orderbucket5_20261014",
+  "vhost": "sky_perf_orderbucket5_20261014",
+  "accountSchema": "sky_perf_1012232348_account",
+  "catalogSchema": "sky_perf_fulfill_catalog_20261013",
+  "jarSha256": {
+    "trade": "94fc6759b7243922aa9b7e2588567dc60790cbdf2d980f966ee769fa57c463a2",
+    "account": "b2f916e102cee4950bf4db13f28aa7be9d1e4fc15b1c28d4f467aace5df6a36a",
+    "catalog": "c6b8783edb11c8b64bba5c26ae2d9c37a13035adf4e6a5d05ffda1540849c2df"
+  },
+  "arrivalSeconds": 60,
+  "seckillRate": 800,
+  "ordinaryRate": 5,
+  "processingSeconds": 120,
+  "outstandingLimit": 500,
+  "batchSize": 8
+}

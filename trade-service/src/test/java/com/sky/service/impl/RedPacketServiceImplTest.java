@@ -20,6 +20,12 @@ class RedPacketServiceImplTest {
     private final RedPacketMapper mapper = mock(RedPacketMapper.class);
     private final RedPacketServiceImpl service = new RedPacketServiceImpl(mapper, mock(AccountClient.class), mock(WeChatPayUtil.class));
 
+    @org.junit.jupiter.api.BeforeEach void wiring() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service,"jdbc",mock(org.springframework.jdbc.core.JdbcTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service,"jobs",mock(OrderReliabilityStore.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service,"recovery",mock(com.sky.payment.PaymentRecoveryStore.class));
+    }
+
     @AfterEach
     void cleanup() {
         BaseContext.removeCurrentId();

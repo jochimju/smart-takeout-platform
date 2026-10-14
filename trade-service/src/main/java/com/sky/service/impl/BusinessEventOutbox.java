@@ -25,6 +25,7 @@ public class BusinessEventOutbox {
     private static final int LEASE_SECONDS = 30;
     private static final int CONFIRM_TIMEOUT_SECONDS = 5;
 
+    /** 调用方事务内只保存业务事件，取消/付款状态与事件一起提交。 */
     public void record(String type, Object aggregateId, Object payload) {
         BusinessEvent event = BusinessEvent.builder().eventId(UUID.randomUUID().toString()).eventType(type)
                 .aggregateType("ORDER").aggregateId(String.valueOf(aggregateId))
@@ -33,6 +34,7 @@ public class BusinessEventOutbox {
                 event.getEventId(), event.getEventType(), event.getAggregateType(), event.getAggregateId(), JSON.toJSONString(event));
     }
 
+    /** 后台发布已提交事件；发送重试可能重复，通知消费者按 eventId 去重。 */
     @Scheduled(fixedDelayString = "${sky.outbox.publish-interval:1000}")
     public void publishPending() {
         List<Map<String,Object>> rows = jdbc.queryForList("select event_id,payload,retry_count from business_event_outbox " +

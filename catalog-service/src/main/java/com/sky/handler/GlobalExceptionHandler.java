@@ -16,6 +16,15 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler({org.springframework.jdbc.UncategorizedSQLException.class,
+            org.springframework.dao.DataAccessResourceFailureException.class,
+            org.springframework.dao.TransientDataAccessException.class})
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE)
+    public Result databaseUnavailable(org.springframework.dao.DataAccessException ex) {
+        log.error("Database write or cache invalidation persistence failed", ex);
+        return Result.error("数据库暂时不可用，请稍后重试");
+    }
+
     /**
      * 捕获业务异常
      * @param ex

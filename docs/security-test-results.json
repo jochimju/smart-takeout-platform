@@ -1,0 +1,18 @@
+{
+  "counts": {
+    "tests": 159,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4
+  },
+  "passed": 155,
+  "skipped": [
+    "rabbitDeadLetterActuallyCancelsAndRestoresStock",
+    "returnedMessageRemainsRecoverableAndCanBeRepublished",
+    "fullFifteenMinuteTtlWithoutWatchdog",
+    "consumerFailureIsRecoveredFromDurableJob"
+  ],
+  "backendBuild": "BUILD SUCCESS",
+  "frontendBuild": "Build complete",
+  "productionDeployed": false
+}

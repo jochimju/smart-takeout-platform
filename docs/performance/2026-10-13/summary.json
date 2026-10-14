@@ -1,0 +1,42 @@
+{
+  "100": {
+    "windowStart": 11.427878141403198,
+    "windowEnd": 49.433024168014526,
+    "rates": {
+      "accepted": 99.98645965836383,
+      "bridged": 78.75249309407445,
+      "publishedUnique": 74.72672248151402,
+      "succeeded": 56.22922744471671
+    },
+    "accepted": 6000,
+    "succeeded": 6000,
+    "failed": 0,
+    "extraPublishes": 434,
+    "observedDrainSeconds": 64.661869764328,
+    "lockWaitSamples": 29,
+    "sampleCount": 67,
+    "maxActivityWaiters": 6,
+    "sampleCostAvgMs": 110.89552238801993,
+    "sampleCostMaxMs": 2046.999999999798
+  },
+  "800": {
+    "windowStart": 21.494473218917847,
+    "windowEnd": 53.49201035499573,
+    "rates": {
+      "accepted": 52.56654575778304,
+      "bridged": 52.56654575778304,
+      "publishedUnique": 51.128935112802054,
+      "succeeded": 41.19067021923784
+    },
+    "accepted": 13524,
+    "succeeded": 6311,
+    "failed": 7213,
+    "extraPublishes": 677,
+    "observedDrainSeconds": 174.6977345943451,
+    "lockWaitSamples": 81,
+    "sampleCount": 122,
+    "maxActivityWaiters": 6,
+    "sampleCostAvgMs": 293.8032786884821,
+    "sampleCostMaxMs": 2125.0
+  }
+}

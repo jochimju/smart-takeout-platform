@@ -1,0 +1,43 @@
+[
+  {
+    "schema": "sky_perf_orderbucket_20261014",
+    "ownedManifestVerified": true,
+    "acceptanceStates": {
+      "SUCCEEDED": 26155
+    }
+  },
+  {
+    "schema": "sky_perf_orderbucket2_20261014",
+    "ownedManifestVerified": true,
+    "acceptanceStates": {}
+  },
+  {
+    "schema": "sky_perf_orderbucket3_20261014",
+    "ownedManifestVerified": true,
+    "acceptanceStates": {
+      "SUCCEEDED": 22400
+    }
+  },
+  {
+    "schema": "sky_perf_orderbucket4_20261014",
+    "ownedManifestVerified": true,
+    "acceptanceStates": {
+      "FAILED": 188,
+      "SUCCEEDED": 1518
+    }
+  },
+  {
+    "schema": "sky_perf_orderbucket5_20261014",
+    "ownedManifestVerified": true,
+    "acceptanceStates": {
+      "SUCCEEDED": 26183
+    }
+  },
+  {
+    "schema": "sky_perf_orderbucket6_20261014",
+    "ownedManifestVerified": true,
+    "acceptanceStates": {
+      "SUCCEEDED": 31453
+    }
+  }
+]

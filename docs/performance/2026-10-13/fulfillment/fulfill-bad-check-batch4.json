@@ -1,0 +1,10 @@
+{
+  "activityId": 3,
+  "accepted": 16,
+  "succeeded": 15,
+  "deterministicFailure": 1,
+  "mysqlStock": 35,
+  "redisStock": 35,
+  "outstanding": 0,
+  "brokerBatchListenerRealDeliveryVerified": true
+}

@@ -31,6 +31,8 @@ public class Employee implements Serializable {
     private String idNumber;
 
     private Integer status;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Long authVersion;
 
     //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;

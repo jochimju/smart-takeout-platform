@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 鑿滃搧
+ * 菜品
  */
 @Data
 @Builder
@@ -21,22 +21,22 @@ public class Dish implements Serializable {
 
     private Long id;
 
-    //鑿滃搧鍚嶇О
+    //菜品名称
     private String name;
 
-    //鑿滃搧鍒嗙被id
+    //菜品分类id
     private Long categoryId;
 
-    //鑿滃搧浠锋牸
+    //菜品价格
     private BigDecimal price;
 
-    //鍥剧墖
+    //图片
     private String image;
 
-    //鎻忚堪淇℃伅
+    //描述信息
     private String description;
 
-    //0 鍋滃敭 1 璧峰敭
+    //0 停售 1 起售
     private Integer status;
 
     private Integer stock;

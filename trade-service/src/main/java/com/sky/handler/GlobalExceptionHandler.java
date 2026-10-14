@@ -15,6 +15,19 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @RestControllerAdvice //处理器通过@RestControllerAdvice注解 “监听” 所有 Controller 层抛出的异常；
 @Slf4j
 public class GlobalExceptionHandler {
+    @ExceptionHandler({org.springframework.jdbc.UncategorizedSQLException.class,
+            org.springframework.dao.DataAccessResourceFailureException.class,
+            org.springframework.dao.TransientDataAccessException.class})
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE)
+    public Result databaseUnavailable(org.springframework.dao.DataAccessException ex) {
+        log.warn("Order database temporarily unavailable",ex);
+        return Result.error("服务暂时不可用，请保留原请求编号查询或重试");
+    }
+    /** Expected seckill backpressure is counted, not logged as one ERROR per rejected request. */
+    @ExceptionHandler(com.sky.exception.SeckillBusyException.class)
+    public Result seckillBusy(com.sky.exception.SeckillBusyException ex) {
+        return Result.error(ex.getMessage());
+    }
 
     /**
      * 捕获业务异常

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TimeoutFailureService {
     private final OrderReliabilityStore store;
     private final MqFailMessageMapper failures;
+    /** 超时消费失败的持久化兜底：已有任务更新任务，否则保存直接投向关闭队列的命令。 */
     @Transactional
     public void record(String number,Exception failure) {
         // Legacy timeout jobs can still be replayed while a deployment drains

@@ -18,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 public class RabbitMqConfiguration {
+    @Bean public org.springframework.amqp.core.Declarables timeoutLanes() {
+        return com.sky.service.mq.TimeoutRouting.declarations(orderDelayExchange());
+    }
 
     @Bean
     public MessageConverter messageConverter() {
@@ -54,6 +57,10 @@ public class RabbitMqConfiguration {
     public DirectExchange orderExchange() {
         return new DirectExchange(MqConstant.ORDER_EXCHANGE, true, false);
     }
+    /** Producers declare their exchange; notification-service owns its queues and consumers. */
+    @Bean public DirectExchange notificationEventExchange() {
+        return new DirectExchange(com.sky.service.impl.BusinessEventOutbox.EXCHANGE,true,false);
+    }
 
     @Bean
     public Queue orderSubmitQueue() {
@@ -65,6 +72,19 @@ public class RabbitMqConfiguration {
     @Bean
     public Binding orderSubmitBinding() {
         return BindingBuilder.bind(orderSubmitQueue()).to(orderExchange()).with(MqConstant.ORDER_SUBMIT_ROUTING_KEY);
+    }
+
+    @Bean
+    public org.springframework.amqp.core.Declarables seckillBucketQueues() {
+        var declarations=new java.util.ArrayList<org.springframework.amqp.core.Declarable>();
+        for(int bucket=0;bucket<8;bucket++) {
+            var queue=QueueBuilder.durable("sky.seckill.order.bucket."+bucket+".v3.queue")
+                .deadLetterExchange(MqConstant.ORDER_FAILURE_EXCHANGE)
+                .deadLetterRoutingKey(MqConstant.ORDER_FAILURE_ROUTING_KEY).build();
+            declarations.add(queue);
+            declarations.add(BindingBuilder.bind(queue).to(orderExchange()).with("seckill.order.bucket."+bucket));
+        }
+        return new org.springframework.amqp.core.Declarables(declarations);
     }
 
     @Bean
@@ -99,6 +119,7 @@ public class RabbitMqConfiguration {
         return new DirectExchange(MqConstant.ORDER_DELAY_EXCHANGE, true, false);
     }
 
+    /** 无主动消费者的延迟队列：15 分钟 TTL 到期后，通过死信路由进入关闭队列。 */
     @Bean
     public Queue orderDelayQueue() {
         return QueueBuilder.durable(MqConstant.ORDER_DELAY_QUEUE)
@@ -113,9 +134,16 @@ public class RabbitMqConfiguration {
         return BindingBuilder.bind(orderDelayQueue()).to(orderDelayExchange()).with(MqConstant.ORDER_DELAY_ROUTING_KEY);
     }
 
+    /** 此死信队列是正常超时处理入口，不表示建单业务失败。 */
     @Bean
     public Queue orderDeadQueue() {
         return QueueBuilder.durable(MqConstant.ORDER_DEAD_QUEUE).build();
+    }
+
+    /** Seckill scheduled outbox publishes only when its real deadline is due. */
+    @Bean
+    public Binding seckillTimeoutBinding() {
+        return BindingBuilder.bind(orderDeadQueue()).to(orderDelayExchange()).with(MqConstant.SECKILL_TIMEOUT_ROUTING_KEY);
     }
 
     @Bean

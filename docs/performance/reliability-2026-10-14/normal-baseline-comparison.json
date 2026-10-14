@@ -1,0 +1,61 @@
+{
+  "async": {
+    "normalSucceeded": 1501,
+    "k6Exit": 0,
+    "acceptance": {
+      "p(99)": 276.0498,
+      "max": 566.3604,
+      "avg": 20.46779686875414,
+      "med": 11.3329,
+      "p(95)": 37.2766
+    },
+    "creationWait": {
+      "normal": {
+        "commitsObserved": 1501.0,
+        "averageMs": 134.57894736842104,
+        "rollingP95Ms": 267.38688,
+        "p95Scope": "Meter rolling window; mean and count use run counter deltas"
+      }
+    },
+    "workload": {
+      "NORMAL_RATE": "50",
+      "NORMAL_ONLY": "1",
+      "NORMAL_MODE": "async"
+    },
+    "validLoad": true,
+    "label": "arch_4a6e45c4d80b4a60"
+  },
+  "sync": {
+    "normalSucceeded": 1501,
+    "k6Exit": 0,
+    "acceptance": {
+      "p(95)": 38.3904,
+      "p(99)": 98.7753,
+      "max": 249.6761,
+      "avg": 24.58688680879417,
+      "med": 21.7141
+    },
+    "creationWait": {
+      "normal": {
+        "commitsObserved": 1501.0,
+        "averageMs": 19.411725516322452,
+        "rollingP95Ms": 267.911168,
+        "p95Scope": "Meter rolling window; mean and count use run counter deltas"
+      }
+    },
+    "workload": {
+      "NORMAL_RATE": "50",
+      "NORMAL_ONLY": "1",
+      "NORMAL_MODE": "sync"
+    },
+    "validLoad": true,
+    "label": "arch_eb0b1f347a994fc4"
+  },
+  "comparison": {
+    "meanAcceptanceSpeedup": 1.2012473529248366,
+    "throughputSpeedupVerified": false,
+    "sameOfferedLoad": 50,
+    "durationSeconds": 30,
+    "note": "Controlled current business pipeline with waiting in HTTP versus background MQ; not a reconstruction of historical 350 ms measurements."
+  }
+}

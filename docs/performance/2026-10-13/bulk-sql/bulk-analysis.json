@@ -1,0 +1,356 @@
+{
+  "completed": 20640,
+  "commits": 2585,
+  "writerJdbcCalls": 43906.0,
+  "prepareJdbcCalls": 2585.0,
+  "jdbcCallsPerOrder": 2.2524709302325583,
+  "writerEvents": {
+    "jdbc_calls": 43906.0,
+    "jdbc_insert_calls": 33565.0,
+    "jdbc_select_calls": 5170.0,
+    "jdbc_update_calls": 5171.0,
+    "orders_created": 20640.0
+  },
+  "prepareEvents": {
+    "jdbc_calls": 2585.0,
+    "jdbc_select_calls": 2585.0
+  },
+  "phases": [
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "accept_insert",
+      "count": 361,
+      "sum_seconds": 1.5156319,
+      "avg_ms_per_call": 4.198426315789474
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "activity_lock",
+      "count": 361,
+      "sum_seconds": 4.507285499999999,
+      "avg_ms_per_call": 12.485555401662047
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "body",
+      "count": 361,
+      "sum_seconds": 8.247942300000002,
+      "avg_ms_per_call": 22.847485595567875
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "command_outbox",
+      "count": 361,
+      "sum_seconds": 1.5675678,
+      "avg_ms_per_call": 4.342293074792244
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "commit_window",
+      "count": 361,
+      "sum_seconds": 4.3718631,
+      "avg_ms_per_call": 12.11042409972299
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_auto_commit_false",
+      "count": 361,
+      "sum_seconds": 0.1160274,
+      "avg_ms_per_call": 0.321405540166205
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_auto_commit_true",
+      "count": 361,
+      "sum_seconds": 0.06935650000000002,
+      "avg_ms_per_call": 0.19212326869806098
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_commit",
+      "count": 361,
+      "sum_seconds": 4.3661552,
+      "avg_ms_per_call": 12.09461274238227
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_insert",
+      "count": 361,
+      "sum_seconds": 2.3313964999999994,
+      "avg_ms_per_call": 6.458162049861494
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_select",
+      "count": 361,
+      "sum_seconds": 4.9660726,
+      "avg_ms_per_call": 13.756433795013852
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "jdbc_sql",
+      "count": 361,
+      "sum_seconds": 7.297469099999999,
+      "avg_ms_per_call": 20.214595844875344
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "total",
+      "count": 361,
+      "sum_seconds": 13.090684199999998,
+      "avg_ms_per_call": 36.26228310249307
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "transaction_cleanup",
+      "count": 361,
+      "sum_seconds": 0.07292280000000001,
+      "avg_ms_per_call": 0.20200221606648203
+    },
+    {
+      "operation": "bridge_batch",
+      "outcome": "bridged",
+      "phase": "transaction_setup",
+      "count": 361,
+      "sum_seconds": 0.3899535,
+      "avg_ms_per_call": 1.0802036011080334
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "activity_lock",
+      "count": 2585,
+      "sum_seconds": 8.832055599999999,
+      "avg_ms_per_call": 3.416655938104448
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "body",
+      "count": 2585,
+      "sum_seconds": 37.7231363,
+      "avg_ms_per_call": 14.593089477756285
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "commit_window",
+      "count": 2585,
+      "sum_seconds": 20.544081000000002,
+      "avg_ms_per_call": 7.947420116054159
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "details",
+      "count": 2585,
+      "sum_seconds": 2.0177163,
+      "avg_ms_per_call": 0.7805478916827853
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "guard_insert",
+      "count": 2585,
+      "sum_seconds": 2.0800449999999997,
+      "avg_ms_per_call": 0.804659574468085
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_auto_commit_false",
+      "count": 2585,
+      "sum_seconds": 0.4712885,
+      "avg_ms_per_call": 0.18231663442940038
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_auto_commit_true",
+      "count": 2585,
+      "sum_seconds": 0.5127814,
+      "avg_ms_per_call": 0.19836804642166347
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_commit",
+      "count": 2585,
+      "sum_seconds": 20.5043634,
+      "avg_ms_per_call": 7.9320554738878135
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_insert",
+      "count": 2585,
+      "sum_seconds": 18.271728999999997,
+      "avg_ms_per_call": 7.068367117988393
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_select",
+      "count": 2585,
+      "sum_seconds": 9.449093200000002,
+      "avg_ms_per_call": 3.655355203094778
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_sql",
+      "count": 2585,
+      "sum_seconds": 30.591428299999997,
+      "avg_ms_per_call": 11.83420823984526
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "jdbc_update",
+      "count": 2585,
+      "sum_seconds": 2.8706061000000003,
+      "avg_ms_per_call": 1.1104859187620892
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "order_insert",
+      "count": 2585,
+      "sum_seconds": 12.2655533,
+      "avg_ms_per_call": 4.744894893617022
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "request_lock",
+      "count": 2585,
+      "sum_seconds": 1.2840014999999998,
+      "avg_ms_per_call": 0.4967123791102514
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "reservation",
+      "count": 2585,
+      "sum_seconds": 2.3441449,
+      "avg_ms_per_call": 0.9068258800773693
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "stock_update",
+      "count": 2585,
+      "sum_seconds": 1.5278508,
+      "avg_ms_per_call": 0.5910447969052224
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "success_state",
+      "count": 2585,
+      "sum_seconds": 4.488062200000001,
+      "avg_ms_per_call": 1.736194274661509
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "timeout_outbox",
+      "count": 2585,
+      "sum_seconds": 2.7191751,
+      "avg_ms_per_call": 1.0519052611218571
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "total",
+      "count": 2585,
+      "sum_seconds": 109.89788280000002,
+      "avg_ms_per_call": 42.513687736943915
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "transaction_cleanup",
+      "count": 2585,
+      "sum_seconds": 0.5544429000000001,
+      "avg_ms_per_call": 0.21448468085106387
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "transaction_setup",
+      "count": 2585,
+      "sum_seconds": 51.02694639999999,
+      "avg_ms_per_call": 19.739631102514505
+    },
+    {
+      "operation": "consume_batch",
+      "outcome": "created",
+      "phase": "writer_gate_wait",
+      "count": 2585,
+      "sum_seconds": 50.3826394,
+      "avg_ms_per_call": 19.490382746615087
+    },
+    {
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "address",
+      "count": 2585,
+      "sum_seconds": 36.117551899999995,
+      "avg_ms_per_call": 13.971973655705996
+    },
+    {
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "jdbc_select",
+      "count": 2585,
+      "sum_seconds": 1.0036002000000002,
+      "avg_ms_per_call": 0.388239922630561
+    },
+    {
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "jdbc_sql",
+      "count": 2585,
+      "sum_seconds": 1.0036002000000002,
+      "avg_ms_per_call": 0.388239922630561
+    },
+    {
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "quote",
+      "count": 2585,
+      "sum_seconds": 26.1586504,
+      "avg_ms_per_call": 10.119400541586073
+    },
+    {
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "snapshot",
+      "count": 2585,
+      "sum_seconds": 1.5088811000000004,
+      "avg_ms_per_call": 0.5837064216634431
+    },
+    {
+      "operation": "prepare",
+      "outcome": "done",
+      "phase": "total",
+      "count": 2585,
+      "sum_seconds": 63.92181160000001,
+      "avg_ms_per_call": 24.727973539651842
+    }
+  ]
+}

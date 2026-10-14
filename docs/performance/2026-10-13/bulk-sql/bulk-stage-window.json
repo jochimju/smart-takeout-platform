@@ -1,0 +1,12 @@
+{
+  "startWall": 1791885119.3427842,
+  "endWall": 1791885173.3531268,
+  "seconds": 54.010342597961426,
+  "rates": {
+    "accepted": 334.6581252880671,
+    "bridged": 335.139514569256,
+    "succeeded": 334.10267611746445
+  },
+  "maxOutstanding": 500,
+  "observerMedianMs": 108.99999999674037
+}

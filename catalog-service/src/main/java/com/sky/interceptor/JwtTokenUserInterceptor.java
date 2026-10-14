@@ -15,9 +15,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * jwt浠ょ墝鏍￠獙鐨勬嫤鎴櫒
+ * jwt令牌校验的拦截器
  */
-@Component
+@Deprecated // Retained for source compatibility; Spring Security owns authentication now.
 @Slf4j
 public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
@@ -25,7 +25,7 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
     private JwtProperties jwtProperties;
 
     /**
-     * 鏍￠獙jwt
+     * 校验jwt
      *
      * @param request
      * @param response
@@ -34,26 +34,26 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
      * @throws Exception
      */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //鍒ゆ柇褰撳墠鎷︽埅鍒扮殑鏄疌ontroller鐨勬柟娉曡繕鏄叾浠栬祫婧?
+        //判断当前拦截到的是Controller的方法还是其他资源
         if (!(handler instanceof HandlerMethod)) {
-            //褰撳墠鎷︽埅鍒扮殑涓嶆槸鍔ㄦ€佹柟娉曪紝鐩存帴鏀捐
+            //当前拦截到的不是动态方法，直接放行
             return true;
         }
 
-        //1銆佷粠璇锋眰澶翠腑鑾峰彇浠ょ墝
+        //1、从请求头中获取令牌
         String token = request.getHeader(jwtProperties.getUserTokenName());
 
-        //2銆佹牎楠屼护鐗?
+        //2、校验令牌
         try {
             log.debug("validating user JWT");
             Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
             Long userId = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
             log.info("current user id: {}", userId);
             BaseContext.setCurrentId(userId);
-            //3銆侀€氳繃锛屾斁琛?
+            //3、通过，放行
             return true;
         } catch (Exception ex) {
-            //4銆佷笉閫氳繃锛屽搷搴?01鐘舵€佺爜
+            //4、不通过，响应401状态码
             response.setStatus(401);
             return false;
         }

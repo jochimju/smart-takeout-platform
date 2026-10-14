@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 public class GatewayAuthProperties {
     /** Browser WebSocket APIs cannot set arbitrary headers. Keep disabled unless required. */
     private boolean allowWebsocketQueryToken = false;
+    private boolean docsEnabled = false;
 }

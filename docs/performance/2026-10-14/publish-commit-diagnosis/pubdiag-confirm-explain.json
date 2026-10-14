@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "select_type": "UPDATE",
+    "table": "mq_fail_message",
+    "partitions": null,
+    "type": "range",
+    "possible_keys": "PRIMARY,idx_mq_fail_retry_lease",
+    "key": "idx_mq_fail_retry_lease",
+    "key_len": "4",
+    "ref": "const",
+    "rows": 1,
+    "filtered": 100.0,
+    "Extra": "Using where; Using temporary"
+  }
+]

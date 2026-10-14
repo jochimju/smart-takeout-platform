@@ -16,6 +16,7 @@
         <module>sky-common</module>
         <module>sky-pojo</module>
         <module>sky-contracts</module>
+        <module>sky-security</module>
         <module>trade-service</module>
         <module>gateway-service</module>
         <module>account-service</module>
@@ -35,6 +36,8 @@
         <jaxb-api>2.3.1</jaxb-api>
         <poi>3.16</poi>
         <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <test.jvm.options></test.jvm.options>
         <mybatis-plus.version>3.5.17</mybatis-plus.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
         <spring-cloud-alibaba.version>2025.0.0.0</spring-cloud-alibaba.version>
@@ -150,6 +153,11 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration><argLine>${test.jvm.options} -Dfile.encoding=UTF-8</argLine></configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

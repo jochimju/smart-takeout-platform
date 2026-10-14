@@ -15,6 +15,9 @@ public interface SeckillReservationMapper {
     @Update("update seckill_reservation set request_id=#{request},request_hash=#{hash} where order_number=#{number}")
     void setRequest(@Param("number") String number,@Param("request") String request,@Param("hash") String hash);
 
+    @Update("update seckill_reservation set bucket_id=#{bucket} where order_number=#{number}")
+    void setBucket(@Param("number") String number,@Param("bucket") int bucket);
+
     @Select("select count(*) from seckill_reservation where activity_id=#{id}")
     int countForActivity(Long id);
 
@@ -23,6 +26,10 @@ public interface SeckillReservationMapper {
     @Insert("insert into seckill_reservation(order_number,activity_id,setmeal_id,user_id,release_status) values(#{number},#{activity},#{setmeal},#{user},0)")
     void insert(@Param("number") String number, @Param("activity") Long activity,
                 @Param("setmeal") Long setmeal, @Param("user") Long user);
+
+    @Insert({"<script>insert into seckill_reservation(order_number,activity_id,setmeal_id,user_id,release_status,request_id,request_hash,bucket_id) values",
+            "<foreach collection='rows' item='row' separator=','>(#{row.orderNumber},#{row.activityId},#{row.setmealId},#{row.userId},0,#{row.requestId},#{row.requestHash},#{row.bucketId})</foreach></script>"})
+    int insertBatch(@Param("rows") List<SeckillReservation> rows);
 
     @Select("select * from seckill_reservation where order_number=#{number} for update")
     SeckillReservation lock(String number);

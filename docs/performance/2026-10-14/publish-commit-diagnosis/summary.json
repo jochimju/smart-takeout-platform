@@ -1,0 +1,1204 @@
+[
+  {
+    "round": "pubdiag",
+    "completed": 16083,
+    "capacityRejected": 30492,
+    "dropped": 1428,
+    "otherRejected": 0,
+    "stageTimings": [
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"accept_insert\"",
+        "count": 114,
+        "sumSeconds": 3.1179387,
+        "meanMs": 27.35033947368421
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"activity_metadata\"",
+        "count": 114,
+        "sumSeconds": 0.06536929999999999,
+        "meanMs": 0.5734149122807017
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"body\"",
+        "count": 114,
+        "sumSeconds": 11.2371582,
+        "meanMs": 98.57156315789473
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"command_outbox\"",
+        "count": 114,
+        "sumSeconds": 7.0877502,
+        "meanMs": 62.17324736842106
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"commit_window\"",
+        "count": 114,
+        "sumSeconds": 7.607559800000001,
+        "meanMs": 66.7329807017544
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_false\"",
+        "count": 114,
+        "sumSeconds": 0.031033199999999997,
+        "meanMs": 0.2722210526315789
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_true\"",
+        "count": 114,
+        "sumSeconds": 0.046378699999999995,
+        "meanMs": 0.4068307017543859
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_commit\"",
+        "count": 114,
+        "sumSeconds": 7.6047559,
+        "meanMs": 66.7083850877193
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_insert\"",
+        "count": 114,
+        "sumSeconds": 9.5058487,
+        "meanMs": 83.38463771929825
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_select\"",
+        "count": 114,
+        "sumSeconds": 0.8551161999999999,
+        "meanMs": 7.501019298245613
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_sql\"",
+        "count": 114,
+        "sumSeconds": 10.360964899999999,
+        "meanMs": 90.88565701754385
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"total\"",
+        "count": 114,
+        "sumSeconds": 18.9367574,
+        "meanMs": 166.11190701754387
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_cleanup\"",
+        "count": 114,
+        "sumSeconds": 0.04809100000000001,
+        "meanMs": 0.42185087719298253
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_setup\"",
+        "count": 114,
+        "sumSeconds": 0.03986839999999999,
+        "meanMs": 0.3497228070175438
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_select\"",
+        "count": 145,
+        "sumSeconds": 0.074511,
+        "meanMs": 0.5138689655172414
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 145,
+        "sumSeconds": 0.074511,
+        "meanMs": 0.5138689655172414
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"pending_scan\"",
+        "count": 145,
+        "sumSeconds": 0.2517566,
+        "meanMs": 1.7362524137931035
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"request_validation\"",
+        "count": 145,
+        "sumSeconds": 0.1185438,
+        "meanMs": 0.8175434482758621
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"total\"",
+        "count": 145,
+        "sumSeconds": 19.5956998,
+        "meanMs": 135.1427572413793
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"broker_confirm\",outcome=\"done\",phase=\"send_to_callback\"",
+        "count": 16083,
+        "sumSeconds": 1294.1163724,
+        "meanMs": 80.46486180438973
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"broker_confirm\",outcome=\"done\",phase=\"total\"",
+        "count": 16083,
+        "sumSeconds": 0.0231197,
+        "meanMs": 0.0014375240937636014
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_delete\"",
+        "count": 328,
+        "sumSeconds": 19.9022672,
+        "meanMs": 60.67764390243903
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 328,
+        "sumSeconds": 19.9022672,
+        "meanMs": 60.67764390243903
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"redis_pipeline\"",
+        "count": 328,
+        "sumSeconds": 3.2339892999999997,
+        "meanMs": 9.859723475609755
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"total\"",
+        "count": 397,
+        "sumSeconds": 23.771021,
+        "meanMs": 59.87662720403023
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"confirm_queue\",outcome=\"done\",phase=\"total\"",
+        "count": 16083,
+        "sumSeconds": 0.005636599999999999,
+        "meanMs": 0.00035046943978113535
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"confirm_queue\",outcome=\"done\",phase=\"wait\"",
+        "count": 16083,
+        "sumSeconds": 4883.1337494,
+        "meanMs": 303.62082630106323
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"activity_lock\"",
+        "count": 2912,
+        "sumSeconds": 5.8067788,
+        "meanMs": 1.9940861263736265
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"body\"",
+        "count": 2912,
+        "sumSeconds": 88.9582538,
+        "meanMs": 30.54885089285714
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"commit_window\"",
+        "count": 2912,
+        "sumSeconds": 154.33314420000002,
+        "meanMs": 52.99901929945055
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"details\"",
+        "count": 2912,
+        "sumSeconds": 8.1340947,
+        "meanMs": 2.7933017513736265
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"guard_insert\"",
+        "count": 2912,
+        "sumSeconds": 10.1265503,
+        "meanMs": 3.4775241414835167
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_false\"",
+        "count": 2912,
+        "sumSeconds": 1.0191789,
+        "meanMs": 0.3499927541208791
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_true\"",
+        "count": 2912,
+        "sumSeconds": 0.9761162000000001,
+        "meanMs": 0.335204739010989
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_commit\"",
+        "count": 2912,
+        "sumSeconds": 154.2582649,
+        "meanMs": 52.97330525412088
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_insert\"",
+        "count": 2912,
+        "sumSeconds": 62.8852104,
+        "meanMs": 21.59519587912088
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_select\"",
+        "count": 2912,
+        "sumSeconds": 6.7869782999999995,
+        "meanMs": 2.3306930975274724
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_sql\"",
+        "count": 2912,
+        "sumSeconds": 80.6468994,
+        "meanMs": 27.69467699175824
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_update\"",
+        "count": 2912,
+        "sumSeconds": 10.9747107,
+        "meanMs": 3.76878801510989
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"order_insert\"",
+        "count": 2912,
+        "sumSeconds": 10.685151600000001,
+        "meanMs": 3.6693515109890114
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"request_lock\"",
+        "count": 2912,
+        "sumSeconds": 2.2034542,
+        "meanMs": 0.7566807005494506
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"reservation\"",
+        "count": 2912,
+        "sumSeconds": 8.9325126,
+        "meanMs": 3.0674837225274727
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"stock_update\"",
+        "count": 2912,
+        "sumSeconds": 4.0609582,
+        "meanMs": 1.3945598214285715
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"success_state\"",
+        "count": 2912,
+        "sumSeconds": 14.1190263,
+        "meanMs": 4.848566723901099
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"timeout_outbox\"",
+        "count": 2912,
+        "sumSeconds": 24.5984239,
+        "meanMs": 8.44726095467033
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"total\"",
+        "count": 2912,
+        "sumSeconds": 245.62757519999997,
+        "meanMs": 84.35012884615384
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_cleanup\"",
+        "count": 2912,
+        "sumSeconds": 1.0245101,
+        "meanMs": 0.3518235233516484
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_setup\"",
+        "count": 2912,
+        "sumSeconds": 1.2112807,
+        "meanMs": 0.4159617788461539
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"writer_gate_wait\"",
+        "count": 2912,
+        "sumSeconds": 0.0053159,
+        "meanMs": 0.0018255151098901098
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"address\"",
+        "count": 2912,
+        "sumSeconds": 9.640357400000001,
+        "meanMs": 3.3105622939560444
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_select\"",
+        "count": 2912,
+        "sumSeconds": 2.392282,
+        "meanMs": 0.821525412087912
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 2912,
+        "sumSeconds": 2.392282,
+        "meanMs": 0.821525412087912
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"quote\"",
+        "count": 2912,
+        "sumSeconds": 12.8940789,
+        "meanMs": 4.427911710164835
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"snapshot\"",
+        "count": 2912,
+        "sumSeconds": 3.0347184,
+        "meanMs": 1.0421423076923078
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"total\"",
+        "count": 2912,
+        "sumSeconds": 25.851401099999997,
+        "meanMs": 8.87754158653846
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"commit_window\"",
+        "count": 245,
+        "sumSeconds": 3.6241249,
+        "meanMs": 14.792346530612244
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"jdbc_auto_commit_false\"",
+        "count": 245,
+        "sumSeconds": 0.05553010000000003,
+        "meanMs": 0.2266534693877552
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"jdbc_auto_commit_true\"",
+        "count": 245,
+        "sumSeconds": 0.058503200000000005,
+        "meanMs": 0.23878857142857146
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"jdbc_commit\"",
+        "count": 245,
+        "sumSeconds": 3.6211793000000005,
+        "meanMs": 14.780323673469391
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"jdbc_select\"",
+        "count": 245,
+        "sumSeconds": 0.8454458999999999,
+        "meanMs": 3.450799591836734
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 245,
+        "sumSeconds": 8.4650218,
+        "meanMs": 34.551109387755105
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"jdbc_update\"",
+        "count": 86,
+        "sumSeconds": 7.6195759,
+        "meanMs": 88.59971976744185
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"total\"",
+        "count": 245,
+        "sumSeconds": 12.494595399999998,
+        "meanMs": 50.998348571428565
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"transaction_cleanup\"",
+        "count": 245,
+        "sumSeconds": 0.11753630000000004,
+        "meanMs": 0.47974000000000017
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_claim\",outcome=\"done\",phase=\"transaction_setup\"",
+        "count": 245,
+        "sumSeconds": 0.16210420000000003,
+        "meanMs": 0.6616497959183675
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"commit_window\"",
+        "count": 103,
+        "sumSeconds": 5.9283274,
+        "meanMs": 57.55657669902913
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_auto_commit_false\"",
+        "count": 103,
+        "sumSeconds": 0.033668899999999995,
+        "meanMs": 0.3268825242718446
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_auto_commit_true\"",
+        "count": 103,
+        "sumSeconds": 0.031443599999999995,
+        "meanMs": 0.3052776699029126
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_commit\"",
+        "count": 103,
+        "sumSeconds": 5.9270207,
+        "meanMs": 57.54389029126214
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 103,
+        "sumSeconds": 7.181071,
+        "meanMs": 69.7191359223301
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_update\"",
+        "count": 103,
+        "sumSeconds": 7.181071,
+        "meanMs": 69.7191359223301
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"total\"",
+        "count": 103,
+        "sumSeconds": 13.2163411,
+        "meanMs": 128.31399126213591
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"transaction_cleanup\"",
+        "count": 103,
+        "sumSeconds": 0.033208,
+        "meanMs": 0.3224077669902912
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"transaction_setup\"",
+        "count": 103,
+        "sumSeconds": 0.0399815,
+        "meanMs": 0.3881699029126214
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"monitor_wait\"",
+        "count": 112,
+        "sumSeconds": 3.8355416,
+        "meanMs": 34.24590714285714
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"send_loop\"",
+        "count": 112,
+        "sumSeconds": 34.2415052,
+        "meanMs": 305.727725
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"total\"",
+        "count": 112,
+        "sumSeconds": 50.263732100000006,
+        "meanMs": 448.78332232142867
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_flush\",outcome=\"done\",phase=\"monitor_wait\"",
+        "count": 150,
+        "sumSeconds": 40.9125776,
+        "meanMs": 272.75051733333333
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_flush\",outcome=\"done\",phase=\"total\"",
+        "count": 150,
+        "sumSeconds": 54.1714751,
+        "meanMs": 361.14316733333334
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_timeout\",outcome=\"done\",phase=\"monitor_wait\"",
+        "count": 133,
+        "sumSeconds": 44.553371999999996,
+        "meanMs": 334.9877593984962
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_timeout\",outcome=\"done\",phase=\"send_loop\"",
+        "count": 133,
+        "sumSeconds": 0.0002714,
+        "meanMs": 0.0020406015037593983
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_timeout\",outcome=\"done\",phase=\"total\"",
+        "count": 133,
+        "sumSeconds": 44.9033077,
+        "meanMs": 337.61885488721805
+      }
+    ],
+    "serverCommit": {
+      "count": 3934,
+      "meanMs": 51.60246403152008,
+      "windowSeconds": 62.01452994346619,
+      "filesGlobal": {
+        "wait/io/file/innodb/innodb_data_file": {
+          "reads": 442,
+          "readPs": 110071996584,
+          "writes": 4489,
+          "writePs": 401254533920,
+          "misc": 2662,
+          "miscPs": 54574880935742
+        },
+        "wait/io/file/innodb/innodb_dblwr_file": {
+          "reads": 0,
+          "readPs": 0,
+          "writes": 1091,
+          "writePs": 798033978526,
+          "misc": 0,
+          "miscPs": 0
+        },
+        "wait/io/file/innodb/innodb_log_file": {
+          "reads": 0,
+          "readPs": 0,
+          "writes": 29950,
+          "writePs": 2477526830668,
+          "misc": 414,
+          "miscPs": 1806766456272
+        },
+        "wait/io/file/sql/binlog": {
+          "reads": 0,
+          "readPs": 0,
+          "writes": 15162,
+          "writePs": 23905799162660,
+          "misc": 2701,
+          "miscPs": 38482202411256
+        }
+      }
+    },
+    "mysqlSamplingErrors": 0
+  },
+  {
+    "round": "pubdiag2",
+    "completed": 18958,
+    "capacityRejected": 28409,
+    "dropped": 622,
+    "otherRejected": 12,
+    "stageTimings": [
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"accept_insert\"",
+        "count": 140,
+        "sumSeconds": 5.0023527,
+        "meanMs": 35.73109071428572
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"activity_metadata\"",
+        "count": 140,
+        "sumSeconds": 0.1027797,
+        "meanMs": 0.7341407142857144
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"body\"",
+        "count": 140,
+        "sumSeconds": 12.5854015,
+        "meanMs": 89.895725
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"command_outbox\"",
+        "count": 140,
+        "sumSeconds": 6.1430289,
+        "meanMs": 43.87877785714286
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"commit_window\"",
+        "count": 140,
+        "sumSeconds": 8.4447115,
+        "meanMs": 60.319367857142865
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_false\"",
+        "count": 140,
+        "sumSeconds": 0.0603431,
+        "meanMs": 0.43102214285714285
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_auto_commit_true\"",
+        "count": 140,
+        "sumSeconds": 0.0420023,
+        "meanMs": 0.3000164285714286
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_commit\"",
+        "count": 140,
+        "sumSeconds": 8.4403809,
+        "meanMs": 60.288434999999986
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_insert\"",
+        "count": 140,
+        "sumSeconds": 9.6160068,
+        "meanMs": 68.68576285714285
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_select\"",
+        "count": 140,
+        "sumSeconds": 1.0351473,
+        "meanMs": 7.393909285714287
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"jdbc_sql\"",
+        "count": 140,
+        "sumSeconds": 10.6511541,
+        "meanMs": 76.07967214285713
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"total\"",
+        "count": 140,
+        "sumSeconds": 21.1563126,
+        "meanMs": 151.11651857142857
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_cleanup\"",
+        "count": 140,
+        "sumSeconds": 0.0449148,
+        "meanMs": 0.32082
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_batch\",outcome=\"bridged\",phase=\"transaction_setup\"",
+        "count": 140,
+        "sumSeconds": 0.0733861,
+        "meanMs": 0.5241864285714286
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_select\"",
+        "count": 194,
+        "sumSeconds": 0.091566,
+        "meanMs": 0.4719896907216494
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 194,
+        "sumSeconds": 0.091566,
+        "meanMs": 0.4719896907216494
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"pending_scan\"",
+        "count": 194,
+        "sumSeconds": 0.418737,
+        "meanMs": 2.1584381443298972
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"request_validation\"",
+        "count": 195,
+        "sumSeconds": 0.3079214,
+        "meanMs": 1.5790841025641027
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"bridge_cycle\",outcome=\"done\",phase=\"total\"",
+        "count": 194,
+        "sumSeconds": 22.879737900000002,
+        "meanMs": 117.93679329896909
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"broker_confirm\",outcome=\"done\",phase=\"send_to_callback\"",
+        "count": 18958,
+        "sumSeconds": 1195.1053728,
+        "meanMs": 63.0396335478426
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"broker_confirm\",outcome=\"done\",phase=\"total\"",
+        "count": 18958,
+        "sumSeconds": 0.0261551,
+        "meanMs": 0.0013796339276294968
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_delete\"",
+        "count": 294,
+        "sumSeconds": 19.7088256,
+        "meanMs": 67.03682176870748
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 294,
+        "sumSeconds": 19.7088256,
+        "meanMs": 67.03682176870748
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"redis_pipeline\"",
+        "count": 294,
+        "sumSeconds": 3.6636665,
+        "meanMs": 12.46145068027211
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"cache_sync\",outcome=\"done\",phase=\"total\"",
+        "count": 383,
+        "sumSeconds": 24.6799276,
+        "meanMs": 64.43845326370757
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"commit_window\"",
+        "count": 101,
+        "sumSeconds": 3.2495276,
+        "meanMs": 32.1735405940594
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"jdbc_auto_commit_false\"",
+        "count": 101,
+        "sumSeconds": 0.0207728,
+        "meanMs": 0.20567128712871288
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"jdbc_auto_commit_true\"",
+        "count": 101,
+        "sumSeconds": 0.0256113,
+        "meanMs": 0.2535772277227723
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"jdbc_commit\"",
+        "count": 101,
+        "sumSeconds": 3.247689,
+        "meanMs": 32.15533663366337
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"jdbc_select\"",
+        "count": 101,
+        "sumSeconds": 0.5872319,
+        "meanMs": 5.814177227722772
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"jdbc_sql\"",
+        "count": 101,
+        "sumSeconds": 6.8464801,
+        "meanMs": 67.78693168316832
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"jdbc_update\"",
+        "count": 101,
+        "sumSeconds": 6.2592482,
+        "meanMs": 61.972754455445546
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"total\"",
+        "count": 101,
+        "sumSeconds": 10.5386375,
+        "meanMs": 104.34294554455447
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"transaction_cleanup\"",
+        "count": 101,
+        "sumSeconds": 0.048718,
+        "meanMs": 0.48235643564356434
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"claimed\",phase=\"transaction_setup\"",
+        "count": 101,
+        "sumSeconds": 0.0638547,
+        "meanMs": 0.6322247524752476
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"commit_window\"",
+        "count": 61,
+        "sumSeconds": 0.0159064,
+        "meanMs": 0.26076065573770496
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"jdbc_auto_commit_false\"",
+        "count": 61,
+        "sumSeconds": 0.012746299999999999,
+        "meanMs": 0.208955737704918
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"jdbc_auto_commit_true\"",
+        "count": 61,
+        "sumSeconds": 0.012489599999999997,
+        "meanMs": 0.20474754098360648
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"jdbc_commit\"",
+        "count": 61,
+        "sumSeconds": 0.014434700000000002,
+        "meanMs": 0.23663442622950823
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"jdbc_select\"",
+        "count": 61,
+        "sumSeconds": 0.04339330000000001,
+        "meanMs": 0.711365573770492
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"jdbc_sql\"",
+        "count": 61,
+        "sumSeconds": 0.04339330000000001,
+        "meanMs": 0.711365573770492
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"total\"",
+        "count": 61,
+        "sumSeconds": 0.1418041,
+        "meanMs": 2.32465737704918
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"transaction_cleanup\"",
+        "count": 61,
+        "sumSeconds": 0.025501800000000005,
+        "meanMs": 0.4180622950819673
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_create\",outcome=\"empty\",phase=\"transaction_setup\"",
+        "count": 61,
+        "sumSeconds": 0.0386146,
+        "meanMs": 0.6330262295081966
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"commit_window\"",
+        "count": 181,
+        "sumSeconds": 0.051588300000000004,
+        "meanMs": 0.2850182320441989
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"jdbc_auto_commit_false\"",
+        "count": 181,
+        "sumSeconds": 0.0420069,
+        "meanMs": 0.23208232044198895
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"jdbc_auto_commit_true\"",
+        "count": 181,
+        "sumSeconds": 0.0417519,
+        "meanMs": 0.23067348066298343
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"jdbc_commit\"",
+        "count": 181,
+        "sumSeconds": 0.047958200000000006,
+        "meanMs": 0.26496243093922656
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"jdbc_select\"",
+        "count": 181,
+        "sumSeconds": 0.1039774,
+        "meanMs": 0.574460773480663
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"jdbc_sql\"",
+        "count": 181,
+        "sumSeconds": 0.1039774,
+        "meanMs": 0.574460773480663
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"total\"",
+        "count": 181,
+        "sumSeconds": 0.5784194,
+        "meanMs": 3.1956872928176794
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"transaction_cleanup\"",
+        "count": 181,
+        "sumSeconds": 0.0866614,
+        "meanMs": 0.47879226519337015
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"claim_timeout\",outcome=\"empty\",phase=\"transaction_setup\"",
+        "count": 181,
+        "sumSeconds": 0.29973890000000003,
+        "meanMs": 1.6560160220994478
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"confirm_queue\",outcome=\"done\",phase=\"total\"",
+        "count": 18958,
+        "sumSeconds": 0.004708,
+        "meanMs": 0.0002483384323240848
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"confirm_queue\",outcome=\"done\",phase=\"wait\"",
+        "count": 18958,
+        "sumSeconds": 4239.5455493,
+        "meanMs": 223.62831254879208
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"activity_lock\"",
+        "count": 3099,
+        "sumSeconds": 6.0941781,
+        "meanMs": 1.9664982575024201
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"body\"",
+        "count": 3099,
+        "sumSeconds": 79.9677357,
+        "meanMs": 25.804367763794772
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"commit_window\"",
+        "count": 3099,
+        "sumSeconds": 171.5147243,
+        "meanMs": 55.34518370442078
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"details\"",
+        "count": 3099,
+        "sumSeconds": 4.0514296,
+        "meanMs": 1.3073344949983865
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"guard_insert\"",
+        "count": 3099,
+        "sumSeconds": 9.8794296,
+        "meanMs": 3.187941142303969
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_false\"",
+        "count": 3099,
+        "sumSeconds": 0.9233936,
+        "meanMs": 0.2979650209745079
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_auto_commit_true\"",
+        "count": 3099,
+        "sumSeconds": 0.9152939,
+        "meanMs": 0.2953513714101323
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_commit\"",
+        "count": 3099,
+        "sumSeconds": 171.4230678,
+        "meanMs": 55.315607550822854
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_insert\"",
+        "count": 3099,
+        "sumSeconds": 44.2912061,
+        "meanMs": 14.292096192320102
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_select\"",
+        "count": 3099,
+        "sumSeconds": 6.6617114,
+        "meanMs": 2.149632591158438
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_sql\"",
+        "count": 3099,
+        "sumSeconds": 66.6625534,
+        "meanMs": 21.51098851242336
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"jdbc_update\"",
+        "count": 3099,
+        "sumSeconds": 15.7096359,
+        "meanMs": 5.069259728944822
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"order_insert\"",
+        "count": 3099,
+        "sumSeconds": 14.0457587,
+        "meanMs": 4.532351952242659
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"request_lock\"",
+        "count": 3099,
+        "sumSeconds": 2.5032689,
+        "meanMs": 0.8077666666666666
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"reservation\"",
+        "count": 3099,
+        "sumSeconds": 6.433042,
+        "meanMs": 2.0758444659567603
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"stock_update\"",
+        "count": 3099,
+        "sumSeconds": 6.2160204,
+        "meanMs": 2.00581490803485
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"success_state\"",
+        "count": 3099,
+        "sumSeconds": 18.6022186,
+        "meanMs": 6.0026520167796065
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"timeout_outbox\"",
+        "count": 3099,
+        "sumSeconds": 11.35986,
+        "meanMs": 3.6656534365924487
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"total\"",
+        "count": 3099,
+        "sumSeconds": 253.8283704,
+        "meanMs": 81.90654094869313
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_cleanup\"",
+        "count": 3099,
+        "sumSeconds": 0.9795198,
+        "meanMs": 0.31607608906098744
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"transaction_setup\"",
+        "count": 3099,
+        "sumSeconds": 1.2279698,
+        "meanMs": 0.39624711197160367
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"consume_batch\",outcome=\"created\",phase=\"writer_gate_wait\"",
+        "count": 3099,
+        "sumSeconds": 0.0066614,
+        "meanMs": 0.0021495321071313325
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"address\"",
+        "count": 3099,
+        "sumSeconds": 7.3970461,
+        "meanMs": 2.386913875443691
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_select\"",
+        "count": 3099,
+        "sumSeconds": 2.2216441,
+        "meanMs": 0.7168906421426267
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 3099,
+        "sumSeconds": 2.2216441,
+        "meanMs": 0.7168906421426267
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"quote\"",
+        "count": 3099,
+        "sumSeconds": 9.478613,
+        "meanMs": 3.058603743142949
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"snapshot\"",
+        "count": 3099,
+        "sumSeconds": 3.0297224,
+        "meanMs": 0.9776451758631816
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"prepare\",outcome=\"done\",phase=\"total\"",
+        "count": 3099,
+        "sumSeconds": 20.4770707,
+        "meanMs": 6.607638173604388
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"commit_window\"",
+        "count": 124,
+        "sumSeconds": 7.6572065,
+        "meanMs": 61.75166532258065
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_auto_commit_false\"",
+        "count": 124,
+        "sumSeconds": 0.0326023,
+        "meanMs": 0.2629217741935484
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_auto_commit_true\"",
+        "count": 124,
+        "sumSeconds": 0.0338789,
+        "meanMs": 0.273216935483871
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_commit\"",
+        "count": 124,
+        "sumSeconds": 7.6553264,
+        "meanMs": 61.73650322580645
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_sql\"",
+        "count": 124,
+        "sumSeconds": 8.0360887,
+        "meanMs": 64.80716693548388
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"jdbc_update\"",
+        "count": 124,
+        "sumSeconds": 8.0360887,
+        "meanMs": 64.80716693548388
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"total\"",
+        "count": 124,
+        "sumSeconds": 15.8353429,
+        "meanMs": 127.70437822580645
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"transaction_cleanup\"",
+        "count": 124,
+        "sumSeconds": 0.0363142,
+        "meanMs": 0.29285645161290325
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_complete\",outcome=\"done\",phase=\"transaction_setup\"",
+        "count": 124,
+        "sumSeconds": 0.0427661,
+        "meanMs": 0.3448879032258065
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"convert_send\"",
+        "count": 101,
+        "sumSeconds": 27.299034,
+        "meanMs": 270.28746534653465
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"monitor_wait\"",
+        "count": 162,
+        "sumSeconds": 5.7230626,
+        "meanMs": 35.32754691358025
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"payload_decode\"",
+        "count": 101,
+        "sumSeconds": 0.534826,
+        "meanMs": 5.295306930693069
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"send_loop\"",
+        "count": 162,
+        "sumSeconds": 28.0937502,
+        "meanMs": 173.4182111111111
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_create\",outcome=\"done\",phase=\"total\"",
+        "count": 162,
+        "sumSeconds": 44.5367551,
+        "meanMs": 274.9182413580247
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_flush\",outcome=\"done\",phase=\"monitor_wait\"",
+        "count": 242,
+        "sumSeconds": 32.9267339,
+        "meanMs": 136.0608838842975
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_flush\",outcome=\"done\",phase=\"total\"",
+        "count": 242,
+        "sumSeconds": 48.860027,
+        "meanMs": 201.90093801652893
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_timeout\",outcome=\"done\",phase=\"monitor_wait\"",
+        "count": 181,
+        "sumSeconds": 37.361054599999996,
+        "meanMs": 206.41466629834252
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_timeout\",outcome=\"done\",phase=\"send_loop\"",
+        "count": 181,
+        "sumSeconds": 0.00037700000000000006,
+        "meanMs": 0.0020828729281767958
+      },
+      {
+        "labels": "application=\"trade-service\",operation=\"publish_timeout\",outcome=\"done\",phase=\"total\"",
+        "count": 181,
+        "sumSeconds": 37.9727166,
+        "meanMs": 209.79401436464087
+      }
+    ],
+    "serverCommit": {
+      "count": 4307,
+      "meanMs": 52.16757406547481,
+      "windowSeconds": 62.04122185707092,
+      "filesGlobal": {
+        "wait/io/file/innodb/innodb_data_file": {
+          "reads": 479,
+          "readPs": 126016882370,
+          "writes": 6063,
+          "writePs": 370747371046,
+          "misc": 3513,
+          "miscPs": 46494233465876
+        },
+        "wait/io/file/innodb/innodb_dblwr_file": {
+          "reads": 0,
+          "readPs": 0,
+          "writes": 1507,
+          "writePs": 694043054478,
+          "misc": 0,
+          "miscPs": 0
+        },
+        "wait/io/file/innodb/innodb_log_file": {
+          "reads": 0,
+          "readPs": 0,
+          "writes": 33568,
+          "writePs": 2862283060174,
+          "misc": 522,
+          "miscPs": 3680368119818
+        },
+        "wait/io/file/sql/binlog": {
+          "reads": 0,
+          "readPs": 0,
+          "writes": 17475,
+          "writePs": 21089717454754,
+          "misc": 2772,
+          "miscPs": 33428639180700
+        }
+      }
+    },
+    "mysqlSamplingErrors": 0
+  }
+]

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 閻犱降鍨瑰畷鐔虹不閿涘嫭鍊?
+ * 订单管理
  */
 @RestController("adminOrderController")
 @RequestMapping("/admin/order")
@@ -28,7 +28,7 @@ public class OrderController {
     private OrderService orderService;
 
     /**
-     * 閻犱降鍨瑰畷鐔煎箹濠婂懎鍋?
+     * 订单搜索
      *
      * @param ordersPageQueryDTO
      * @return
@@ -41,7 +41,7 @@ public class OrderController {
     }
 
     /**
-     * 闁告艾瀚柌婊堟偐閼哥鍋撴担鐑樼暠閻犱降鍨瑰畷鐔煎极娴兼潙娅ょ紓浣哄枙椤?
+     * 各个状态的订单数量统计
      *
      * @return
      */
@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     /**
-     * 閻犱降鍨瑰畷鐔烘嫚閿旇棄鍓?
+     * 订单详情
      *
      * @param id
      * @return
@@ -66,7 +66,7 @@ public class OrderController {
     }
 
     /**
-     * 闁规亽鍎卞畷?
+     * 接单
      *
      * @return
      */
@@ -78,7 +78,7 @@ public class OrderController {
     }
 
     /**
-     * 闁归攱甯掑畷?
+     * 拒单
      *
      * @return
      */
@@ -90,7 +90,7 @@ public class OrderController {
     }
 
     /**
-     * 闁告瑦鐗楃粔椋庢媼閵忕姴绀?
+     * 取消订单
      *
      * @return
      */
@@ -102,7 +102,7 @@ public class OrderController {
     }
 
     /**
-     * 婵炴煡绠栭埀顑挎祰椤撳綊宕?
+     * 派送订单
      *
      * @return
      */
@@ -114,7 +114,7 @@ public class OrderController {
     }
 
     /**
-     * 閻庣懓鏈崹姘辨媼閵忕姴绀?
+     * 完成订单
      *
      * @return
      */

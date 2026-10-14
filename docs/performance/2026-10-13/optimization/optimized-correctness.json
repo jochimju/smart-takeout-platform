@@ -1,0 +1,65 @@
+{
+  "cacheEvents": 0,
+  "failedReasons": [
+    {
+      "reason": "秒杀建单等待超时",
+      "count": 9300
+    },
+    {
+      "reason": "秒杀建单等待超时，请重新抢购",
+      "count": 32569
+    }
+  ],
+  "duplicateActiveUserGuards": 0,
+  "duplicateOrderNumbers": 0,
+  "activities": [
+    {
+      "id": 1,
+      "initialStock": 60000,
+      "mysqlStock": 59999,
+      "redisStock": 59999,
+      "activeGuards": 1,
+      "redisUsers": 1,
+      "redisPending": 0,
+      "requestStates": {
+        "SUCCEEDED": 2001
+      },
+      "orderStates": {
+        "6": 2000,
+        "2": 1
+      }
+    },
+    {
+      "id": 2,
+      "initialStock": 60000,
+      "mysqlStock": 60000,
+      "redisStock": 60000,
+      "activeGuards": 0,
+      "redisUsers": 0,
+      "redisPending": 0,
+      "requestStates": {
+        "FAILED": 41869,
+        "SUCCEEDED": 6132
+      },
+      "orderStates": {
+        "6": 6132
+      }
+    },
+    {
+      "id": 3,
+      "initialStock": 100,
+      "mysqlStock": 99,
+      "redisStock": 99,
+      "activeGuards": 1,
+      "redisUsers": 1,
+      "redisPending": 0,
+      "requestStates": {
+        "SUCCEEDED": 3
+      },
+      "orderStates": {
+        "6": 2,
+        "2": 1
+      }
+    }
+  ]
+}

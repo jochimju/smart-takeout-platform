@@ -33,6 +33,7 @@ public class OrderReliabilityTask {
     private final JdbcTemplate jdbc;
     private final TransactionTemplate transactions;
 
+    /** 处理已有可靠性任务与退款；当前普通建单未调用 scheduleTimeout，不能理解为扫描所有订单。 */
     @Scheduled(fixedDelayString="${sky.order.reliability-dispatch-ms:1000}")
     public void dispatch() {
         for(Map<String,Object> job:store.ready()) {
@@ -50,16 +51,16 @@ public class OrderReliabilityTask {
         }
     }
 
+    /** 已有超时任务按剩余期限发延迟消息；已到期直接投关闭队列，不再等待完整 15 分钟。 */
     public void publishTimeout(Map<String,Object> job,String token) throws Exception {
         String id=(String)job.get("id"), number=(String)job.get("order_number");
         LocalDateTime due=toLocalDateTime(job.get("due_at"));
         long remaining=Duration.between(LocalDateTime.now(),due).toMillis();
-        String routing=remaining>0 ? MqConstant.ORDER_DELAY_ROUTING_KEY : MqConstant.ORDER_DEAD_ROUTING_KEY;
+        String routing=com.sky.service.mq.TimeoutRouting.route(remaining);
         CorrelationData correlation=new CorrelationData(id+":"+token);
         rabbit.convertAndSend(MqConstant.ORDER_DELAY_EXCHANGE,routing,number,message -> {
             message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
             message.getMessageProperties().setMessageId(id);
-            if(remaining>0) message.getMessageProperties().setExpiration(Long.toString(Math.max(1,remaining)));
             return message;
         },correlation);
         CorrelationData.Confirm confirm=correlation.getFuture().get(5,TimeUnit.SECONDS);
@@ -75,6 +76,7 @@ public class OrderReliabilityTask {
         throw new IllegalStateException("unsupported due_at value: " + value);
     }
 
+    /** 真实退款先查询固定退款号；处理中稍后再查，成功后才将支付状态改为已退款。 */
     public void refund(Map<String,Object> job,String token) throws Exception {
         String number=(String)job.get("order_number"), id=(String)job.get("id");
         boolean mock=OrderLifecycleService.asBoolean(job.get("mock_payment"));
@@ -100,6 +102,13 @@ public class OrderReliabilityTask {
                 throw new IllegalStateException("refund response does not match task");
         }
         transactions.executeWithoutResult(status -> {
+            if (number.startsWith("RP")) {
+                var purchases=jdbc.queryForList("select status from red_packet_purchase_order where order_no=? for update",number);
+                if(purchases.size()!=1 || !java.util.Set.of(3,4).contains(((Number)purchases.get(0).get("status")).intValue()))
+                    throw new IllegalStateException("red packet refund state mismatch");
+                jdbc.update("update red_packet_purchase_order set status=4 where order_no=? and status=3",number);
+                store.done(id); return;
+            }
             // Match lifecycle lock ordering: order first, then job.
             List<Map<String,Object>> orders=jdbc.queryForList("select status,pay_status from orders where number=? for update",number);
             if(orders.size()!=1 || ((Number)orders.get(0).get("status")).intValue()!=6)

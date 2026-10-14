@@ -1,4 +1,10 @@
 server:
+  tomcat:
+    accept-count: ${SKY_HTTP_ACCEPT_COUNT:1024}
+    max-connections: ${SKY_HTTP_MAX_CONNECTIONS:4096}
+    threads:
+      max: ${SKY_HTTP_MAX_THREADS:256}
+      min-spare: 32
   port: ${SKY_ACCOUNT_PORT:8082}
 
 spring:
@@ -7,7 +13,7 @@ spring:
   config:
     import: ${NACOS_CONFIG_IMPORT:optional:nacos:account-service.yml}
   profiles:
-    active: dev
+    default: prod
   cloud:
     nacos:
       username: ${NACOS_USERNAME:}
@@ -20,6 +26,10 @@ spring:
         namespace: ${NACOS_NAMESPACE:}
   datasource:
     druid:
+      initial-size: ${SKY_DB_INITIAL_SIZE:8}
+      min-idle: ${SKY_DB_MIN_IDLE:8}
+      max-active: ${SKY_DB_MAX_ACTIVE:32}
+      max-wait: ${SKY_DB_MAX_WAIT_MS:1000}
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://${SKY_DB_HOST:localhost}:${SKY_DB_PORT:3306}/${SKY_ACCOUNT_DB:sky_take_out_account}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
       username: ${SKY_DB_USER:root}
@@ -40,13 +50,18 @@ logging:
     level: "%5p [trace=%X{traceId:-}]"
 
 sky:
+  employee:
+    initial-password: ${SKY_EMPLOYEE_INITIAL_PASSWORD:}
+  security:
+    docs-enabled: false
+    cors-origins: ${SKY_CORS_ORIGINS:}
   internal:
-    token: ${SKY_INTERNAL_TOKEN:dev-only-change-me}
+    token: ${SKY_INTERNAL_TOKEN:}
   jwt:
-    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:itcast}
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:}
     admin-ttl: 7200000
     admin-token-name: token
-    user-secret-key: ${SKY_JWT_USER_SECRET:itheima}
+    user-secret-key: ${SKY_JWT_USER_SECRET:}
     user-ttl: 7200000
     user-token-name: authentication
   wechat:

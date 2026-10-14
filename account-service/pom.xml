@@ -10,6 +10,7 @@
     </parent>
     <artifactId>account-service</artifactId>
     <dependencies>
+        <dependency><groupId>com.sky</groupId><artifactId>sky-security</artifactId><version>${project.version}</version></dependency>
         <dependency>
             <groupId>com.sky</groupId>
             <artifactId>sky-common</artifactId>

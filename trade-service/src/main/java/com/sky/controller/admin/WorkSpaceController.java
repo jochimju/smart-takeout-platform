@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * 瀹搞儰缍旈崣?
+ * 工作台
  */
 @RestController
 @RequestMapping("/admin/workspace")
@@ -29,15 +29,15 @@ public class WorkSpaceController {
     private WorkspaceService workspaceService;
 
     /**
-     * 瀹搞儰缍旈崣棰佺矕閺冦儲鏆熼幑顔界叀鐠?
+     * 工作台今日数据查询
      * @return
      */
     @GetMapping("/businessData")
     @ApiOperation("today business data")
     public Result<BusinessDataVO> businessData(){
-        //閼惧嘲绶辫ぐ鎾炽亯閻ㄥ嫬绱戞慨瀣闂?
+        //获得当天的开始时间
         LocalDateTime begin = LocalDateTime.now().with(LocalTime.MIN);
-        //閼惧嘲绶辫ぐ鎾炽亯閻ㄥ嫮绮ㄩ弶鐔告闂?
+        //获得当天的结束时间
         LocalDateTime end = LocalDateTime.now().with(LocalTime.MAX);
 
         BusinessDataVO businessDataVO = workspaceService.getBusinessData(begin, end);
@@ -45,17 +45,17 @@ public class WorkSpaceController {
     }
 
     /**
-     * 閺屻儴顕楃拋銏犲礋缁狅紕鎮婇弫鐗堝祦
+     * 查询订单管理数据
      * @return
      */
     @GetMapping("/overviewOrders")
-    @ApiOperation("閺屻儴顕楃拋銏犲礋缁狅紕鎮婇弫鐗堝祦")
+    @ApiOperation("查询订单管理数据")
     public Result<OrderOverViewVO> orderOverView(){
         return Result.success(workspaceService.getOrderOverView());
     }
 
     /**
-     * 閺屻儴顕楅懣婊冩惂閹槒顫?
+     * 查询菜品总览
      * @return
      */
     @GetMapping("/overviewDishes")
@@ -65,7 +65,7 @@ public class WorkSpaceController {
     }
 
     /**
-     * 閺屻儴顕楁總妤咁樀閹槒顫?
+     * 查询套餐总览
      * @return
      */
     @GetMapping("/overviewSetmeals")

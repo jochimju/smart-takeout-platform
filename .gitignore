@@ -31,6 +31,10 @@ catalog-service/src/main/resources/application-dev.yml
 catalog-service/src/main/resources/application-local.yml
 account-service/src/main/resources/application-dev.yml
 account-service/src/main/resources/application-local.yml
+gateway-service/src/main/resources/application-dev.yml
+gateway-service/src/main/resources/application-local.yml
+notification-service/src/main/resources/application-dev.yml
+notification-service/src/main/resources/application-local.yml
 *.pem
 *.key
 *.p12

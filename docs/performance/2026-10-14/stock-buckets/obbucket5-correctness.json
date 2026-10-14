@@ -1,0 +1,69 @@
+{
+  "database": "sky_perf_orderbucket5_20261014",
+  "activityId": 2,
+  "tradeStoppedForSnapshot": true,
+  "queues": {
+    "sky.seckill.order.v2.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.order.submit.v2.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.order.dead.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.0.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.1.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.2.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.3.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.4.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.5.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.6.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    },
+    "sky.seckill.order.bucket.7.v3.queue": {
+      "messages_ready": 0,
+      "messages_unacknowledged": 0
+    }
+  },
+  "pendingAcceptance": 0,
+  "cacheEvents": 0,
+  "pendingCommandOutbox": 0,
+  "dueTimeoutOutbox": 0,
+  "initialStock": 60000,
+  "mysqlStock": 35724,
+  "redisStock": 35724,
+  "guards": 24276,
+  "redisUsers": 24276,
+  "outstanding": 0,
+  "outstandingCount": 0,
+  "unbridged": 0,
+  "requestStates": {
+    "SUCCEEDED": 24276
+  },
+  "seckillOrders": 24276,
+  "duplicateUsers": 0,
+  "ordinaryOrders": 300
+}

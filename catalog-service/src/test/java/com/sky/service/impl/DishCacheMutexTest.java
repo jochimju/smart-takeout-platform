@@ -49,7 +49,7 @@ class DishCacheMutexTest {
         ReflectionTestUtils.setField(service, "redisTemplate", redis);
         ReflectionTestUtils.setField(service, "menuCache", new com.sky.cache.MenuCache(redis, lock, new com.sky.cache.MenuCacheMetrics()));
         categoryId = Math.abs(UUID.randomUUID().getMostSignificantBits());
-        key = "dish_" + categoryId;
+        key = dishKey(categoryId);
         lockKey = RedisKeyConstant.CACHE_LOCK + key;
         doReturn(menu).when(service).listWithFlavor(any(Dish.class));
     }
@@ -59,6 +59,11 @@ class DishCacheMutexTest {
         Thread.interrupted();
         lock.shutdown();
         redis.delete(Arrays.asList(key, lockKey));
+    }
+
+    private com.sky.cache.MenuCache cacheForKeys() { return (com.sky.cache.MenuCache) ReflectionTestUtils.getField(service, "menuCache"); }
+    private String dishKey(long id) {
+        return ReflectionTestUtils.invokeMethod(ReflectionTestUtils.getField(service, "menuCache"), "dishKey", id);
     }
 
     @Test
@@ -195,7 +200,7 @@ class DishCacheMutexTest {
         }).when(setmeals).list(any(com.sky.entity.Setmeal.class));
         ExecutorService pool = Executors.newFixedThreadPool(6);
         CountDownLatch start = new CountDownLatch(1);
-        String mealKey = "userSetmealCache::" + categoryId;
+        String mealKey = ReflectionTestUtils.invokeMethod(cacheForKeys(), "setmealKey", categoryId);
         try {
             List<Future<?>> futures = new ArrayList<>();
             for (int i = 0; i < 6; i++) futures.add(pool.submit(() -> {
@@ -223,10 +228,10 @@ class DishCacheMutexTest {
         dishCategory.setId(categoryId); dishCategory.setType(1);
         com.sky.entity.Category mealCategory = new com.sky.entity.Category();
         mealCategory.setId(categoryId); mealCategory.setType(2);
-        when(categories.list(null)).thenReturn(Arrays.asList(dishCategory, mealCategory));
+        when(categories.list(null, null)).thenReturn(Arrays.asList(dishCategory, mealCategory));
         when(setmeals.list(any())).thenReturn(Collections.emptyList());
         com.sky.cache.MenuCacheWarmup warmup = new com.sky.cache.MenuCacheWarmup(categories, service, setmeals, cache, true);
-        String mealKey = "userSetmealCache::" + categoryId;
+        String mealKey = ReflectionTestUtils.invokeMethod(cacheForKeys(), "setmealKey", categoryId);
         try {
             warmup.warmup(); warmup.warmup(); // 第二实例/重复预热复用已有缓存。
             assertEquals(1, cache.get("dish", categoryId, () -> { throw new AssertionError("unexpected load"); }).size());
@@ -237,29 +242,6 @@ class DishCacheMutexTest {
             assertEquals(1L, metrics.snapshot().get("dish").get("requests"));
             assertEquals(1L, metrics.snapshot().get("setmeal").get("warmupLoads"));
             assertTrue(redis.getExpire(mealKey, TimeUnit.SECONDS) <= 90);
-        } finally { redis.delete(mealKey); }
-    }
-
-    @Test
-    void springCacheEvictionStillClearsSetmealPayload() {
-        String mealKey = "userSetmealCache::" + categoryId;
-        com.sky.cache.MenuCache cache = new com.sky.cache.MenuCache(redis, lock, new com.sky.cache.MenuCacheMetrics());
-        try (org.springframework.context.annotation.AnnotationConfigApplicationContext context =
-                     new org.springframework.context.annotation.AnnotationConfigApplicationContext(EvictionConfig.class)) {
-            cache.get("setmeal", categoryId, Collections::emptyList);
-            com.sky.dto.SetmealDTO dto = new com.sky.dto.SetmealDTO();
-            dto.setCategoryId(categoryId);
-            com.sky.controller.admin.SetmealController controller = context.getBean(com.sky.controller.admin.SetmealController.class);
-            com.sky.service.SetmealService mockService = context.getBean(com.sky.service.SetmealService.class);
-            doThrow(new IllegalStateException("rollback")).when(mockService).update(any());
-            assertThrows(IllegalStateException.class, () -> controller.update(dto));
-            assertNotNull(redis.opsForValue().get(mealKey));
-            controller.save(dto);
-            assertNull(redis.opsForValue().get(mealKey));
-            cache.get("setmeal", categoryId, Collections::emptyList);
-            doNothing().when(mockService).update(any());
-            controller.update(dto);
-            assertNull(redis.opsForValue().get(mealKey));
         } finally { redis.delete(mealKey); }
     }
 
@@ -283,7 +265,7 @@ class DishCacheMutexTest {
             com.sky.cache.MenuCacheMetrics metrics = new com.sky.cache.MenuCacheMetrics();
             com.sky.cache.MenuCache cache = new com.sky.cache.MenuCache(redis, lock, metrics);
             List<String> keys = new ArrayList<>();
-            for (int i = 0; i < 10; i++) keys.add("dish_" + (categoryId + i));
+            for (int i = 0; i < 10; i++) keys.add(dishKey(categoryId + i));
             java.util.function.Supplier<List<DishVO>> loader = () -> {
                 try { Thread.sleep(5); } catch (InterruptedException e) { throw new IllegalStateException(e); }
                 return menu;
@@ -341,13 +323,13 @@ class DishCacheMutexTest {
         com.sky.cache.MenuCache cache = new com.sky.cache.MenuCache(redis, lock, metrics);
         com.sky.entity.Category a = new com.sky.entity.Category(); a.setId(categoryId); a.setType(1);
         com.sky.entity.Category b = new com.sky.entity.Category(); b.setId(categoryId); b.setType(2);
-        when(categories.list(null)).thenReturn(Arrays.asList(a,b));
+        when(categories.list(null, null)).thenReturn(Arrays.asList(a,b));
         doThrow(new IllegalStateException("failed dish query")).when(service).listWithFlavor(any());
         when(meals.list(any())).thenReturn(Collections.emptyList());
         try {
             assertDoesNotThrow(() -> new com.sky.cache.MenuCacheWarmup(categories, service, meals, cache, true).warmup());
             assertEquals(1L, metrics.snapshot().get("dish").get("warmupErrors"));
-            assertNotNull(redis.opsForValue().get("userSetmealCache::" + categoryId));
-        } finally { redis.delete("userSetmealCache::" + categoryId); }
+            assertNotNull(redis.opsForValue().get(ReflectionTestUtils.invokeMethod(cacheForKeys(), "setmealKey", categoryId)));
+        } finally { redis.delete((String) ReflectionTestUtils.invokeMethod(cacheForKeys(), "setmealKey", categoryId)); }
     }
 }
