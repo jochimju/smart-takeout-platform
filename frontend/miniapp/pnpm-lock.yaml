@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@dcloudio/uni-ui':
+        specifier: ^1.4.14
+        version: 1.5.12
+
+packages:
+
+  '@dcloudio/uni-ui@1.5.12':
+    resolution: {integrity: sha512-mGDl2OZSz7D8xcUAzJegWDHOqB4MEFBSW9Esb/oJiu2/3Gk9+P/Z4bA4JZ9jv9VWBYbMrYwaTfK1Z728kABdYg==}
+
+snapshots:
+
+  '@dcloudio/uni-ui@1.5.12': {}

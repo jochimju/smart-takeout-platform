@@ -21,6 +21,10 @@ spring:
     gateway:
       server:
         webflux:
+          # Keep the browser-facing host through Nginx -> gateway -> domain service.
+          # Otherwise a same-origin POST is misclassified as cross-origin by servlet CORS.
+          default-filters:
+            - PreserveHostHeader
           routes:
             - id: account-admin
               uri: lb://${SKY_ACCOUNT_ROUTE:account-service}
